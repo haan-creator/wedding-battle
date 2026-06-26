@@ -1,8 +1,12 @@
 .DS_Store
-*.jsx
+node_modules/
+dist/
+index.html.bak
+/*.jsx
 *.md
 Gemini_Generated_Image_*.png
 led顯示板.jpeg
 d0afdf30-095e-46ca-88f8-7128c37fa816.jpeg
 Homepage_Discover-our-games_MC-Vanilla-KeyArt_864x864.jpg
 Minecraft_cover.png
+婚禮大作戰_分享版*.html
