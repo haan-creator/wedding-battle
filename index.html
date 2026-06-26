@@ -103,5 +103,10 @@ react/cjs/react-jsx-runtime.production.min.js:
    *)
 */
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
 </body>
 </html>
