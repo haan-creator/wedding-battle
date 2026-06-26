@@ -1,0 +1,13 @@
+{
+  "name": "婚禮大作戰",
+  "short_name": "婚禮大作戰",
+  "description": "長輩 vs 年輕人・一道柵欄、兩個世界",
+  "start_url": "/wedding-battle/",
+  "display": "standalone",
+  "background_color": "#160b12",
+  "theme_color": "#C8102E",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
