@@ -23,3 +23,6 @@ yarn-error.log*
 
 # 測試覆蓋率
 coverage/
+
+# Local Netlify folder
+.netlify
