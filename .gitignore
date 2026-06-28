@@ -6,3 +6,20 @@ index.html.bak
 /*.jsx
 *.md
 婚禮大作戰_分享版*.html
+
+# 環境變數與密鑰
+.env
+.env.local
+.env.*.local
+
+# Log 檔
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# 編輯器設定
+.vscode/
+.idea/
+
+# 測試覆蓋率
+coverage/
