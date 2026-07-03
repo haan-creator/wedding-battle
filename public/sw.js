@@ -1,4 +1,4 @@
-const CACHE = 'wedding-battle-v1';
+const CACHE = 'wedding-battle-v2';
 const FILES = [
   './',
   './index.html',
