@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 內建繁中像素字型（Fusion Pixel 子集、OFL-1.1，見 assets/FONT-LICENSE.txt）
+   本地打包：不連外部字型服務，離線也能開 */
+@font-face {
+  font-family: "WB Pixel";
+  src: url("./assets/wb-pixel.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; }
+body {
+  margin: 0;
+  font-family: "WB Pixel", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+button, input, select, textarea { font-family: inherit; }
 #root { width: 100%; min-height: 100vh; }
