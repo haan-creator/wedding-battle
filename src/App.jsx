@@ -119,10 +119,8 @@ const TAROTS = [
 
 const SPOT_TAGS = { karaoke: "卡拉OK點唱機", tarot: "靈性角落", sofa: "長輩沙發區", table: "辦桌圓桌", tea: "茶水吧台", mahjong: "麻將桌", candle: "燭光餐桌", buffet: "自助餐台", dj: "DJ 台", arch: "乾燥花拱門", photo: "拍照打卡花牆" };
 
-const SEVERITY_LABEL = { mild: "🟡 輕微", medium: "🟠 中等", severe: "🔴 嚴重", fatal: "💀 致命" };
 const CATCH_RATE = { mild: 0.35, medium: 0.55, severe: 0.75, fatal: 0.95 };
 const MINE_GAIN = { mild: 200, medium: 300, severe: 450, fatal: 600 };   // 沒被抓：長輩加分
-const MINE_DMG  = { mild: 0,   medium: 0,   severe: 100, fatal: 200 };   // 重話傷害：年輕人扣分
 
 /* 回嗆卡：全部帶刺，差異是路線與笑點（不再有溫和／嚴重分級，內部數值保留） */
 const COMEBACK_CARDS = [
@@ -843,7 +841,6 @@ export default function App() {
   const [npcReact, setNpcReact] = useState(null); // NPC 回話氣泡
   const [pops, setPops] = useState([]); // 飄分數字
   const [nowPlaying, setNowPlaying] = useState(null); // 卡拉OK 播放中
-  const [contrib, setContrib] = useState(0); // 你的個人貢獻
   const [shoutCd, setShoutCd] = useState(0);
   const [chaos, setChaos] = useState(0);          // 🔥 現場火爆指數（全場共同）
   const [shoutUses, setShoutUses] = useState(0);  // 大聲公已用次數
@@ -902,8 +899,6 @@ export default function App() {
   const buzz = useCallback(() => beep(180, 0.3, "sawtooth", 0.08), [beep]);
 
   const addPop = useCallback((text, color) => {
-    const mt = /^\+(\d+)/.exec(text);
-    if (mt) setContrib((c) => c + parseInt(mt[1], 10));
     const id = Date.now() + Math.random();
     setPops((p) => [...p.slice(-3), { id, text, color: color || "#3E7C6E" }]);
     setTimeout(() => setPops((p) => p.filter((x) => x.id !== id)), 1500);
@@ -959,7 +954,7 @@ export default function App() {
   const walkTo = useCallback((targetX, cb, opts = {}) => {
     if (busyRef.current) return;
     const from = pxRef.current;
-    if (Math.abs(targetX - from) < 8) { if (opts.endFace) setFacing(opts.endFace); cb && cb(); return; }
+    if (Math.abs(targetX - from) < 8) { if (opts.endFace) setFacing(opts.endFace); if (cb) cb(); return; }
     busyRef.current = true;
     setFacing(targetX > from ? 1 : -1);
     setWalking(true);
@@ -1633,7 +1628,7 @@ export default function App() {
     setChaos(0); setShoutUses(0); setBestLine(null); setQuitGroup(false);
     setStat({ smuggle: 0, intercept: 0, comeback: 0, fined: 0, switched: 0, bribes: 0 });
     setLed([{ text: "🎊 歡迎蒞臨婚禮大亂鬥會場 🎊", seq: ledSeq.current++ }]);
-    setModal(null); setKaraoke(6); setTrapCd(0); setCarried(false); setBubble(null); setExpr("idle"); setDisguised(false); setTruce(0); setToastCd(0); setLurker(null); setSings(0); setSongs(0); setElderChoir(false); setYouthParty(false); setNpcReact(null); setPy(0); setContrib(0); setShoutCd(0); setBaitCd(0); setTarotCd(0); setTarotFx(null);
+    setModal(null); setKaraoke(6); setTrapCd(0); setCarried(false); setBubble(null); setExpr("idle"); setDisguised(false); setTruce(0); setToastCd(0); setLurker(null); setSings(0); setSongs(0); setElderChoir(false); setYouthParty(false); setNpcReact(null); setPy(0); setShoutCd(0); setBaitCd(0); setTarotCd(0); setTarotFx(null);
     busyRef.current = false;
   };
 
@@ -1875,85 +1870,89 @@ export default function App() {
         <span style={{ color: INK, background: "#FFF8EC", border: `2px solid ${INK}`, padding: "1px 8px", minWidth: 34, textAlign: "center" }}>{v * 20}</span>
       </span>
     );
+    /* 橫向手機版型：整頁改成 flex-col + overflow-y:auto 兜底，
+       主卡改「左立繪／右資訊」橫排，在 ~390–430px 高的橫向手機也能一屏塞下 */
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-3" style={{ background: "#1c130c", color: "#F3E9D7", minHeight: "100dvh" }}>
+      <div className="flex flex-col p-2" style={{ background: "#1c130c", color: "#F3E9D7", height: "100dvh", overflowY: "auto" }}>
         <style>{css}</style>
         {rotateHint}
-        <h2 className="text-xl md:text-2xl font-black mb-2" style={{ letterSpacing: ".08em" }}>選擇你的入席身份</h2>
 
-        {/* 陣營頁籤 */}
-        <div className="flex gap-2 mb-3">
-          <button className="font-black px-4 py-2" style={{ background: isE ? C.red : "#2b1e15", color: isE ? "#FFF8EC" : "#C4B29A", border: `3px solid ${INK}`, boxShadow: isE ? `3px 3px 0 ${INK}` : "none", minHeight: 44, cursor: "pointer" }} onClick={() => switchFaction("elder")}>🧓 長輩陣營</button>
-          <button className="font-black px-4 py-2" style={{ background: !isE ? "#37812E" : "#2b1e15", color: !isE ? "#FFF8EC" : "#C4B29A", border: `3px solid ${INK}`, boxShadow: !isE ? `3px 3px 0 ${INK}` : "none", minHeight: 44, cursor: "pointer" }} onClick={() => switchFaction("youth")}>👱 年輕人陣營</button>
+        {/* 頂列：標題＋陣營頁籤同一行，省高度 */}
+        <div className="flex items-center justify-between gap-2 flex-wrap flex-shrink-0">
+          <h2 className="font-black" style={{ fontSize: "clamp(14px,2.4vh,20px)", letterSpacing: ".06em" }}>選擇你的入席身份</h2>
+          <div className="flex gap-1.5">
+            <button className="font-black" style={{ fontSize: 12, padding: "6px 12px", background: isE ? C.red : "#2b1e15", color: isE ? "#FFF8EC" : "#C4B29A", border: `2.5px solid ${INK}`, boxShadow: isE ? `2px 2px 0 ${INK}` : "none", minHeight: 34, cursor: "pointer" }} onClick={() => switchFaction("elder")}>🧓 長輩陣營</button>
+            <button className="font-black" style={{ fontSize: 12, padding: "6px 12px", background: !isE ? "#37812E" : "#2b1e15", color: !isE ? "#FFF8EC" : "#C4B29A", border: `2.5px solid ${INK}`, boxShadow: !isE ? `2px 2px 0 ${INK}` : "none", minHeight: 34, cursor: "pointer" }} onClick={() => switchFaction("youth")}>👱 年輕人陣營</button>
+          </div>
         </div>
-        <div className="text-[11px] font-bold opacity-70 mb-2">{isE ? "目標：闖過柵欄，把「關心」一句不漏講完" : "目標：守住邊界，讓每句地雷話都被回敬"}</div>
+        <div className="text-[10px] font-bold opacity-70 flex-shrink-0 mb-1.5">{isE ? "目標：闖過柵欄，把「關心」一句不漏講完" : "目標：守住邊界，讓每句地雷話都被回敬"}</div>
 
-        {/* RPG 入席卡 */}
-        <div key={selFaction + cur.id} className="w-full max-w-md wb-pop relative p-3.5" style={{
+        {/* RPG 入席卡：橫排，撐滿剩餘高度 */}
+        <div key={selFaction + cur.id} className="wb-pop relative flex gap-2.5 p-2.5" style={{
+          flex: "1 1 auto", minHeight: 150,
           border: `4px solid ${INK}`, boxShadow: "6px 6px 0 rgba(0,0,0,.45)",
           background: isE
             ? "repeating-linear-gradient(45deg, rgba(242,178,52,.14) 0 3px, transparent 3px 16px), repeating-linear-gradient(-45deg, rgba(242,178,52,.14) 0 3px, transparent 3px 16px), linear-gradient(#9c1226, #7c0c1e)"
             : "radial-gradient(rgba(255,248,236,.5) 1.5px, transparent 1.6px), linear-gradient(#458f3a, #37812E)",
           backgroundSize: isE ? "auto" : "26px 26px, 100% 100%",
         }}>
-          {/* 台詞（深色 RPG 框，退為氣氛） */}
-          <div className="flex items-start gap-3">
-            <div className="relative flex-1 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "7px 11px", fontSize: 13, lineHeight: 1.6 }}>
-              {CHAR_QUOTES[cur.id]}
+          {/* 左：立繪＋切換箭頭 */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <button onClick={() => go(-1)} aria-label="上一位" className="font-black" style={{ width: 34, height: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer", flexShrink: 0 }}>◀</button>
+            <div className="flex items-center justify-center" style={{ border: `3px solid ${INK}`, background: "rgba(23,16,10,.35)", padding: 6, height: "100%", minWidth: 76 }}>
+              <div style={{ animation: "wbIdle 2s ease-in-out infinite", transform: isE ? "none" : "scaleX(-1)" }}><CharSprite id={cur.id} w={78} /></div>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Pips label="體力" val={cur.stats.defense} color="#FF5A4E" />
-              <Pips label={isE ? "話量" : "嗆力"} val={cur.stats.attack} color="#F2B234" />
-            </div>
+            <button onClick={() => go(1)} aria-label="下一位" className="font-black" style={{ width: 34, height: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer", flexShrink: 0 }}>▶</button>
           </div>
 
-          {/* 立繪＋數值 */}
-          <div className="flex items-end gap-3 mt-3">
-            <button onClick={() => go(-1)} aria-label="上一位" className="font-black" style={{ width: 44, height: 44, background: "#FFF8EC", color: INK, border: `3px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 18, cursor: "pointer", flexShrink: 0 }}>◀</button>
-            <div className="flex-1 flex items-end justify-center gap-3 flex-wrap">
-              <div style={{ border: `3px solid ${INK}`, background: "rgba(23,16,10,.35)", padding: 8 }}>
-                <div style={{ animation: "wbIdle 2s ease-in-out infinite", transform: isE ? "none" : "scaleX(-1)" }}><CharSprite id={cur.id} w={104} /></div>
+          {/* 右：台詞／數值／資訊卡，直排但精簡高度 */}
+          <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+            <div className="flex items-start gap-2">
+              <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "5px 9px", fontSize: 12, lineHeight: 1.5 }}>
+                {CHAR_QUOTES[cur.id]}
               </div>
-              <div className="grid grid-cols-2 gap-1.5 pb-1">
-                <StatChip k="攻" v={cur.stats.attack} /><StatChip k="防" v={cur.stats.defense} />
-                <StatChip k="潛" v={cur.stats.stealth} /><StatChip k="速" v={cur.stats.speed} />
+              <div className="flex flex-col gap-1 flex-shrink-0">
+                <Pips label="體力" val={cur.stats.defense} color="#FF5A4E" />
+                <Pips label={isE ? "話量" : "嗆力"} val={cur.stats.attack} color="#F2B234" />
               </div>
             </div>
-            <button onClick={() => go(1)} aria-label="下一位" className="font-black" style={{ width: 44, height: 44, background: "#FFF8EC", color: INK, border: `3px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 18, cursor: "pointer", flexShrink: 0 }}>▶</button>
-          </div>
-
-          {/* 資訊卡（淺色底，焦點） */}
-          <div className="mt-3 px-3 py-2.5" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
-            <div className="font-black" style={{ fontSize: 15, color: INK }}>
-              <span style={{ color: accent }}>{cur.name}</span> <span style={{ opacity: 0.72 }}>〔LV.{CHAR_LV[cur.id]}〕〔{cur.specialty}〕</span>
+            <div className="grid grid-cols-4 gap-1">
+              <StatChip k="攻" v={cur.stats.attack} /><StatChip k="防" v={cur.stats.defense} />
+              <StatChip k="潛" v={cur.stats.stealth} /><StatChip k="速" v={cur.stats.speed} />
             </div>
-            <div className="font-black mt-1" style={{ fontSize: 12.5, color: INK, lineHeight: 1.7 }}>
-              ＊<span style={{ color: accent }}>{cur.skill}（必殺）</span>
+            <div className="flex-1 min-h-0 overflow-y-auto px-2.5 py-1.5" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
+              <div className="font-black" style={{ fontSize: 13, color: INK }}>
+                <span style={{ color: accent }}>{cur.name}</span> <span style={{ opacity: 0.72 }}>〔LV.{CHAR_LV[cur.id]}〕〔{cur.specialty}〕</span>
+              </div>
+              <div className="font-black mt-0.5" style={{ fontSize: 11.5, color: INK, lineHeight: 1.6 }}>
+                ＊<span style={{ color: accent }}>{cur.skill}（必殺）</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 頭像列 */}
-        <div className="flex gap-2 my-3">
-          {list.map((c, i) => (
-            <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
-              className="overflow-hidden flex items-center justify-center"
-              style={{
-                width: 48, height: 48, background: "#FFF8EC", cursor: "pointer",
-                border: `3px solid ${i === selIdx ? accent : INK}`,
-                boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
-                opacity: i === selIdx ? 1 : 0.6,
-              }}>
-              <CharSprite id={c.id} w={38} headOnly />
-            </button>
-          ))}
+        {/* 底列：頭像列＋入席按鈕同一行 */}
+        <div className="flex items-center gap-2 mt-1.5 flex-shrink-0">
+          <div className="flex gap-1.5 flex-shrink-0">
+            {list.map((c, i) => (
+              <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
+                className="overflow-hidden flex items-center justify-center"
+                style={{
+                  width: 36, height: 36, background: "#FFF8EC", cursor: "pointer",
+                  border: `2.5px solid ${i === selIdx ? accent : INK}`,
+                  boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
+                  opacity: i === selIdx ? 1 : 0.6,
+                }}>
+                <CharSprite id={c.id} w={28} headOnly />
+              </button>
+            ))}
+          </div>
+          <button className="font-black flex-1" style={{ fontSize: 13, background: accent, color: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: `0 0 0 2px #FFF8EC, 3px 3px 0 ${INK}`, padding: "8px 14px", minHeight: 40, cursor: "pointer" }}
+            onClick={() => startGame(cur)}>
+            🎊 以「{cur.name}」的身份入席
+          </button>
         </div>
-
-        <button className="font-black" style={{ fontSize: 16, background: accent, color: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: `0 0 0 2px #FFF8EC, 4px 4px 0 ${INK}`, padding: "12px 26px", minHeight: 48, cursor: "pointer" }}
-          onClick={() => startGame(cur)}>
-          🎊 以「{cur.name}」的身份入席
-        </button>
-        <div className="text-[11px] font-bold opacity-60 mt-3">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</div>
+        <div className="text-[9px] font-bold opacity-60 mt-1 text-center flex-shrink-0">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</div>
       </div>
     );
   }
@@ -2737,7 +2736,6 @@ function IntroModal({ css, onClose, onStart }) {
     { title: "戰帖・怎麼得分（30 秒看完）", rules: true, war: true },
   ];
 
-  const box = (bg) => ({ background: bg, border: `3px solid ${INK}`, borderRadius: 12, padding: "7px 10px", lineHeight: 1.85 });
   const p = pages[page];
 
   return (
