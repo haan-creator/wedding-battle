@@ -119,10 +119,8 @@ const TAROTS = [
 
 const SPOT_TAGS = { karaoke: "卡拉OK點唱機", tarot: "靈性角落", sofa: "長輩沙發區", table: "辦桌圓桌", tea: "茶水吧台", mahjong: "麻將桌", candle: "燭光餐桌", buffet: "自助餐台", dj: "DJ 台", arch: "乾燥花拱門", photo: "拍照打卡花牆" };
 
-const SEVERITY_LABEL = { mild: "🟡 輕微", medium: "🟠 中等", severe: "🔴 嚴重", fatal: "💀 致命" };
 const CATCH_RATE = { mild: 0.35, medium: 0.55, severe: 0.75, fatal: 0.95 };
 const MINE_GAIN = { mild: 200, medium: 300, severe: 450, fatal: 600 };   // 沒被抓：長輩加分
-const MINE_DMG  = { mild: 0,   medium: 0,   severe: 100, fatal: 200 };   // 重話傷害：年輕人扣分
 
 /* 回嗆卡：全部帶刺，差異是路線與笑點（不再有溫和／嚴重分級，內部數值保留） */
 const COMEBACK_CARDS = [
@@ -843,7 +841,6 @@ export default function App() {
   const [npcReact, setNpcReact] = useState(null); // NPC 回話氣泡
   const [pops, setPops] = useState([]); // 飄分數字
   const [nowPlaying, setNowPlaying] = useState(null); // 卡拉OK 播放中
-  const [contrib, setContrib] = useState(0); // 你的個人貢獻
   const [shoutCd, setShoutCd] = useState(0);
   const [chaos, setChaos] = useState(0);          // 🔥 現場火爆指數（全場共同）
   const [shoutUses, setShoutUses] = useState(0);  // 大聲公已用次數
@@ -902,8 +899,6 @@ export default function App() {
   const buzz = useCallback(() => beep(180, 0.3, "sawtooth", 0.08), [beep]);
 
   const addPop = useCallback((text, color) => {
-    const mt = /^\+(\d+)/.exec(text);
-    if (mt) setContrib((c) => c + parseInt(mt[1], 10));
     const id = Date.now() + Math.random();
     setPops((p) => [...p.slice(-3), { id, text, color: color || "#3E7C6E" }]);
     setTimeout(() => setPops((p) => p.filter((x) => x.id !== id)), 1500);
@@ -959,7 +954,7 @@ export default function App() {
   const walkTo = useCallback((targetX, cb, opts = {}) => {
     if (busyRef.current) return;
     const from = pxRef.current;
-    if (Math.abs(targetX - from) < 8) { if (opts.endFace) setFacing(opts.endFace); cb && cb(); return; }
+    if (Math.abs(targetX - from) < 8) { if (opts.endFace) setFacing(opts.endFace); if (cb) cb(); return; }
     busyRef.current = true;
     setFacing(targetX > from ? 1 : -1);
     setWalking(true);
@@ -1633,7 +1628,7 @@ export default function App() {
     setChaos(0); setShoutUses(0); setBestLine(null); setQuitGroup(false);
     setStat({ smuggle: 0, intercept: 0, comeback: 0, fined: 0, switched: 0, bribes: 0 });
     setLed([{ text: "🎊 歡迎蒞臨婚禮大亂鬥會場 🎊", seq: ledSeq.current++ }]);
-    setModal(null); setKaraoke(6); setTrapCd(0); setCarried(false); setBubble(null); setExpr("idle"); setDisguised(false); setTruce(0); setToastCd(0); setLurker(null); setSings(0); setSongs(0); setElderChoir(false); setYouthParty(false); setNpcReact(null); setPy(0); setContrib(0); setShoutCd(0); setBaitCd(0); setTarotCd(0); setTarotFx(null);
+    setModal(null); setKaraoke(6); setTrapCd(0); setCarried(false); setBubble(null); setExpr("idle"); setDisguised(false); setTruce(0); setToastCd(0); setLurker(null); setSings(0); setSongs(0); setElderChoir(false); setYouthParty(false); setNpcReact(null); setPy(0); setShoutCd(0); setBaitCd(0); setTarotCd(0); setTarotFx(null);
     busyRef.current = false;
   };
 
@@ -2737,7 +2732,6 @@ function IntroModal({ css, onClose, onStart }) {
     { title: "戰帖・怎麼得分（30 秒看完）", rules: true, war: true },
   ];
 
-  const box = (bg) => ({ background: bg, border: `3px solid ${INK}`, borderRadius: 12, padding: "7px 10px", lineHeight: 1.85 });
   const p = pages[page];
 
   return (
