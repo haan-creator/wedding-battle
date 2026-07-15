@@ -24,14 +24,16 @@ const YOUTHS = [
 const ALL_CHARS = [...ELDERS, ...YOUTHS];
 
 /* 入席卡台詞與等級（選角畫面用） */
+/* 入席台詞：刻意跟每個角色自己的必殺技引句不同（取自遊戲既有語料），
+   避免選角卡上方對話框跟下方必殺技顯示同一句話 */
 const CHAR_QUOTES = {
-  e1: "你看隔壁小美都生第二胎了～",
-  e2: "少年欸，一個月薪水多少？",
-  e3: "你表哥在竹科年薪兩百萬喔",
-  e4: "來！這杯不喝就是看不起我",
-  y1: "不好意思…我要去上廁所（遁走）",
-  y2: "叔叔你這西裝哪裡買的？",
-  y3: "那阿姨你當年幾歲生的？",
+  e1: "什麼時候結婚？",
+  e2: "買房了沒？",
+  e3: "吃這麼少，難怪這麼瘦",
+  e4: "早生貴子！",
+  y1: "叔叔阿姨那邊有卡拉OK喔，不是很好嗎～",
+  y2: "叔叔你這領帶好好看！跟你上次報的明牌一樣澎欸",
+  y3: "阿姨那你兒子呢？40 了還沒對象？",
   y4: "（音量轉到最大）阿姨你說什麼？聽不到～",
 };
 const CHAR_LV = { e1: 63, e2: 58, e3: 60, e4: 65, y1: 24, y2: 27, y3: 28, y4: 25 };
@@ -1745,6 +1747,7 @@ export default function App() {
     .wb-pop { animation: wbPop .22s ease-out; }
     .wb-portrait-fill { display:flex; align-items:center; justify-content:center; overflow:hidden; }
     .wb-portrait-fill svg { height:100%; width:auto; display:block; }
+    .wb-quote-bub::before { content:""; position:absolute; left:-8px; top:50%; transform:translateY(-50%); border:7px solid transparent; border-right-color:var(--qb); }
     @keyframes wbLedIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .wb-ledin { animation: wbLedIn .3s steps(3) both; }
     .wb-ledblink { animation: wbBlink .8s steps(2) infinite; }
@@ -1911,7 +1914,13 @@ export default function App() {
           {/* 右：台詞／數值／資訊卡靠上；入席按鈕沉到右下角，填滿卡片剩餘空間 */}
           <div className="flex-1 min-w-0 flex flex-col gap-2" style={{ justifyContent: "flex-start" }}>
             <div className="flex items-start gap-2">
-              <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "6px 10px", fontSize: 13, lineHeight: 1.5 }}>
+              {/* 對話框：淡陣營色調＋尖角指向立繪，降低視覺重量，跟下面的資訊卡分出主次 */}
+              <div className="wb-quote-bub relative flex-1 min-w-0 font-black" style={{
+                "--qb": isE ? "#F2B234" : "#DCEBD8",
+                background: isE ? "rgba(120,20,32,.55)" : "rgba(30,70,26,.55)",
+                color: "#FFF8EC", border: `2px solid var(--qb)`, outline: `2px solid ${INK}`,
+                padding: "6px 10px 6px 15px", fontSize: 13, lineHeight: 1.5,
+              }}>
                 {CHAR_QUOTES[cur.id]}
               </div>
               <div className="flex flex-col gap-1 flex-shrink-0">
@@ -1924,12 +1933,15 @@ export default function App() {
               <StatChip k="嘴砲" v={cur.stats.attack} /><StatChip k="抗噪" v={cur.stats.defense} />
               <StatChip k="低調" v={cur.stats.stealth} /><StatChip k="跑路" v={cur.stats.speed} />
             </div>
+            {/* 資訊卡：名字放大當標題，LV／稱號降級成小字副標，必殺技獨立一行帶標籤 */}
             <div className="px-3 py-2" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
-              <div className="font-black" style={{ fontSize: 14, color: INK }}>
-                <span style={{ color: accent }}>{cur.name}</span> <span style={{ opacity: 0.72 }}>〔LV.{CHAR_LV[cur.id]}〕〔{cur.specialty}〕</span>
+              <div className="flex items-baseline gap-1.5 flex-wrap">
+                <span className="font-black" style={{ fontSize: 19, color: accent, letterSpacing: ".02em" }}>{cur.name}</span>
+                <span className="font-bold" style={{ fontSize: 10.5, color: INK, opacity: 0.6 }}>LV.{CHAR_LV[cur.id]}・{cur.specialty}</span>
               </div>
-              <div className="font-black mt-1" style={{ fontSize: 12.5, color: INK, lineHeight: 1.6 }}>
-                ＊<span style={{ color: accent }}>{cur.skill}（必殺）</span>
+              <div className="font-black mt-1.5 flex items-start gap-1.5" style={{ fontSize: 12.5, color: INK, lineHeight: 1.5 }}>
+                <span className="flex-shrink-0" style={{ background: accent, color: "#FFF8EC", fontSize: 10, padding: "1px 6px" }}>必殺</span>
+                <span>{cur.skill}</span>
               </div>
             </div>
             {/* 入席按鈕：縮小、貼右下角，吃掉原本空白的區域 */}
