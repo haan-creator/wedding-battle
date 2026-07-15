@@ -1881,7 +1881,10 @@ export default function App() {
     /* 橫向手機版型：整頁改成 flex-col + overflow-y:auto 兜底，
        主卡改「左立繪／右資訊」橫排，在 ~390–430px 高的橫向手機也能一屏塞下 */
     return (
-      <div className="flex flex-col p-2" style={{ background: "#1c130c", color: "#F3E9D7", height: "100dvh", overflowY: "auto" }}>
+      <div className="flex flex-col" style={{
+        background: "#1c130c", color: "#F3E9D7", height: "100dvh", overflowY: "auto",
+        padding: "8px calc(8px + env(safe-area-inset-right)) 8px calc(8px + env(safe-area-inset-left))",
+      }}>
         <style>{css}</style>
         {rotateHint}
 
@@ -1957,21 +1960,21 @@ export default function App() {
           </div>
         </div>
 
-        {/* 底列：頭像列（獨立一行，尺寸符合觸控標準） */}
-        <div className="flex items-center gap-1.5 mt-1.5 flex-shrink-0">
+        {/* 底列：頭像列（放大，獨立一行） */}
+        <div className="flex items-center gap-2 mt-1.5 flex-shrink-0">
           {list.map((c, i) => (
             <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
-              className="overflow-hidden flex items-center justify-center"
+              className="overflow-hidden flex items-center justify-center flex-shrink-0"
               style={{
-                width: 40, height: 40, background: "#FFF8EC", cursor: "pointer",
-                border: `2.5px solid ${i === selIdx ? accent : INK}`,
-                boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
+                width: 52, height: 52, background: "#FFF8EC", cursor: "pointer",
+                border: `3px solid ${i === selIdx ? accent : INK}`,
+                boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 3px 3px 0 ${INK}` : `3px 3px 0 ${INK}`,
                 opacity: i === selIdx ? 1 : 0.6,
               }}>
-              <CharSprite id={c.id} w={32} headOnly />
+              <CharSprite id={c.id} w={42} headOnly />
             </button>
           ))}
-          <span className="text-[9px] font-bold opacity-60 ml-1">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</span>
+          <span className="text-xs font-bold opacity-70 ml-1">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</span>
         </div>
       </div>
     );
