@@ -1741,6 +1741,8 @@ export default function App() {
     .wb-scorepop { position:absolute; left:50%; font-weight:900; font-size:17px; white-space:nowrap; pointer-events:none; letter-spacing:.02em; text-shadow:-2px -2px 0 #FFFDF6, 2px -2px 0 #FFFDF6, -2px 2px 0 #FFFDF6, 2px 2px 0 #FFFDF6, 0 3px 0 rgba(0,0,0,.15); animation: wbPopUp 2.8s ease-out forwards; z-index:28; }
     .wb-hint { position:absolute; top:-28px; left:50%; transform:translateX(-50%); background:#FFE6A0; color:#1d1a17; font-size:11px; font-weight:900; padding:3px 9px; border-radius:0; border:2.5px solid #1d1a17; box-shadow:2px 2px 0 #1d1a17; white-space:nowrap; pointer-events:none; }
     .wb-pop { animation: wbPop .22s ease-out; }
+    .wb-portrait-fill { display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .wb-portrait-fill svg { height:100%; width:auto; display:block; }
     @keyframes wbLedIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .wb-ledin { animation: wbLedIn .3s steps(3) both; }
     .wb-ledblink { animation: wbBlink .8s steps(2) infinite; }
@@ -1825,14 +1827,13 @@ export default function App() {
         {/* 開始鍵：深色底淺色字、文字置中 */}
         <button onClick={startClick} className="absolute font-black" style={{
           left: "50%", bottom: "max(8%, calc(6% + env(safe-area-inset-bottom)))", transform: "translateX(-50%)",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: "0.6em",
+          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5em",
           fontSize: "clamp(15px,2.6vw,20px)", color: "#FFF8EC", background: "#2b241d",
           border: `3px solid ${INK}`, boxShadow: `0 0 0 2px #FFF8EC, 4px 4px 0 ${INK}`,
-          padding: "0.55em 1.3em", minHeight: 48, cursor: "pointer",
+          padding: "0.55em 1.5em", minHeight: 48, cursor: "pointer", whiteSpace: "nowrap",
         }}>
-          <span style={{ animation: "wbBlink 1s steps(2) infinite" }}>▶</span>
-          <span style={{ letterSpacing: ".4em", marginRight: "-.4em" }}>開始</span>
-          <span style={{ visibility: "hidden" }}>▶</span>
+          <span style={{ animation: "wbBlink 1s steps(2) infinite", lineHeight: 1 }}>▶</span>
+          <span style={{ lineHeight: 1 }}>開始</span>
         </button>
         <button onClick={() => setMuted((m) => !m)} className="absolute text-xs font-black" style={{ right: 12, top: 10, textShadow: `1px 1px 0 ${INK}` }}>{muted ? "🔇 音效已關" : "🔊 音效已開"}</button>
       </div>
@@ -1896,19 +1897,19 @@ export default function App() {
             : "radial-gradient(rgba(255,248,236,.5) 1.5px, transparent 1.6px), linear-gradient(#458f3a, #37812E)",
           backgroundSize: isE ? "auto" : "26px 26px, 100% 100%",
         }}>
-          {/* 左：立繪＋切換箭頭 */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <button onClick={() => go(-1)} aria-label="上一位" className="font-black" style={{ width: 34, height: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer", flexShrink: 0 }}>◀</button>
-            <div className="flex items-center justify-center" style={{ border: `3px solid ${INK}`, background: "rgba(23,16,10,.35)", padding: 6, height: "100%", minWidth: 76 }}>
-              <div style={{ animation: "wbIdle 2s ease-in-out infinite", transform: isE ? "none" : "scaleX(-1)" }}><CharSprite id={cur.id} w={78} /></div>
+          {/* 左：立繪佔卡片近半寬，隨畫面高度等比放大（RPG 選角常見比例） */}
+          <div className="flex items-stretch gap-1.5 flex-shrink-0" style={{ flex: "0 1 42%", maxWidth: 260 }}>
+            <button onClick={() => go(-1)} aria-label="上一位" className="font-black flex-shrink-0" style={{ width: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer" }}>◀</button>
+            <div className="wb-portrait-fill flex-1" style={{ border: `3px solid ${INK}`, background: "rgba(23,16,10,.35)", padding: 6, minWidth: 0 }}>
+              <div style={{ animation: "wbIdle 2s ease-in-out infinite", transform: isE ? "none" : "scaleX(-1)", height: "100%" }}><CharSprite id={cur.id} w={140} /></div>
             </div>
-            <button onClick={() => go(1)} aria-label="下一位" className="font-black" style={{ width: 34, height: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer", flexShrink: 0 }}>▶</button>
+            <button onClick={() => go(1)} aria-label="下一位" className="font-black flex-shrink-0" style={{ width: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer" }}>▶</button>
           </div>
 
-          {/* 右：台詞／數值／資訊卡，直排但精簡高度 */}
-          <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+          {/* 右：台詞／數值／資訊卡，整組垂直置中，不強行撐滿高度 */}
+          <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
             <div className="flex items-start gap-2">
-              <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "5px 9px", fontSize: 12, lineHeight: 1.5 }}>
+              <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "6px 10px", fontSize: 13, lineHeight: 1.5 }}>
                 {CHAR_QUOTES[cur.id]}
               </div>
               <div className="flex flex-col gap-1 flex-shrink-0">
@@ -1916,15 +1917,15 @@ export default function App() {
                 <Pips label={isE ? "話量" : "嗆力"} val={cur.stats.attack} color="#F2B234" />
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-1">
+            <div className="grid grid-cols-4 gap-1.5">
               <StatChip k="攻" v={cur.stats.attack} /><StatChip k="防" v={cur.stats.defense} />
               <StatChip k="潛" v={cur.stats.stealth} /><StatChip k="速" v={cur.stats.speed} />
             </div>
-            <div className="flex-1 min-h-0 overflow-y-auto px-2.5 py-1.5" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
-              <div className="font-black" style={{ fontSize: 13, color: INK }}>
+            <div className="px-3 py-2" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
+              <div className="font-black" style={{ fontSize: 14, color: INK }}>
                 <span style={{ color: accent }}>{cur.name}</span> <span style={{ opacity: 0.72 }}>〔LV.{CHAR_LV[cur.id]}〕〔{cur.specialty}〕</span>
               </div>
-              <div className="font-black mt-0.5" style={{ fontSize: 11.5, color: INK, lineHeight: 1.6 }}>
+              <div className="font-black mt-1" style={{ fontSize: 12.5, color: INK, lineHeight: 1.6 }}>
                 ＊<span style={{ color: accent }}>{cur.skill}（必殺）</span>
               </div>
             </div>
