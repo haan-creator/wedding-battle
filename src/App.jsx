@@ -677,11 +677,11 @@ const Marquee = ({ led }) => {
   }, []);
   const big = cur && (cur.text.includes("⚠️") || cur.text.includes("【"));
   return (
-    <div className="relative overflow-hidden" style={{ background: "#140202", border: `4px solid #3A0E0E`, boxShadow: "inset 0 0 18px rgba(255,60,40,.25), 0 3px 0 rgba(0,0,0,.4)", minHeight: 44 }}>
+    <div className="relative overflow-hidden" style={{ background: "#140202", border: `3px solid #3A0E0E`, boxShadow: "inset 0 0 14px rgba(255,60,40,.25), 0 2px 0 rgba(0,0,0,.4)", minHeight: 34 }}>
       {cur && (
-        <div key={cur.seq || cur.text} className="flex items-center justify-center gap-2 px-3 py-1.5 font-black wb-ledin"
+        <div key={cur.seq || cur.text} className="flex items-center justify-center gap-2 px-3 py-1 font-black wb-ledin"
           style={{
-            fontSize: big ? "clamp(14px, 3.6vw, 19px)" : "clamp(13px, 3.2vw, 17px)",
+            fontSize: big ? "clamp(12px, 3vw, 16px)" : "clamp(11px, 2.6vw, 14px)",
             color: big ? "#FFD24A" : "#FF6A55",
             textShadow: big ? "0 0 9px rgba(255,210,74,.95), 0 0 2px #000" : "0 0 8px rgba(255,106,85,.9), 0 0 2px #000",
             letterSpacing: ".04em", lineHeight: 1.3, textAlign: "center",
@@ -865,11 +865,13 @@ export default function App() {
   const busyRef = useRef(false);
   const [worldScale, setWorldScale] = useState(1);
 
-  /* 小螢幕（手機）時整個世界等比縮小，避免跑版 */
+  /* 手機橫向：場景改走「鏡頭跟隨」邏輯——縮放公式對齊場景實際所需高度（柵欄崗哨 330px 是
+     最高元素，+30px 底距＝需要 360px），只縮小到「剛好不裁切」，不再為了塞進整個 2080px
+     寬的場景而過度縮小，避免角色和道具小到點不到 */
   useEffect(() => {
     const el = worldRef.current;
     if (!el || phase !== "playing") return;
-    const calc = () => setWorldScale(Math.min(1, Math.max(0.45, el.clientHeight / 450)));
+    const calc = () => setWorldScale(Math.min(1, Math.max(0.6, el.clientHeight / 380)));
     calc();
     const ro = new ResizeObserver(calc);
     ro.observe(el);
@@ -1741,6 +1743,8 @@ export default function App() {
     .wb-scorepop { position:absolute; left:50%; font-weight:900; font-size:17px; white-space:nowrap; pointer-events:none; letter-spacing:.02em; text-shadow:-2px -2px 0 #FFFDF6, 2px -2px 0 #FFFDF6, -2px 2px 0 #FFFDF6, 2px 2px 0 #FFFDF6, 0 3px 0 rgba(0,0,0,.15); animation: wbPopUp 2.8s ease-out forwards; z-index:28; }
     .wb-hint { position:absolute; top:-28px; left:50%; transform:translateX(-50%); background:#FFE6A0; color:#1d1a17; font-size:11px; font-weight:900; padding:3px 9px; border-radius:0; border:2.5px solid #1d1a17; box-shadow:2px 2px 0 #1d1a17; white-space:nowrap; pointer-events:none; }
     .wb-pop { animation: wbPop .22s ease-out; }
+    .wb-portrait-fill { display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .wb-portrait-fill svg { height:100%; width:auto; display:block; }
     @keyframes wbLedIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .wb-ledin { animation: wbLedIn .3s steps(3) both; }
     .wb-ledblink { animation: wbBlink .8s steps(2) infinite; }
@@ -1825,14 +1829,13 @@ export default function App() {
         {/* 開始鍵：深色底淺色字、文字置中 */}
         <button onClick={startClick} className="absolute font-black" style={{
           left: "50%", bottom: "max(8%, calc(6% + env(safe-area-inset-bottom)))", transform: "translateX(-50%)",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: "0.6em",
+          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5em",
           fontSize: "clamp(15px,2.6vw,20px)", color: "#FFF8EC", background: "#2b241d",
           border: `3px solid ${INK}`, boxShadow: `0 0 0 2px #FFF8EC, 4px 4px 0 ${INK}`,
-          padding: "0.55em 1.3em", minHeight: 48, cursor: "pointer",
+          padding: "0.55em 1.5em", minHeight: 48, cursor: "pointer", whiteSpace: "nowrap",
         }}>
-          <span style={{ animation: "wbBlink 1s steps(2) infinite" }}>▶</span>
-          <span style={{ letterSpacing: ".4em", marginRight: "-.4em" }}>開始</span>
-          <span style={{ visibility: "hidden" }}>▶</span>
+          <span style={{ animation: "wbBlink 1s steps(2) infinite", lineHeight: 1 }}>▶</span>
+          <span style={{ lineHeight: 1 }}>開始</span>
         </button>
         <button onClick={() => setMuted((m) => !m)} className="absolute text-xs font-black" style={{ right: 12, top: 10, textShadow: `1px 1px 0 ${INK}` }}>{muted ? "🔇 音效已關" : "🔊 音效已開"}</button>
       </div>
@@ -1896,19 +1899,19 @@ export default function App() {
             : "radial-gradient(rgba(255,248,236,.5) 1.5px, transparent 1.6px), linear-gradient(#458f3a, #37812E)",
           backgroundSize: isE ? "auto" : "26px 26px, 100% 100%",
         }}>
-          {/* 左：立繪＋切換箭頭 */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <button onClick={() => go(-1)} aria-label="上一位" className="font-black" style={{ width: 34, height: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer", flexShrink: 0 }}>◀</button>
-            <div className="flex items-center justify-center" style={{ border: `3px solid ${INK}`, background: "rgba(23,16,10,.35)", padding: 6, height: "100%", minWidth: 76 }}>
-              <div style={{ animation: "wbIdle 2s ease-in-out infinite", transform: isE ? "none" : "scaleX(-1)" }}><CharSprite id={cur.id} w={78} /></div>
+          {/* 左：立繪佔卡片近半寬，隨畫面高度等比放大（RPG 選角常見比例） */}
+          <div className="flex items-center gap-1.5 flex-shrink-0" style={{ flex: "0 1 42%", maxWidth: 260 }}>
+            <button onClick={() => go(-1)} aria-label="上一位" className="font-black flex-shrink-0" style={{ width: 28, height: 28, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 13, cursor: "pointer" }}>◀</button>
+            <div className="wb-portrait-fill flex-1 self-stretch" style={{ border: `3px solid ${INK}`, background: "rgba(23,16,10,.35)", padding: 6, minWidth: 0 }}>
+              <div style={{ animation: "wbIdle 2s ease-in-out infinite", transform: isE ? "none" : "scaleX(-1)", height: "100%" }}><CharSprite id={cur.id} w={140} /></div>
             </div>
-            <button onClick={() => go(1)} aria-label="下一位" className="font-black" style={{ width: 34, height: 34, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 15, cursor: "pointer", flexShrink: 0 }}>▶</button>
+            <button onClick={() => go(1)} aria-label="下一位" className="font-black flex-shrink-0" style={{ width: 28, height: 28, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 13, cursor: "pointer" }}>▶</button>
           </div>
 
-          {/* 右：台詞／數值／資訊卡，直排但精簡高度 */}
-          <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+          {/* 右：台詞／數值／資訊卡靠上；入席按鈕沉到右下角，填滿卡片剩餘空間 */}
+          <div className="flex-1 min-w-0 flex flex-col gap-2" style={{ justifyContent: "flex-start" }}>
             <div className="flex items-start gap-2">
-              <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "5px 9px", fontSize: 12, lineHeight: 1.5 }}>
+              <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "6px 10px", fontSize: 13, lineHeight: 1.5 }}>
                 {CHAR_QUOTES[cur.id]}
               </div>
               <div className="flex flex-col gap-1 flex-shrink-0">
@@ -1916,43 +1919,46 @@ export default function App() {
                 <Pips label={isE ? "話量" : "嗆力"} val={cur.stats.attack} color="#F2B234" />
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-1">
-              <StatChip k="攻" v={cur.stats.attack} /><StatChip k="防" v={cur.stats.defense} />
-              <StatChip k="潛" v={cur.stats.stealth} /><StatChip k="速" v={cur.stats.speed} />
+            {/* 改用 flex justify-between，讓最後一格（跑路）跟上面的話量右緣切齊 */}
+            <div className="flex justify-between gap-1.5">
+              <StatChip k="嘴砲" v={cur.stats.attack} /><StatChip k="抗噪" v={cur.stats.defense} />
+              <StatChip k="低調" v={cur.stats.stealth} /><StatChip k="跑路" v={cur.stats.speed} />
             </div>
-            <div className="flex-1 min-h-0 overflow-y-auto px-2.5 py-1.5" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
-              <div className="font-black" style={{ fontSize: 13, color: INK }}>
+            <div className="px-3 py-2" style={{ background: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: "inset 0 0 0 2px rgba(29,26,23,.12)" }}>
+              <div className="font-black" style={{ fontSize: 14, color: INK }}>
                 <span style={{ color: accent }}>{cur.name}</span> <span style={{ opacity: 0.72 }}>〔LV.{CHAR_LV[cur.id]}〕〔{cur.specialty}〕</span>
               </div>
-              <div className="font-black mt-0.5" style={{ fontSize: 11.5, color: INK, lineHeight: 1.6 }}>
+              <div className="font-black mt-1" style={{ fontSize: 12.5, color: INK, lineHeight: 1.6 }}>
                 ＊<span style={{ color: accent }}>{cur.skill}（必殺）</span>
               </div>
             </div>
+            {/* 入席按鈕：縮小、貼右下角，吃掉原本空白的區域 */}
+            <button className="font-black" style={{
+              alignSelf: "flex-end", marginTop: "auto", width: "52%", minWidth: 150,
+              fontSize: 13, background: accent, color: "#FFF8EC", border: `3px solid ${INK}`,
+              boxShadow: `0 0 0 2px #FFF8EC, 3px 3px 0 ${INK}`, padding: "8px 10px", minHeight: 40, cursor: "pointer",
+            }} onClick={() => startGame(cur)}>
+              入席開戰
+            </button>
           </div>
         </div>
 
-        {/* 底列：頭像列＋入席按鈕同一行 */}
-        <div className="flex items-center gap-2 mt-1.5 flex-shrink-0">
-          <div className="flex gap-1.5 flex-shrink-0">
-            {list.map((c, i) => (
-              <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
-                className="overflow-hidden flex items-center justify-center"
-                style={{
-                  width: 36, height: 36, background: "#FFF8EC", cursor: "pointer",
-                  border: `2.5px solid ${i === selIdx ? accent : INK}`,
-                  boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
-                  opacity: i === selIdx ? 1 : 0.6,
-                }}>
-                <CharSprite id={c.id} w={28} headOnly />
-              </button>
-            ))}
-          </div>
-          <button className="font-black flex-1" style={{ fontSize: 13, background: accent, color: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: `0 0 0 2px #FFF8EC, 3px 3px 0 ${INK}`, padding: "8px 14px", minHeight: 40, cursor: "pointer" }}
-            onClick={() => startGame(cur)}>
-            🎊 以「{cur.name}」的身份入席
-          </button>
+        {/* 底列：頭像列（獨立一行，尺寸符合觸控標準） */}
+        <div className="flex items-center gap-1.5 mt-1.5 flex-shrink-0">
+          {list.map((c, i) => (
+            <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
+              className="overflow-hidden flex items-center justify-center"
+              style={{
+                width: 40, height: 40, background: "#FFF8EC", cursor: "pointer",
+                border: `2.5px solid ${i === selIdx ? accent : INK}`,
+                boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
+                opacity: i === selIdx ? 1 : 0.6,
+              }}>
+              <CharSprite id={c.id} w={32} headOnly />
+            </button>
+          ))}
+          <span className="text-[9px] font-bold opacity-60 ml-1">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</span>
         </div>
-        <div className="text-[9px] font-bold opacity-60 mt-1 text-center flex-shrink-0">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</div>
       </div>
     );
   }
@@ -2071,24 +2077,24 @@ export default function App() {
       {photoFlash && <div className="fixed inset-0 z-50 pointer-events-none" style={{ background: "#fff", animation: "wbFlash .45s ease-in-out 1" }} />}
 
       {/* LED 跑馬燈 */}
-      <div className="p-2 relative">
+      <div className="px-2 pt-1 relative">
         <Marquee led={led} />
       </div>
 
       {/* HUD：現場火爆指數（主要進度）＋倒數＋資源 */}
-      <div className="px-3 pb-1 flex flex-wrap items-center gap-2 text-xs font-black">
-        <div className="flex items-center gap-1.5" style={{ minWidth: 180, flex: "1 1 180px", maxWidth: 340 }}>
-          <span style={{ color: INK, whiteSpace: "nowrap" }}>🔥 火爆</span>
-          <div style={{ flex: 1, height: 16, border: `2.5px solid ${INK}`, background: "rgba(255,253,246,.6)", display: "flex", gap: 2, padding: 2 }}>
+      <div className="px-2 py-1 flex flex-wrap items-center gap-1.5 text-xs font-black">
+        <div className="flex items-center gap-1.5" style={{ minWidth: 160, flex: "1 1 160px", maxWidth: 300 }}>
+          <span style={{ color: INK, whiteSpace: "nowrap" }}>🔥火爆</span>
+          <div style={{ flex: 1, height: 13, border: `2px solid ${INK}`, background: "rgba(255,253,246,.6)", display: "flex", gap: 2, padding: 2 }}>
             {Array.from({ length: 20 }).map((_, i) => (
               <span key={i} style={{ flex: 1, background: i < Math.round(chaos / 5) ? (i >= 16 ? "#F2B234" : i >= 10 ? "#E5304C" : i >= 5 ? "#E08A3C" : "#E8C84F") : "transparent" }} />
             ))}
           </div>
-          <span className="px-1.5 py-0.5" style={{ background: chaosStage(chaos).color, border: `2px solid ${INK}`, color: INK, whiteSpace: "nowrap" }}>{chaosStage(chaos).label}·{chaos}</span>
+          <span className="px-1 py-0.5" style={{ background: chaosStage(chaos).color, border: `2px solid ${INK}`, color: INK, whiteSpace: "nowrap" }}>{chaosStage(chaos).label}·{chaos}</span>
         </div>
-        <span className="px-2.5 py-1" style={{ background: "rgba(29,26,23,.85)", color: "#fff", border: `2px solid ${INK}` }}>⏱ {fmt(timeLeft)}</span>
-        {isElder && <span className="px-2.5 py-1" style={{ background: "rgba(232,184,75,.92)", border: `2px solid ${INK}` }}>🧧 ${wallet}</span>}
-        {!isElder && combo > 0 && <span className="px-2.5 py-1" style={{ background: "rgba(122,58,142,.9)", color: "#fff", border: `2px solid ${INK}` }}>⚡ 連鎖 {combo}</span>}
+        <span className="px-2 py-0.5" style={{ background: "rgba(29,26,23,.85)", color: "#fff", border: `2px solid ${INK}` }}>⏱{fmt(timeLeft)}</span>
+        {isElder && <span className="px-2 py-0.5" style={{ background: "rgba(232,184,75,.92)", border: `2px solid ${INK}` }}>🧧${wallet}</span>}
+        {!isElder && combo > 0 && <span className="px-2 py-0.5" style={{ background: "rgba(122,58,142,.9)", color: "#fff", border: `2px solid ${INK}` }}>⚡連鎖{combo}</span>}
         <span className="flex-1" />
         <button onClick={() => setMuted((m) => !m)} aria-label="切換音效">{muted ? "🔇" : "🔊"}</button>
       </div>
@@ -2206,13 +2212,13 @@ export default function App() {
 
           {/* ===== 邊界檢查哨（大門） ===== */}
           <div className="absolute wb-stop" style={{ left: WORLD.gateX - 95, bottom: 30, width: 190, height: 330, cursor: "pointer", zIndex: 12 }} onClick={onGateClick}>
-            {/* 彈跳箭頭提示 */}
+            {/* 彈跳箭頭提示（高度壓低，避免手機橫向短螢幕被裁切） */}
             <div style={{
-              position: "absolute", top: -34, left: "50%",
+              position: "absolute", top: -22, left: "50%",
               animation: "wbBounce 1s ease-in-out infinite",
               background: isElder && inElderZone ? "#C8102E" : "#3E7C6E", color: "#fff",
-              border: `3px solid ${INK}`, borderRadius: 14, padding: "4px 12px",
-              fontWeight: 900, fontSize: 14, whiteSpace: "nowrap", boxShadow: `3px 3px 0 ${INK}`, zIndex: 15,
+              border: `2.5px solid ${INK}`, borderRadius: 12, padding: "3px 10px",
+              fontWeight: 900, fontSize: 12, whiteSpace: "nowrap", boxShadow: `2px 2px 0 ${INK}`, zIndex: 15,
             }}>
               {isElder && inElderZone ? "🏃 查看闖關任務 👇" : !isElder ? "🛡️ 守備柵欄 👇" : "🚪 邊界大門"}
             </div>
@@ -2329,20 +2335,17 @@ export default function App() {
         </button>
       )}
 
-      {/* 底部任務欄（含大頭照） */}
-      <div className="px-3 py-2 flex items-center gap-2" style={{ background: "rgba(29,26,23,.88)", color: "#FBF6EC", paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}>
-        <div className="rounded-full overflow-hidden flex items-center justify-center" style={{ width: 42, height: 42, background: "#FBF6EC", border: `3px solid ${C.gold}` }}>
-          {me && <CharSprite id={me.id} w={34} headOnly />}
+      {/* 底部任務欄（含大頭照，單行精簡提示） */}
+      <div className="px-2 py-1 flex items-center gap-2" style={{ background: "rgba(29,26,23,.88)", color: "#FBF6EC", paddingBottom: "max(4px, env(safe-area-inset-bottom))" }}>
+        <div className="rounded-full overflow-hidden flex items-center justify-center flex-shrink-0" style={{ width: 30, height: 30, background: "#FBF6EC", border: `2.5px solid ${C.gold}` }}>
+          {me && <CharSprite id={me.id} w={24} headOnly />}
         </div>
-        <div className="text-xs font-bold leading-snug">
-          <div style={{ color: C.gold }}>{me?.name}</div>
-          <div className="opacity-90">
-            {isElder
-              ? inElderZone ? "點年輕人區的東西或大門 → 偷渡過去！（也可以先唱卡拉OK暖身）"
-                : `點年輕人搭話講地雷話！已講 ${spoken.length}/${MINE_PHRASES.length} 句`
-              : "主動出擊：點「👀 可疑長輩」陰他！警報響要攔截、被嗆要抽卡反擊、大門可設陷阱"}
-            <span className="opacity-60">｜👣 點地上任一點就能走過去（電腦另可用方向鍵）</span>
-          </div>
+        <div className="text-xs font-bold leading-snug min-w-0" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <span style={{ color: C.gold }}>{me?.name}</span>
+          <span className="opacity-90">：{isElder
+            ? inElderZone ? "點年輕人區東西或大門闖關偷渡！"
+              : `搭話講地雷話（已講 ${spoken.length}/${MINE_PHRASES.length}）`
+            : "點可疑長輩／警報攔截／柵欄設防"}</span>
         </div>
       </div>
 
