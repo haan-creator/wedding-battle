@@ -1809,9 +1809,11 @@ export default function App() {
           <div key={m.id} className="wb-tchar" style={{
             left: `${m.cx - 4.6}%`, bottom: `${m.fy}%`, width: "9.2%", minWidth: 52,
             zIndex: Math.round(100 - m.fy), animationDelay: `${m.d}s`,
-            transform: m.flip ? "scaleX(-1)" : "none",
           }}>
-            <CharSprite id={m.id} w={130} />
+            {/* 鏡像翻轉放在內層元素，避免跟外層 wb-tchar 的浮動動畫搶同一個 transform */}
+            <div style={{ transform: m.flip ? "scaleX(-1)" : "none" }}>
+              <CharSprite id={m.id} w={130} />
+            </div>
           </div>
         ))}
         {/* Logo：全白、同一字型 */}
