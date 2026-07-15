@@ -1908,8 +1908,8 @@ export default function App() {
             <button onClick={() => go(1)} aria-label="下一位" className="font-black flex-shrink-0" style={{ width: 28, height: 28, background: "#FFF8EC", color: INK, border: `2.5px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, fontSize: 13, cursor: "pointer" }}>▶</button>
           </div>
 
-          {/* 右：台詞／數值／資訊卡，靠上對齊立繪頂端，不強行撐滿高度 */}
-          <div className="flex-1 min-w-0 flex flex-col justify-start gap-2">
+          {/* 右：台詞／數值／資訊卡靠上；入席按鈕沉到右下角，填滿卡片剩餘空間 */}
+          <div className="flex-1 min-w-0 flex flex-col gap-2" style={{ justifyContent: "flex-start" }}>
             <div className="flex items-start gap-2">
               <div className="relative flex-1 min-w-0 font-black" style={{ background: "rgba(23,16,10,.9)", color: "#FFF8EC", border: "2px solid #FFF8EC", outline: `2px solid ${INK}`, padding: "6px 10px", fontSize: 13, lineHeight: 1.5 }}>
                 {CHAR_QUOTES[cur.id]}
@@ -1919,7 +1919,8 @@ export default function App() {
                 <Pips label={isE ? "話量" : "嗆力"} val={cur.stats.attack} color="#F2B234" />
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-1.5">
+            {/* 改用 flex justify-between，讓最後一格（跑路）跟上面的話量右緣切齊 */}
+            <div className="flex justify-between gap-1.5">
               <StatChip k="嘴砲" v={cur.stats.attack} /><StatChip k="抗噪" v={cur.stats.defense} />
               <StatChip k="低調" v={cur.stats.stealth} /><StatChip k="跑路" v={cur.stats.speed} />
             </div>
@@ -1931,31 +1932,33 @@ export default function App() {
                 ＊<span style={{ color: accent }}>{cur.skill}（必殺）</span>
               </div>
             </div>
+            {/* 入席按鈕：縮小、貼右下角，吃掉原本空白的區域 */}
+            <button className="font-black" style={{
+              alignSelf: "flex-end", marginTop: "auto", width: "52%", minWidth: 150,
+              fontSize: 13, background: accent, color: "#FFF8EC", border: `3px solid ${INK}`,
+              boxShadow: `0 0 0 2px #FFF8EC, 3px 3px 0 ${INK}`, padding: "8px 10px", minHeight: 40, cursor: "pointer",
+            }} onClick={() => startGame(cur)}>
+              入席開戰
+            </button>
           </div>
         </div>
 
-        {/* 底列：頭像列＋入席按鈕同一行 */}
-        <div className="flex items-center gap-2 mt-1.5 flex-shrink-0">
-          <div className="flex gap-1.5 flex-shrink-0">
-            {list.map((c, i) => (
-              <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
-                className="overflow-hidden flex items-center justify-center"
-                style={{
-                  width: 36, height: 36, background: "#FFF8EC", cursor: "pointer",
-                  border: `2.5px solid ${i === selIdx ? accent : INK}`,
-                  boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
-                  opacity: i === selIdx ? 1 : 0.6,
-                }}>
-                <CharSprite id={c.id} w={28} headOnly />
-              </button>
-            ))}
-          </div>
-          <button className="font-black flex-1" style={{ fontSize: 13, background: accent, color: "#FFF8EC", border: `3px solid ${INK}`, boxShadow: `0 0 0 2px #FFF8EC, 3px 3px 0 ${INK}`, padding: "8px 14px", minHeight: 40, cursor: "pointer" }}
-            onClick={() => startGame(cur)}>
-            🎊 以「{cur.name}」的身份入席
-          </button>
+        {/* 底列：頭像列（獨立一行，尺寸符合觸控標準） */}
+        <div className="flex items-center gap-1.5 mt-1.5 flex-shrink-0">
+          {list.map((c, i) => (
+            <button key={c.id} onClick={() => { setSelIdx(i); beep(880, 0.06); }} aria-label={c.name}
+              className="overflow-hidden flex items-center justify-center"
+              style={{
+                width: 40, height: 40, background: "#FFF8EC", cursor: "pointer",
+                border: `2.5px solid ${i === selIdx ? accent : INK}`,
+                boxShadow: i === selIdx ? `0 0 0 2px ${accent}88, 2px 2px 0 ${INK}` : `2px 2px 0 ${INK}`,
+                opacity: i === selIdx ? 1 : 0.6,
+              }}>
+              <CharSprite id={c.id} w={32} headOnly />
+            </button>
+          ))}
+          <span className="text-[9px] font-bold opacity-60 ml-1">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</span>
         </div>
-        <div className="text-[9px] font-bold opacity-60 mt-1 text-center flex-shrink-0">婚禮開始後陣營就鎖定了，想換邊要「再舉辦一次婚禮」</div>
       </div>
     );
   }
