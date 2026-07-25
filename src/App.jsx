@@ -2085,6 +2085,35 @@ export default function App() {
   /* ============================================================
      主遊戲畫面（橫向捲軸世界）
      ============================================================ */
+
+  /* 🔍 焦點制提示：同一時間只有「離玩家最近的可互動目標」浮出名牌／發光，
+     其餘一律安靜——裝飾永遠不亮，會亮的就是能點的（計畫書第四節互動原則） */
+  const FOCUS_RANGE = 300;
+  const focusCandidates = [];
+  if (!modal && !carried) {
+    WORLD.spots.forEach((s) => {
+      const interactive =
+        (isElder && ((s.zone === "elder" && inElderZone) || s.zone === "youth")) ||
+        (!isElder && s.zone === "youth");
+      if (interactive) focusCandidates.push({ id: s.id, x: s.x + s.w / 2 });
+    });
+    if (isElder && inElderZone) focusCandidates.push({ id: "npc-e1", x: 332 }, { id: "npc-e2", x: 671 });
+    if (isElder && !inElderZone) focusCandidates.push({ id: "npc-y1", x: 1145 }, { id: "npc-y2", x: 1409 }, { id: "npc-y3", x: 1844 });
+    if (!isElder) focusCandidates.push({ id: "npc-y1", x: 1145 }, { id: "npc-y2", x: 1409 }, { id: "npc-y3", x: 1844 }, { id: "npc-y4", x: 1572 });
+    if ((isElder && inElderZone) || !isElder) focusCandidates.push({ id: "gate", x: WORLD.gateX });
+    focusCandidates.push({ id: "couple", x: 1958 });
+  }
+  let focusId = null;
+  {
+    let best = FOCUS_RANGE;
+    for (const c of focusCandidates) {
+      const d = Math.abs(c.x - px);
+      if (d < best) { best = d; focusId = c.id; }
+    }
+  }
+  /* 可疑長輩是限時事件目標，靠近時優先鎖定 */
+  if (!isElder && lurker && !modal && !carried && Math.abs(lurker.x + 30 - px) < FOCUS_RANGE) focusId = "lurker";
+
   return (
     <div className="flex flex-col overflow-hidden" style={{ background: "#BFE3D0", color: C.ink, height: "100dvh", minHeight: "100vh", maxHeight: "100dvh", paddingLeft: "env(safe-area-inset-left)", paddingRight: "env(safe-area-inset-right)" }}>
       <style>{css}</style>
@@ -2168,27 +2197,28 @@ export default function App() {
             const actionable =
               (isElder && inElderZone && s.id === "karaoke") ||
               (!isElder && (s.id === "dj" || s.id === "photo" || s.id === "tarot"));
+            const focused = focusId === s.id;
             return (
               <Prop key={s.id} x={s.x} y={(s.off || 0) + 36} w={s.w} h={s.h}
                 onClick={interactive ? () => onSpotClick(s) : undefined}
-                hot={actionable}
+                hot={actionable && focused}
                 label={s.label}
-                tag={SPOT_TAGS[s.id]}>
+                tag={focused && !(actionable && s.label) ? SPOT_TAGS[s.id] : undefined}>
                 <s.Comp />
               </Prop>
             );
           })}
 
           {/* NPC：長輩們坐沙發/打麻將 */}
-          {charId !== "e1" && <NPCSprite id="e1" x={300} y={96} w={64} flip dance={elderChoir} react={npcReact && npcReact.id === "e1" ? npcReact : null} onClick={isElder && inElderZone ? () => approachNpc(332, () => { setBubble("英珠啊，呷飽未？"); setTimeout(() => setBubble(null), 2000); }) : undefined} />}
-          {charId !== "e2" && <NPCSprite id="e2" x={640} y={120} w={62} dance={elderChoir} react={npcReact && npcReact.id === "e2" ? npcReact : null} onClick={isElder && inElderZone ? () => approachNpc(671, () => { setBubble("水泉伯，茶好喝嗎？"); setTimeout(() => setBubble(null), 2000); }) : undefined} />}
+          {charId !== "e1" && <NPCSprite id="e1" x={300} y={96} w={64} flip dance={elderChoir} react={npcReact && npcReact.id === "e1" ? npcReact : null} hot={focusId === "npc-e1"} onClick={isElder && inElderZone ? () => approachNpc(332, () => { setBubble("英珠啊，呷飽未？"); setTimeout(() => setBubble(null), 2000); }) : undefined} />}
+          {charId !== "e2" && <NPCSprite id="e2" x={640} y={120} w={62} dance={elderChoir} react={npcReact && npcReact.id === "e2" ? npcReact : null} hot={focusId === "npc-e2"} onClick={isElder && inElderZone ? () => approachNpc(671, () => { setBubble("水泉伯，茶好喝嗎？"); setTimeout(() => setBubble(null), 2000); }) : undefined} />}
           {charId !== "e3" && <NPCSprite id="e3" x={455} y={160} w={58} dance={elderChoir} react={npcReact && npcReact.id === "e3" ? npcReact : null} />}
           {charId !== "e4" && <NPCSprite id="e4" x={386} y={40} w={64} flip dance={elderChoir} react={npcReact && npcReact.id === "e4" ? npcReact : null} />}
           {/* NPC：年輕人（搭話統一點人，不點桌子） */}
-          {charId !== "y1" && <NPCSprite id="y1" x={1115} y={42} w={60} flip dance={youthParty} react={npcReact && npcReact.id === "y1" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1145, () => openTalk("y1")) : !isElder ? () => approachNpc(1145, () => peerChat("y1")) : undefined} hot={isElder && !inElderZone} />}
-          {charId !== "y2" && <NPCSprite id="y2" x={1378} y={42} w={62} dance={youthParty} react={npcReact && npcReact.id === "y2" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1409, () => openTalk("y2")) : !isElder ? () => approachNpc(1409, () => peerChat("y2")) : undefined} hot={isElder && !inElderZone} />}
-          {charId !== "y3" && <NPCSprite id="y3" x={1812} y={38} w={60} flip dance={youthParty} react={npcReact && npcReact.id === "y3" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1844, () => openTalk("y3")) : !isElder ? () => approachNpc(1844, () => peerChat("y3")) : undefined} hot={isElder && !inElderZone} />}
-          {charId !== "y4" && <NPCSprite id="y4" x={1604} y={40} w={62} dance react={npcReact && npcReact.id === "y4" ? npcReact : null} onClick={!isElder ? () => approachNpc(1572, () => peerChat("y4")) : undefined} />}
+          {charId !== "y1" && <NPCSprite id="y1" x={1115} y={42} w={60} flip dance={youthParty} react={npcReact && npcReact.id === "y1" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1145, () => openTalk("y1")) : !isElder ? () => approachNpc(1145, () => peerChat("y1")) : undefined} hot={focusId === "npc-y1"} />}
+          {charId !== "y2" && <NPCSprite id="y2" x={1378} y={42} w={62} dance={youthParty} react={npcReact && npcReact.id === "y2" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1409, () => openTalk("y2")) : !isElder ? () => approachNpc(1409, () => peerChat("y2")) : undefined} hot={focusId === "npc-y2"} />}
+          {charId !== "y3" && <NPCSprite id="y3" x={1812} y={38} w={60} flip dance={youthParty} react={npcReact && npcReact.id === "y3" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1844, () => openTalk("y3")) : !isElder ? () => approachNpc(1844, () => peerChat("y3")) : undefined} hot={focusId === "npc-y3"} />}
+          {charId !== "y4" && <NPCSprite id="y4" x={1604} y={40} w={62} dance react={npcReact && npcReact.id === "y4" ? npcReact : null} hot={focusId === "npc-y4"} onClick={!isElder ? () => approachNpc(1572, () => peerChat("y4")) : undefined} />}
           {/* 🎤 卡拉OK 播放中字幕 */}
           {nowPlaying && (
             <div className="wb-pop" style={{ position: "absolute", left: 70, bottom: 235, zIndex: 15, background: "#1d1a17", color: "#FFE6A0", border: `3px solid ${INK}`, borderRadius: 12, padding: "3px 10px", fontSize: 11, fontWeight: 900, boxShadow: `2px 2px 0 ${INK}`, animation: "wbSway 1.4s ease-in-out infinite alternate" }}>
@@ -2200,7 +2230,7 @@ export default function App() {
           {youthParty && <div style={{ position: "absolute", left: 1450, bottom: 170, fontSize: 30, animation: "wbIdle .6s ease-in-out infinite", zIndex: 15 }}>🎧🎵🎶</div>}
 
           {/* 💒 新郎新娘（象徵性無臉設計）：點擊敬酒 */}
-          <CoupleSprite x={1928} y={40} hot={!modal && !carried}
+          <CoupleSprite x={1928} y={40} hot={focusId === "couple"}
             cdLabel={toastCd > 0 ? `🥂 ${toastCd}s` : "🥂 向新人敬酒"}
             onClick={() => {
               if (phase !== "playing" || modal || carried) return;
@@ -2209,7 +2239,7 @@ export default function App() {
             }} />
           {/* 👀 可疑長輩（年輕人限定攻擊目標） */}
           {!isElder && lurker && (
-            <div className="wb-hot wb-stop" onClick={() => {
+            <div className={`${focusId === "lurker" ? "wb-hot " : ""}wb-stop`} onClick={() => {
               if (phase !== "playing" || modal || carried) return;
               if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
               approachNpc(lurker.x + 30, openSchmooze);
@@ -2223,14 +2253,14 @@ export default function App() {
                 <CharSprite id={lurker.elder.id} w={60} expression={npcReact && npcReact.id === "visitor" && npcReact.expr ? npcReact.expr : "idle"} />
               </div>
               <div style={{ position: "absolute", top: -6, right: -4, fontSize: 16 }}>💦</div>
-              <div className="wb-hint">👀 可疑長輩・搭話陰他</div>
+              {focusId === "lurker" && <div className="wb-hint">👀 可疑長輩・搭話陰他</div>}
             </div>
           )}
 
           {/* ===== 邊界檢查哨（大門） ===== */}
           <div className="absolute wb-stop" style={{ left: WORLD.gateX - 95, bottom: 30, width: 190, height: 330, cursor: "pointer", zIndex: 12 }} onClick={onGateClick}>
-            {/* 彈跳箭頭提示（高度壓低，避免手機橫向短螢幕被裁切） */}
-            <div style={{
+            {/* 彈跳箭頭提示：只在柵欄成為焦點時出現 */}
+            {focusId === "gate" && <div style={{
               position: "absolute", top: -22, left: "50%",
               animation: "wbBounce 1s ease-in-out infinite",
               background: isElder && inElderZone ? "#C8102E" : "#3E7C6E", color: "#fff",
@@ -2238,7 +2268,7 @@ export default function App() {
               fontWeight: 900, fontSize: 12, whiteSpace: "nowrap", boxShadow: `2px 2px 0 ${INK}`, zIndex: 15,
             }}>
               {isElder && inElderZone ? "🏃 查看闖關任務 👇" : !isElder ? "🛡️ 守備柵欄 👇" : "🚪 邊界大門"}
-            </div>
+            </div>}
             <svg width="190" height="330" viewBox="0 0 190 330">
               {/* 左右鐵柵欄延伸 */}
               {[6, 20, 34].map((x) => <rect key={`l${x}`} x={x} y={96} width={6} height={234} fill="#6A6A75" stroke={INK} strokeWidth={2} />)}
@@ -2261,7 +2291,7 @@ export default function App() {
               <circle cx={95} cy={26} r={12} fill={alert_ ? "#FF2A1A" : "#5A1212"} stroke={INK} strokeWidth={3.5} style={alert_ ? { animation: "wbBlink .4s linear infinite" } : {}} />
               {alert_ && <g opacity={0.7}><path d="M 76 18 L 64 10 M 114 18 L 126 10 M 95 10 L 95 0" stroke="#FF2A1A" strokeWidth={4} strokeLinecap="round" /></g>}
               {/* 金框紅色雙開大門（互動時發光脈動） */}
-              <g style={(isElder && inElderZone) || !isElder ? { animation: "wbGatePulse 1.6s ease-in-out infinite" } : {}}>
+              <g style={focusId === "gate" ? { animation: "wbGatePulse 1.6s ease-in-out infinite" } : {}}>
                 <rect x={56} y={92} width={78} height={238} rx={6} fill="#E8B84B" stroke={INK} strokeWidth={4.5} />
                 <rect x={63} y={100} width={30} height={222} rx={4} fill="#C8413A" stroke={INK} strokeWidth={3.5} />
                 <rect x={97} y={100} width={30} height={222} rx={4} fill="#C8413A" stroke={INK} strokeWidth={3.5} />
@@ -2338,7 +2368,7 @@ export default function App() {
       {phase === "playing" && !modal && !carried && shoutUses < SHOUT_LIMIT && (
         <button onClick={() => { if (shoutCd <= 0) setModal({ type: "shout" }); }}
           className="fixed font-black wb-pop" disabled={shoutCd > 0}
-          style={{ right: "max(14px, env(safe-area-inset-right))", bottom: 86, zIndex: 35, minWidth: 54, height: 54, background: shoutCd > 0 ? "#C9BFA8" : "#FFE6A0", color: INK, border: `3.5px solid ${INK}`, borderRadius: "50%", fontSize: shoutCd > 0 ? 16 : 22, boxShadow: `3px 3px 0 ${INK}`, opacity: shoutCd > 0 ? 0.55 : 1, display: "flex", alignItems: "center", justifyContent: "center", animation: shoutCd > 0 ? "none" : "wbHotPulse 1.8s ease-in-out infinite" }}>
+          style={{ right: "max(14px, env(safe-area-inset-right))", bottom: 86, zIndex: 35, minWidth: 54, height: 54, background: shoutCd > 0 ? "#C9BFA8" : "#FFE6A0", color: INK, border: `3.5px solid ${INK}`, borderRadius: "50%", fontSize: shoutCd > 0 ? 16 : 22, boxShadow: `3px 3px 0 ${INK}`, opacity: shoutCd > 0 ? 0.55 : 1, display: "flex", alignItems: "center", justifyContent: "center", animation: "none" }}>
           {shoutCd > 0 ? shoutCd : `📢${SHOUT_LIMIT - shoutUses}`}
         </button>
       )}
@@ -2638,7 +2668,7 @@ export default function App() {
 /* ---------- NPC ---------- */
 function NPCSprite({ id, x, y, w = 60, flip, onClick, hot, dance, react }) {
   return (
-    <div onClick={onClick} className={`${onClick ? "wb-stop" : ""} ${onClick || hot ? "wb-hot" : ""}`}
+    <div onClick={onClick} className={`${onClick ? "wb-stop" : ""} ${hot ? "wb-hot" : ""}`}
       style={{ position: "absolute", left: x, bottom: y, cursor: onClick ? "pointer" : "default", zIndex: react ? 30 : 10 }}>
       {react && (
         <div className="wb-pop" style={{ position: "absolute", bottom: "calc(100% + 9px)", left: "50%", transform: "translateX(-50%)", background: "#fff", border: `3px solid ${INK}`, borderRadius: 0, padding: "3px 8px", fontWeight: 900, fontSize: 11, boxShadow: `2px 2px 0 ${INK}`, zIndex: 32, maxWidth: 150, whiteSpace: "normal", width: "max-content", textAlign: "left", lineHeight: 1.35 }}>
