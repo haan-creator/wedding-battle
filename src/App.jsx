@@ -854,6 +854,11 @@ export default function App() {
   const [tarotCd, setTarotCd] = useState(0);
   const [tarotFx, setTarotFx] = useState(null); // wheel / power / tower
 
+  /* 對話佇列：角色間的重要對話走固定底部對話框，玩家點一下才前進 */
+  const [dlg, setDlg] = useState(null); // { lines:[{who, side, sprite, expr, text}], idx }
+  const dlgRef = useRef(null); dlgRef.current = dlg;
+  const dlgDoneRef = useRef(null);
+
   const audioRef = useRef(null);
   const modalRef = useRef(null); modalRef.current = modal;
   const truceRef = useRef(0); truceRef.current = truce;
@@ -918,6 +923,21 @@ export default function App() {
   elderSRef.current = elderScore; youthSRef.current = youthScore;
   const flashRed = useCallback(() => { setFlash(true); setTimeout(() => setFlash(false), 900); }, []);
   const addFine = useCallback((name, amt) => setFines((f) => ({ ...f, [name]: (f[name] || 0) + amt })), []);
+
+  const showDlg = useCallback((lines, onDone) => {
+    dlgDoneRef.current = onDone || null;
+    setDlg({ lines: lines.filter(Boolean), idx: 0 });
+  }, []);
+  const advanceDlg = useCallback(() => {
+    beep(660, 0.05, "square", 0.03);
+    setDlg((d) => {
+      if (!d) return d;
+      if (d.idx + 1 < d.lines.length) return { ...d, idx: d.idx + 1 };
+      const cb = dlgDoneRef.current; dlgDoneRef.current = null;
+      if (cb) setTimeout(cb, 60);
+      return null;
+    });
+  }, [beep]);
 
   /* 🔥 火爆指數：行動結果發生後才顯示變化；跨越階段時全場廣播 */
   const addChaos = useCallback((delta, line, who) => {
@@ -987,7 +1007,7 @@ export default function App() {
 
   /* 🖱️📱 點地面任意處 → 斜線走過去（含深度） */
   const onGroundClick = (e) => {
-    if (phase !== "playing" || modal || carried) return;
+    if (phase !== "playing" || modal || dlg || carried) return;
     if (e.target.closest && e.target.closest(".wb-stop")) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const wx = (e.clientX - rect.left) / worldScale;
@@ -1016,7 +1036,7 @@ export default function App() {
     window.addEventListener("keydown", kd);
     window.addEventListener("keyup", ku);
     const t = setInterval(() => {
-      if (modalRef.current || busyRef.current) return;
+      if (modalRef.current || dlgRef.current || busyRef.current) return;
       const k = keysRef.current;
       const dx = (k.ArrowRight ? 1 : 0) - (k.ArrowLeft ? 1 : 0);
       const dy = (k.ArrowUp ? 1 : 0) - (k.ArrowDown ? 1 : 0);
@@ -1053,7 +1073,7 @@ export default function App() {
   useEffect(() => {
     if (phase !== "playing") return;
     const t = setInterval(() => {
-      if (modalRef.current) return; // 對話進行時暫停倒數
+      if (modalRef.current || dlgRef.current) return; // 對話進行時暫停倒數
       setTimeLeft((s) => { if (s <= 1) { clearInterval(t); setPhase("ending"); return 0; } return s - 1; });
     }, 1000);
     return () => clearInterval(t);
@@ -1086,7 +1106,7 @@ export default function App() {
     let alive = true;
     const fire = () => {
       if (!alive) return;
-      if (modalRef.current || truceRef.current > 0 || busyRef.current) { setTimeout(fire, 4000); return; }
+      if (modalRef.current || dlgRef.current || truceRef.current > 0 || busyRef.current) { setTimeout(fire, 4000); return; }
       setTruce(10);
       setPhotoFlash(true); setTimeout(() => setPhotoFlash(false), 450);
       setElderScore((s) => s + 100); setYouthScore((s) => s + 100);
@@ -1128,7 +1148,7 @@ export default function App() {
     const loop = () => {
       t = setTimeout(() => {
         if (!alive) return;
-        if (!modalRef.current && !busyRef.current && truceRef.current <= 0) (Math.random() < 0.5 ? spawnVerify : spawnCardBattle)();
+        if (!modalRef.current && !dlgRef.current && !busyRef.current && truceRef.current <= 0) (Math.random() < 0.5 ? spawnVerify : spawnCardBattle)();
         loop();
       }, 8000 + Math.random() * 8000);
     };
@@ -1229,11 +1249,14 @@ export default function App() {
       if (Math.random() < catchChance) {
         alarm(); flashRed(); setExpr("shock");
         setWallet((w) => w - p.fine);
-        addPop(`💸 罰款 −$${p.fine}（只扣錢）`, "#C8102E");
         addFine(me.name, p.fine);
         setStat((s) => ({ ...s, fined: s.fined + 1 }));
-        pushLed(`⚠️ ${me.name}！罰 $${p.fine}！原因：${p.category} ⚠️`, me.id);
-        if (npcId) npcSay(npcId, gline(rand(RPHIT), charId), "shock", 3800);
+        pushLed(`${me.name} 被開罰單！罰 $${p.fine}，原因：${p.category}`, me.id);
+        const npcObj = npcId ? YOUTHS.find((y) => y.id === npcId) : null;
+        showDlg([
+          npcObj && { who: npcObj.name, side: "youth", sprite: npcObj.id, text: gline(rand(RPHIT), charId) },
+          { who: "婚宴糾察隊", side: "sys", text: `逮到了！「${p.category}」現行犯，罰紅包 $${p.fine}。（只扣錢，火爆指數不受影響）` },
+        ]);
         if (p.severity === "severe" || p.severity === "fatal") {
           addPop("🚪 免費送回長輩區", "#7A6A55");
           addChaos(CHAOS.carry, `${me.name} 被保鏢架走時大喊「我也沒說什麼啊！」`, me.name);
@@ -1253,8 +1276,12 @@ export default function App() {
         setElderScore((s) => s + gain);
         addChaos(CHAOS.mine, `「${p.text}」`, me.name);
         cheer();
-        if (npcId) npcSay(npcId, gline(rand(RPDODGE), charId), null, 4000);
-        pushLed(`😏 ${me.name} 講完「${p.text}」全場空氣凝結三秒`, me.id);
+        const npcObj = npcId ? YOUTHS.find((y) => y.id === npcId) : null;
+        pushLed(`${me.name} 講完「${p.text}」，全場空氣凝結三秒`, me.id);
+        showDlg([
+          npcObj && { who: npcObj.name, side: "youth", sprite: npcObj.id, text: gline(rand(RPDODGE), charId) },
+          { who: "現場狀況", side: "sys", text: `這句話沒人攔得住，空氣凝結三秒。現場火爆指數 +${CHAOS.mine}。` },
+        ]);
       }
     }, 1000);
   };
@@ -1325,12 +1352,13 @@ export default function App() {
     if (card.risk && Math.random() < card.risk) {
       buzz(); flashRed(); setExpr("shock");
       setCombo(0);
-      addPop("😬 嗆過頭！被新娘瞪", "#7A6A55");
-      setBubble("（新娘回頭瞪了一眼…）"); busyRef.current = true;
-      pushLed(`📺 ${me.name} 嗆過頭！新娘親自回頭關切，罰站反省中（不扣分，但好糗）`, me.id);
-      setTimeout(() => { setBubble(null); setExpr("idle"); busyRef.current = false; }, 2200);
-      setNpcReact({ id: "foe", elder: m.elder.id, text: "唉唷～連新娘都看不下去囉？", expr: null });
-      setTimeout(() => setNpcReact((w) => (w && w.id === "foe" ? null : w)), 4000);
+      pushLed(`${me.name} 嗆過頭！新娘親自回頭關切，罰站反省中`, me.id);
+      busyRef.current = true;
+      showDlg([
+        { who: me.name, side: "youth", sprite: me.id, text: cardLine(card, m.elder) },
+        { who: "現場狀況", side: "sys", text: "（新娘回頭瞪了一眼……全場安靜）" },
+        { who: m.elder.name, side: "elder", sprite: m.elder.id, text: "唉唷～連新娘都看不下去囉？" },
+      ], () => { setExpr("idle"); busyRef.current = false; });
       return;
     }
     const n = combo + 1;
@@ -1342,13 +1370,13 @@ export default function App() {
     if (n >= 2) addPop(`⚡ 交鋒連鎖 ×${n}`);
     setStat((s) => ({ ...s, comeback: s.comeback + 1 }));
     cheer();
-    setBubble(cardLine(card, m.elder)); setTimeout(() => setBubble(null), 2200);
-    setNpcReact({ id: "foe", elder: m.elder.id, text: null, expr: null });
-    setTimeout(() => {
-      const rc = CRPLY[card.id] || ["……", null];
-      setNpcReact({ id: "foe", elder: m.elder.id, text: rc[0], expr: rc[1] });
-    }, 900);
-    setTimeout(() => setNpcReact((w) => (w && w.id === "foe" ? null : w)), 5000);
+    const rc = CRPLY[card.id] || ["……", null];
+    const chaosGain = CHAOS.comeback + (n >= 2 ? CHAOS.chain : 0);
+    showDlg([
+      { who: me.name, side: "youth", sprite: me.id, text: cardLine(card, m.elder) },
+      { who: m.elder.name, side: "elder", sprite: m.elder.id, expr: rc[1], text: rc[0] },
+      { who: "現場狀況", side: "sys", text: `${m.elder.name}${card.effect}。現場火爆指數 +${chaosGain}${n >= 2 ? `（交鋒連鎖 ×${n}）` : ""}。` },
+    ]);
     if (card.id === "c5") pushLed(`🏆 ${me.name} 使出『核彈卡』！${m.elder.name} 已陣亡，全場歡呼！+${total}，長輩 −${card.dmg}`, m.elder.id);
     else pushLed(`🎯 ${me.name} 使出『${card.name}』：${m.elder.name} ${card.effect}！+${total}${card.dmg > 0 ? `，長輩 −${card.dmg}` : ""}`, me.id);
     if (n === 2) pushLed("✨ 2 連擊！獲得稱號：高 EQ 青年");
@@ -1362,8 +1390,10 @@ export default function App() {
     setElderScore((s) => s + 300);
     setChaos((c) => Math.max(0, c - 3)); // 已讀不回，場子冷掉
     buzz();
-    setNpcReact({ id: "foe", elder: m.elder.id, text: rand(CIGN), expr: null });
-    setTimeout(() => setNpcReact((w) => (w && w.id === "foe" ? null : w)), 4000);
+    showDlg([
+      { who: m.elder.name, side: "elder", sprite: m.elder.id, text: rand(CIGN) },
+      { who: "現場狀況", side: "sys", text: "沒人接話，場子冷掉了。現場火爆指數 −3。" },
+    ]);
     pushLed(`😤 ${m.elder.name} 講完「${m.phrase.text}」沒人反擊，氣勢大增 +300`, m.elder.id);
   };
 
@@ -1425,18 +1455,23 @@ export default function App() {
         buzz(); flashRed();
         setCombo(0);
         setElderScore((s) => s + 100);
-        addPop("😱 被識破！長輩 +100", "#7A3A8E");
         setExpr("shock"); busyRef.current = true;
-        setTimeout(() => { busyRef.current = false; }, 1800); setTimeout(() => setExpr("idle"), 1500);
-        npcSay("visitor", "少跟我來這套！你是不是交不到對象才這樣講話？😤", null, 4200);
-        pushLed(`😱 ${m.elder.name} 不吃這套！反手一句「你是不是交不到對象才這樣講話？」 −200`, m.elder.id);
+        pushLed(`${m.elder.name} 不吃這套！反手一句「你是不是交不到對象才這樣講話？」`, m.elder.id);
+        showDlg([
+          { who: m.elder.name, side: "elder", sprite: m.elder.id, text: "少跟我來這套！你是不是交不到對象才這樣講話？" },
+          { who: "現場狀況", side: "sys", text: "被識破了，你原地石化三秒。" },
+        ], () => { busyRef.current = false; setExpr("idle"); });
       } else {
         cheer();
         setYouthScore((s) => s + 250);
-        addChaos(CHAOS.comeback, `😊「${gline(opt.line, m.elder)}」`, me.name);
+        addChaos(CHAOS.comeback, `「${gline(opt.line, m.elder)}」`, me.name);
         setStat((s) => ({ ...s, comeback: s.comeback + 1 }));
-        npcSay("visitor", gline(ERPLY[opt.id] || "……", m.elder), ERPX[opt.id] || null, 4200);
-        pushLed(`🎯 ${me.name} 使出『${opt.name}』！${m.elder.name} ${opt.ok}　+250`, m.elder.id);
+        pushLed(`${me.name} 使出「${opt.name}」！${m.elder.name} ${opt.ok}`, m.elder.id);
+        showDlg([
+          { who: me.name, side: "youth", sprite: me.id, text: gline(opt.line, m.elder) },
+          { who: m.elder.name, side: "elder", sprite: m.elder.id, expr: ERPX[opt.id] || null, text: gline(ERPLY[opt.id] || "……", m.elder) },
+          { who: "現場狀況", side: "sys", text: `${m.elder.name}${opt.ok}。現場火爆指數 +${CHAOS.comeback}。` },
+        ]);
       }
       setTimeout(() => setLurker(null), 2000);
     }, 1100);
@@ -1456,18 +1491,25 @@ export default function App() {
     setModal(null); setShoutCd(15);
     setShoutUses((n) => n + 1);
     setPhotoFlash(true); setTimeout(() => setPhotoFlash(false), 350); // 集中演出閃光
-    setBubble(`📢「${s.line}」`); setTimeout(() => setBubble(null), 3200);
-    addChaos(CHAOS.shout, `📢「${s.line}」`, me.name);
-    pushLed(`📢【大聲公】${me.name}：「${s.line}」——全場都聽見了`, me.id);
+    addChaos(CHAOS.shout, `「${s.line}」`, me.name);
+    pushLed(`【大聲公】${me.name}：「${s.line}」——全場都聽見了`, me.id);
+    let reply;
     if (isElder) {
       setElderScore((sc) => sc + (s.v || 80));
       const yn = rand(["y1", "y2", "y3"].filter((i) => i !== charId));
-      setTimeout(() => npcSay(yn, gline(rand(RPDODGE), charId), null, 4200), 1200);
+      const yo = YOUTHS.find((y) => y.id === yn);
+      reply = { who: yo.name, side: "youth", sprite: yn, text: gline(rand(RPDODGE), charId) };
     } else {
       setYouthScore((sc) => sc + (s.v || 80));
       const en = rand(["e1", "e2", "e4"].filter((i) => i !== charId));
-      setTimeout(() => npcSay(en, rand(["現在的年輕人喔…", "哎唷！大小聲什麼啦！", "我聽你在放送啦！"]), "shock", 4200), 1200);
+      const eo = ELDERS.find((e) => e.id === en);
+      reply = { who: eo.name, side: "elder", sprite: en, expr: "shock", text: rand(["現在的年輕人喔…", "哎唷！大小聲什麼啦！", "我聽你在放送啦！"]) };
     }
+    showDlg([
+      { who: `${me.name}（大聲公）`, side: isElder ? "elder" : "youth", sprite: me.id, text: s.line },
+      reply,
+      { who: "現場狀況", side: "sys", text: `全場都聽見了，跑馬燈正在重播。現場火爆指數 +${CHAOS.shout}。` },
+    ]);
   };
 
   /* 🍗 長輩設年輕人誘餌 */
@@ -2381,6 +2423,42 @@ export default function App() {
           📱 退出家庭群組
         </button>
       )}
+
+      {/* ===== 固定式 RPG 對話框：角色對話與行動結果都走這裡，按一下才前進 ===== */}
+      {dlg && dlg.lines[dlg.idx] && (() => {
+        const L = dlg.lines[dlg.idx];
+        const last = dlg.idx === dlg.lines.length - 1;
+        const sideColor = L.side === "elder" ? C.red : L.side === "youth" ? "#37812E" : "#4A4038";
+        return (
+          <div className="fixed inset-x-0 bottom-0 z-40" onClick={advanceDlg}
+            style={{ padding: "0 calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left))", cursor: "pointer" }}>
+            <div className="relative w-full max-w-3xl mx-auto" style={{
+              background: "rgba(23,16,10,.97)", border: "3px solid #FFF8EC",
+              boxShadow: `0 0 0 3px ${INK}`, padding: "14px 16px 12px",
+            }}>
+              {L.who && (
+                <span className="absolute font-black" style={{
+                  top: 0, left: 12, transform: "translateY(-55%)", background: sideColor,
+                  color: "#FFF8EC", border: `2px solid ${INK}`, padding: "2px 10px", fontSize: 13,
+                }}>{L.who}</span>
+              )}
+              <div className="flex items-center gap-3">
+                {L.sprite && (
+                  <div className="flex-shrink-0" style={{ width: 46 }}>
+                    <CharSprite id={L.sprite} w={46} expression={L.expr || "idle"} headOnly />
+                  </div>
+                )}
+                <div className="font-black flex-1 min-w-0" style={{ fontSize: 15, lineHeight: 1.65, color: "#FBF6EC" }}>
+                  {L.text}
+                </div>
+              </div>
+              <span className="absolute font-black" style={{ right: 12, bottom: 6, fontSize: 13, color: C.gold, animation: "wbBlink 1s steps(2) infinite" }}>
+                {last ? "▼ 點一下結束" : "▼ 點一下繼續"}
+              </span>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* 底部任務欄（含大頭照，單行精簡提示） */}
       <div className="px-2 py-1 flex items-center gap-2" style={{ background: "rgba(29,26,23,.88)", color: "#FBF6EC", paddingBottom: "max(4px, env(safe-area-inset-bottom))" }}>
