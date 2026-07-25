@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 /* ============================================================
-   🎊 婚禮大亂鬥 Wedding Battle — 可玩版 v3
+    婚禮大亂鬥 Wedding Battle — 可玩版 v3
    手繪醜萌角色 × 像素場景混搭・火爆指數計分・RPG 對話框
    ============================================================ */
 
@@ -60,7 +60,7 @@ const ERPLY = { s1: "哎喲～就早睡多喝水啦（講不停模式啟動）",
 const ERPX = { s3: "dead", s6: "shock", s7: "shock", s8: "shock" };
 const CRPLY = { c1: ["我、我那時候時代不一樣啦！", "shock"], c2: ["這領帶噢～東區買的…欸等等你什麼意思？", null], c3: ["我婆婆喔……（陷入當年回憶，眼神放空）", null], c4: ["你、你這樣很沒禮貌欸！（氣到發抖）", "shock"], c5: ["……（原地暴斃，靈魂飄出）", "dead"], c6: ["欸？？紅包還能這樣用？！", "shock"] };
 const ELDER_MALE = new Set(["e2", "e4"]);
-/* 依長輩性別轉換稱呼：阿姨↔叔叔、她→他、很美→很帥 */
+/* 依長輩性別轉換稱呼：阿姨叔叔、她他、很美很帥 */
 const gline = (t, elder) => {
   const eid = typeof elder === "string" ? elder : elder && elder.id;
   if (!ELDER_MALE.has(eid)) return t;
@@ -103,12 +103,12 @@ const YOUTH_SHOUTS = [
 
 /* 年輕人誘餌（長輩可設） */
 const YBAITS = [
-  { name: "免費塔羅占卜", icon: "🔮", joke: "「水逆特別場限額 5 名」——嘴上說不信，腳已經排隊" },
-  { name: "免費精釀啤酒", icon: "🍺", joke: "「免費」＋「限量」直接失去理智" },
-  { name: "現炸鹽酥雞攤", icon: "🍗", joke: "再厭世也無法拒絕免費炸物" },
-  { name: "頌缽療癒體驗", icon: "🎵", joke: "「我就體驗五分鐘而已」" },
-  { name: "免費充電站", icon: "🔌", joke: "手機剩 12% 的人毫無抵抗力" },
-  { name: "隱藏版千層蛋糕", icon: "🍰", joke: "為了一張照片可以背叛任何人" },
+  { name: "免費塔羅占卜", joke: "「水逆特別場限額 5 名」——嘴上說不信，腳已經排隊" },
+  { name: "免費精釀啤酒", joke: "「免費」＋「限量」直接失去理智" },
+  { name: "現炸鹽酥雞攤", joke: "再厭世也無法拒絕免費炸物" },
+  { name: "頌缽療癒體驗", joke: "「我就體驗五分鐘而已」" },
+  { name: "免費充電站", joke: "手機剩 12% 的人毫無抵抗力" },
+  { name: "隱藏版千層蛋糕", joke: "為了一張照片可以背叛任何人" },
 ];
 
 /* 塔羅牌 */
@@ -126,12 +126,12 @@ const MINE_GAIN = { mild: 200, medium: 300, severe: 450, fatal: 600 };   // 沒�
 
 /* 回嗆卡：全部帶刺，差異是路線與笑點（不再有溫和／嚴重分級，內部數值保留） */
 const COMEBACK_CARDS = [
-  { id: "c6", name: "回馬槍卡", line: "「阿姨紅包先收好，等你兒子結婚我再包回去」", effect: "長輩當場語塞", icon: "🧧", gain: 300, dmg: 0,   risk: 0 },
-  { id: "c2", name: "商業互吹卡", line: "「叔叔你這領帶好好看！跟你上次講的股票一樣紅欸」", effect: "長輩分不清是誇是損", icon: "🔀", gain: 300, dmg: 0,   risk: 0 },
-  { id: "c3", name: "陰陽卡", line: "「對啊好煩喔～阿姨你婆婆當年也這樣一直唸你嗎？」", effect: "長輩陷入回憶，攻擊中斷", icon: "🤝", gain: 350, dmg: 0,   risk: 0 },
-  { id: "c4", name: "已讀卡", line: "「哇～（當面拿出手機滑）阿姨你剛剛有說話嗎？」", effect: "當面已讀，傷害性不大侮辱性極強", icon: "📱", gain: 350, dmg: 0,   risk: 0.1 },
-  { id: "c1", name: "反彈卡", line: "「那阿姨你當年幾歲生的？」", effect: "長輩沉默 3 秒", icon: "🪞", gain: 450, dmg: 100, risk: 0.15 },
-  { id: "c5", name: "你兒子卡", line: "「阿姨那你兒子呢？40 了還沒對象？」", effect: "長輩直接暴斃，全場歡呼", icon: "💥", gain: 600, dmg: 200, risk: 0.3 },
+  { id: "c6", name: "回馬槍卡", line: "「阿姨紅包先收好，等你兒子結婚我再包回去」", effect: "長輩當場語塞", gain: 300, dmg: 0,   risk: 0 },
+  { id: "c2", name: "商業互吹卡", line: "「叔叔你這領帶好好看！跟你上次講的股票一樣紅欸」", effect: "長輩分不清是誇是損", gain: 300, dmg: 0,   risk: 0 },
+  { id: "c3", name: "陰陽卡", line: "「對啊好煩喔～阿姨你婆婆當年也這樣一直唸你嗎？」", effect: "長輩陷入回憶，攻擊中斷", gain: 350, dmg: 0,   risk: 0 },
+  { id: "c4", name: "已讀卡", line: "「哇～（當面拿出手機滑）阿姨你剛剛有說話嗎？」", effect: "當面已讀，傷害性不大侮辱性極強", gain: 350, dmg: 0,   risk: 0.1 },
+  { id: "c1", name: "反彈卡", line: "「那阿姨你當年幾歲生的？」", effect: "長輩沉默 3 秒", gain: 450, dmg: 100, risk: 0.15 },
+  { id: "c5", name: "你兒子卡", line: "「阿姨那你兒子呢？40 了還沒對象？」", effect: "長輩直接暴斃，全場歡呼", gain: 600, dmg: 200, risk: 0.3 },
 ];
 
 /* 年輕人社畜話術（表面客氣、實際在陰人） */
@@ -150,11 +150,11 @@ const SCHMOOZE = [
 /* 年輕人點歌歌單（DJ 台） */
 /* 長輩卡拉OK 歌單（3台2國，長輩 KTV 必點） */
 const KSONGS = [
-  { t: "愛拚才會贏", a: "葉啟田", lang: "台", mood: "hype",  hint: "🔥 壓軸炸場" },
-  { t: "歡喜就好",   a: "陳雷",   lang: "台", mood: "happy", hint: "😄 輕鬆喜慶" },
-  { t: "甜蜜蜜",     a: "鄧麗君", lang: "國", mood: "sweet", hint: "🍬 超應景" },
-  { t: "月亮代表我的心", a: "鄧麗君", lang: "國", mood: "classic", hint: "🌙 經典安全牌" },
-  { t: "家後",       a: "江蕙",   lang: "台", mood: "sad",   hint: "💧 很感人，但…" },
+  { t: "愛拚才會贏", a: "葉啟田", lang: "台", mood: "hype",  hint: "壓軸炸場" },
+  { t: "歡喜就好",   a: "陳雷",   lang: "台", mood: "happy", hint: "輕鬆喜慶" },
+  { t: "甜蜜蜜",     a: "鄧麗君", lang: "國", mood: "sweet", hint: "超應景" },
+  { t: "月亮代表我的心", a: "鄧麗君", lang: "國", mood: "classic", hint: "經典安全牌" },
+  { t: "家後",       a: "江蕙",   lang: "台", mood: "sad",   hint: "很感人，但…" },
 ];
 
 const SONGS = [
@@ -167,10 +167,10 @@ const SONGS = [
 ];
 
 const TRAPS = [
-  { name: "早鳥優惠券", icon: "🎟️", ok: "搶「前 10 名送禮券」上當被當場攔截", fail: "優惠券被風吹走了…" },
-  { name: "假 WiFi 熱點", icon: "📶", ok: "為了連「婚禮_5G_免費」停下來傳長輩圖，偷渡中斷被逮", fail: "長輩們都辦吃到飽，沒人上鉤" },
-  { name: "養生講座傳單", icon: "📋", ok: "被「免費健康檢查」吸引回長輩區排隊", fail: "傳單字太小，長輩們看不到" },
-  { name: "孫子照片牆", icon: "🖼️", ok: "在「來看看你孫子」展板前駐足，偷渡計畫忘光光", fail: "有長輩嫌這孫子沒自家的可愛，無效" },
+  { name: "早鳥優惠券", ok: "搶「前 10 名送禮券」上當被當場攔截", fail: "優惠券被風吹走了…" },
+  { name: "假 WiFi 熱點", ok: "為了連「婚禮_5G_免費」停下來傳長輩圖，偷渡中斷被逮", fail: "長輩們都辦吃到飽，沒人上鉤" },
+  { name: "養生講座傳單", ok: "被「免費健康檢查」吸引回長輩區排隊", fail: "傳單字太小，長輩們看不到" },
+  { name: "孫子照片牆", ok: "在「來看看你孫子」展板前駐足，偷渡計畫忘光光", fail: "有長輩嫌這孫子沒自家的可愛，無效" },
 ];
 
 const QUIZ = [
@@ -187,27 +187,43 @@ const QUIZ = [
   { q: "「tag 我一下」是什麼意思？", options: ["在貼文標註我", "幫我買行李吊牌", "跟我玩鬼抓人", "幫我蓋章"], ans: 0 },
   { q: "Netflix 是什麼？", options: ["線上影音平台", "新型感冒藥", "住美國的親戚", "網路花店"], ans: 0 },
   { q: "限動的「24 小時後消失」代表？", options: ["貼文自動下架", "手機會自爆", "記憶體被清空", "孫子會被罵"], ans: 0 },
-  { q: "年輕人傳「💀」這個表情是指？", options: ["笑死了", "詛咒對方", "清明節快到了", "提醒吃鈣片"], ans: 0 },
+  { q: "年輕人說「我笑到骨頭都沒了」是指？", options: ["非常好笑", "得了骨質疏鬆", "在做瑜珈", "跌倒受傷"], ans: 0 },
 ];
 
 const OUTFITS = [
-  { label: "大花襯衫＋草帽", icon: "🌺", ok: false },
-  { label: "西裝＋老花眼鏡", icon: "👓", ok: false },
-  { label: "寬鬆帽T＋老帽＋小白鞋", icon: "🧢", ok: true },
-  { label: "旗袍＋珍珠項鍊", icon: "📿", ok: false },
-  { label: "oversize 帽T＋側背小包", icon: "🎒", ok: true },
-  { label: "鴨舌帽反戴＋無線耳機", icon: "🎧", ok: true },
-  { label: "polo 衫紮進西裝褲＋皮帶手機套", icon: "📱", ok: false },
-  { label: "登山外套＋遮陽斗笠", icon: "👒", ok: false },
+  { label: "大花襯衫＋草帽", ok: false },
+  { label: "西裝＋老花眼鏡", ok: false },
+  { label: "寬鬆帽T＋老帽＋小白鞋", ok: true },
+  { label: "旗袍＋珍珠項鍊", ok: false },
+  { label: "oversize 帽T＋側背小包", ok: true },
+  { label: "鴨舌帽反戴＋無線耳機", ok: true },
+  { label: "polo 衫紮進西裝褲＋皮帶手機套", ok: false },
+  { label: "登山外套＋遮陽斗笠", ok: false },
 ];
 
-const AI_YOUTH_EVENTS = ["🏆 年輕人陣營成功攔截一位偽裝長輩！", "📸 拍照打卡區大排長龍，潮度上升", "🎵 DJ 把音量轉大，成功蓋掉勸酒聲"];
-const AI_ELDER_EVENTS = ["😏 有長輩偷偷講完一句地雷話沒被發現…", "🧧 有長輩用紅包收買了守門人！", "🚨 邊界警報！有不明人士試圖翻越柵欄！"];
+const AI_YOUTH_EVENTS = ["年輕人陣營成功攔截一位偽裝長輩！", "拍照打卡區大排長龍，潮度上升", "DJ 把音量轉大，成功蓋掉勸酒聲"];
+const AI_ELDER_EVENTS = ["有長輩偷偷講完一句地雷話沒被發現…", "有長輩用紅包收買了守門人！", "邊界警報！有不明人士試圖翻越柵欄！"];
+
+/* ============================================================
+   〈歡喜就好〉主旋律（陳雷／吳嘉祥曲）
+   依樂譜 Dm-C-Dm-C / Gm7-Am7 和聲進行採譜的主歌旋律片段，
+   用 8-bit 方波在遊戲內演奏；[音高, 拍數] ，休止符用 0
+   ============================================================ */
+const NOTE = { 0: 0, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00,
+               AS4: 466.16, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46 };
+const HAPPY_SONG = [
+  /* 人生海海 甚麼攏了解 */
+  ["A4",1],["A4",1],["C5",1],["A4",1],["G4",2],["F4",2],
+  ["F4",1],["G4",1],["A4",1],["G4",1],["F4",2],[0,1],
+  /* 有時仔清醒 有時青菜 */
+  ["A4",1],["C5",1],["D5",1],["C5",1],["A4",2],["G4",2],
+  ["F4",1],["G4",1],["F4",1],["E4",1],["D4",3],[0,1],
+];
 
 const GAME_SECONDS = 90;
 const START_WALLET = 5000;
 
-/* 🔥 現場火爆指數：全場共同進度（0–100），雙方成功行動都往上推 */
+/*  現場火爆指數：全場共同進度（0–100），雙方成功行動都往上推 */
 const CHAOS = {
   gate: 5,        // 成功通過柵欄
   mine: 8,        // 長輩完成一次地雷話
@@ -231,7 +247,7 @@ const sample = (a, n) => [...a].sort(() => Math.random() - 0.5).slice(0, n);
 const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 /* ============================================================
-   👵 角色視覺資料（醜萌手繪風 SVG）
+    角色視覺資料（醜萌手繪風 SVG）
    ============================================================ */
 
 const INK = "#1d1a17";
@@ -579,7 +595,7 @@ const TarotProp = () => (
     {[-18, 0, 18].map((a, i) => (
       <rect key={i} x={56} y={38} width={15} height={23} rx={2.5} fill={i === 1 ? "#FFE6A0" : "#E8DFF5"} stroke={INK} strokeWidth={2.5} transform={`rotate(${a} 63 60)`} />
     ))}
-    <text x={63} y={54} textAnchor="middle" fontSize={9} fontWeight={900} fill={INK}>★</text>
+    <text x={63} y={54} textAnchor="middle" fontSize={9} fontWeight={900} fill={INK}></text>
     {[0, 1, 2].map((i) => (
       <circle key={"s" + i} cx={84 - i * 3} cy={36 - i * 10} r={3.5 - i * 0.8} fill="#BFC9BF" opacity={.7} style={{ animation: `wbIdle ${1.6 + i * 0.5}s ease-in-out infinite` }} />
     ))}
@@ -645,7 +661,7 @@ const WORLD = {
   gateX: 820,
   youthEntry: 1000,
   spots: [
-    { id: "karaoke", x: 80, w: 150, h: 140, zone: "elder", label: "🎤 高歌一曲 +100", Comp: KaraokeProp },
+    { id: "karaoke", x: 80, w: 150, h: 140, zone: "elder", label: "高歌一曲 +100", Comp: KaraokeProp },
     { id: "sofa", x: 270, w: 160, h: 95, zone: "elder", Comp: SofaProp },
     { id: "table", x: 460, w: 130, h: 95, zone: "elder", Comp: RoundTableProp },
     { id: "tea", x: 610, w: 110, h: 100, zone: "elder", Comp: TeaProp },
@@ -677,7 +693,7 @@ const Marquee = ({ led }) => {
     }, 5000);
     return () => clearInterval(t);
   }, []);
-  const big = cur && (cur.text.includes("⚠️") || cur.text.includes("【"));
+  const big = cur && (cur.text.includes("") || cur.text.includes("【"));
   return (
     <div className="relative overflow-hidden" style={{ background: "#140202", border: `3px solid #3A0E0E`, boxShadow: "inset 0 0 14px rgba(255,60,40,.25), 0 2px 0 rgba(0,0,0,.4)", minHeight: 34 }}>
       {cur && (
@@ -688,10 +704,10 @@ const Marquee = ({ led }) => {
             textShadow: big ? "0 0 9px rgba(255,210,74,.95), 0 0 2px #000" : "0 0 8px rgba(255,106,85,.9), 0 0 2px #000",
             letterSpacing: ".04em", lineHeight: 1.3, textAlign: "center",
           }}>
-          <span className="wb-ledblink" style={{ flexShrink: 0 }}>◉</span>
+          <span className="wb-ledblink" style={{ flexShrink: 0 }}></span>
           {cur.face && <span className="rounded-full overflow-hidden inline-flex" style={{ background: "#2A0808", border: "2.5px solid #FF6A55", width: 30, height: 30, alignItems: "center", justifyContent: "center", flexShrink: 0 }}><CharSprite id={cur.face} w={26} headOnly /></span>}
           <span style={{ minWidth: 0 }}>{cur.text}</span>
-          <span className="wb-ledblink" style={{ flexShrink: 0 }}>◉</span>
+          <span className="wb-ledblink" style={{ flexShrink: 0 }}></span>
         </div>
       )}
     </div>
@@ -708,7 +724,7 @@ const StringLights = () => (
 );
 
 /* ============================================================
-   🏞️ 標題畫面像素場景（程式逐格繪製，取代原 base64 底圖）
+    標題畫面像素場景（程式逐格繪製，取代原 base64 底圖）
    ============================================================ */
 const TITLE_CAST = [
   { id: "e1", cx: 29.5, fy: 41.5, d: 0 },
@@ -808,7 +824,7 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(GAME_SECONDS);
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
-  const [led, setLed] = useState([{ text: "🎊 歡迎蒞臨婚禮大亂鬥會場 🎊", seq: 0 }, { text: "💡 溫馨提示：問別人薪水前，請先公布自己的", seq: 1 }]);
+  const [led, setLed] = useState([{ text: "歡迎蒞臨婚禮大亂鬥會場", seq: 0 }, { text: "溫馨提示：問別人薪水前，請先公布自己的", seq: 1 }]);
   const [flash, setFlash] = useState(false);
   const [alert_, setAlert] = useState(false);
   const [modal, setModal] = useState(null);
@@ -844,7 +860,7 @@ export default function App() {
   const [pops, setPops] = useState([]); // 飄分數字
   const [nowPlaying, setNowPlaying] = useState(null); // 卡拉OK 播放中
   const [shoutCd, setShoutCd] = useState(0);
-  const [chaos, setChaos] = useState(0);          // 🔥 現場火爆指數（全場共同）
+  const [chaos, setChaos] = useState(0);          //  現場火爆指數（全場共同）
   const [shoutUses, setShoutUses] = useState(0);  // 大聲公已用次數
   const [bestLine, setBestLine] = useState(null); // 本場最精彩的一句話 {text, who, v}
   const [quitGroup, setQuitGroup] = useState(false); // 退出家庭群組大招
@@ -853,6 +869,11 @@ export default function App() {
   const [baitCd, setBaitCd] = useState(0);
   const [tarotCd, setTarotCd] = useState(0);
   const [tarotFx, setTarotFx] = useState(null); // wheel / power / tower
+
+  /* 對話佇列：角色間的重要對話走固定底部對話框，玩家點一下才前進 */
+  const [dlg, setDlg] = useState(null); // { lines:[{who, side, sprite, expr, text}], idx }
+  const dlgRef = useRef(null); dlgRef.current = dlg;
+  const dlgDoneRef = useRef(null);
 
   const audioRef = useRef(null);
   const modalRef = useRef(null); modalRef.current = modal;
@@ -901,6 +922,27 @@ export default function App() {
   const alarm = useCallback(() => { beep(980, 0.18, "sawtooth", 0.07); setTimeout(() => beep(740, 0.18, "sawtooth", 0.07), 180); setTimeout(() => beep(980, 0.25, "sawtooth", 0.07), 360); }, [beep]);
   const cheer = useCallback(() => { beep(660, 0.1, "triangle"); setTimeout(() => beep(880, 0.1, "triangle"), 110); setTimeout(() => beep(1100, 0.2, "triangle"), 220); }, [beep]);
   const buzz = useCallback(() => beep(180, 0.3, "sawtooth", 0.08), [beep]);
+  const songTimers = useRef([]);
+  /* 用內建方波音源演奏一段旋律；bpm 決定速度，回傳整段長度（毫秒） */
+  const playSong = useCallback((song, bpm = 116) => {
+    songTimers.current.forEach(clearTimeout);
+    songTimers.current = [];
+    if (muted) return 0;
+    const beat = 60000 / bpm;
+    let t = 0;
+    song.forEach(([n, len]) => {
+      const ms = beat * len;
+      const f = NOTE[n];
+      if (f) {
+        songTimers.current.push(setTimeout(() => {
+          beep(f, (ms * 0.9) / 1000, "square", 0.045);
+        }, t));
+      }
+      t += ms;
+    });
+    return t;
+  }, [beep, muted]);
+  useEffect(() => () => songTimers.current.forEach(clearTimeout), []);
 
   const addPop = useCallback((text, color) => {
     const id = Date.now() + Math.random();
@@ -919,18 +961,33 @@ export default function App() {
   const flashRed = useCallback(() => { setFlash(true); setTimeout(() => setFlash(false), 900); }, []);
   const addFine = useCallback((name, amt) => setFines((f) => ({ ...f, [name]: (f[name] || 0) + amt })), []);
 
-  /* 🔥 火爆指數：行動結果發生後才顯示變化；跨越階段時全場廣播 */
+  const showDlg = useCallback((lines, onDone) => {
+    dlgDoneRef.current = onDone || null;
+    setDlg({ lines: lines.filter(Boolean), idx: 0 });
+  }, []);
+  const advanceDlg = useCallback(() => {
+    beep(660, 0.05, "square", 0.03);
+    setDlg((d) => {
+      if (!d) return d;
+      if (d.idx + 1 < d.lines.length) return { ...d, idx: d.idx + 1 };
+      const cb = dlgDoneRef.current; dlgDoneRef.current = null;
+      if (cb) setTimeout(cb, 60);
+      return null;
+    });
+  }, [beep]);
+
+  /*  火爆指數：行動結果發生後才顯示變化；跨越階段時全場廣播 */
   const addChaos = useCallback((delta, line, who) => {
     lastChaosAt.current = Date.now();
     setChaos((c) => {
       const next = Math.max(0, Math.min(100, c + delta));
       const before = chaosStage(c), after = chaosStage(next);
       if (delta > 0 && after.min > before.min) {
-        setTimeout(() => pushLed(`🔥【現場快報】火爆指數進入「${after.label}」階段！（${next}）`), 400);
+        setTimeout(() => pushLed(`【現場快報】火爆指數進入「${after.label}」階段！（${next}）`), 400);
       }
       return next;
     });
-    if (delta > 0) addPop(`🔥 火爆 +${delta}`, "#E5304C");
+    if (delta > 0) addPop(`火爆 +${delta}`, "#E5304C");
     if (line && delta > 0) setBestLine((b) => (!b || delta >= b.v ? { text: line, who: who || "", v: delta } : b));
   }, [addPop, pushLed]);
 
@@ -948,7 +1005,7 @@ export default function App() {
   /* 火爆衝到 100：婚禮直接失控收場 */
   useEffect(() => {
     if (phase !== "playing" || chaos < 100) return;
-    pushLed("💥【現場快報】火爆指數爆表！柵欄倒了！婚禮進入傳說模式！");
+    pushLed("【現場快報】火爆指數爆表！柵欄倒了！婚禮進入傳說模式！");
     const t = setTimeout(() => setPhase("ending"), 2600);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -985,9 +1042,9 @@ export default function App() {
     walkTo(npcCenterX + side * 78, cb, { endFace: side === -1 ? 1 : -1 });
   }, [walkTo]);
 
-  /* 🖱️📱 點地面任意處 → 斜線走過去（含深度） */
+  /*  點地面任意處  斜線走過去（含深度） */
   const onGroundClick = (e) => {
-    if (phase !== "playing" || modal || carried) return;
+    if (phase !== "playing" || modal || dlg || carried) return;
     if (e.target.closest && e.target.closest(".wb-stop")) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const wx = (e.clientX - rect.left) / worldScale;
@@ -1003,7 +1060,7 @@ export default function App() {
     walkTo(tx, null, { toY: ty });
   };
 
-  /* ⌨️ 鍵盤移動（電腦）：← → 左右走，↑ ↓ 往場景深處/前方走 */
+  /*  鍵盤移動（電腦）：  左右走，  往場景深處/前方走 */
   const keysRef = useRef({});
   useEffect(() => {
     if (phase !== "playing") return;
@@ -1016,7 +1073,7 @@ export default function App() {
     window.addEventListener("keydown", kd);
     window.addEventListener("keyup", ku);
     const t = setInterval(() => {
-      if (modalRef.current || busyRef.current) return;
+      if (modalRef.current || dlgRef.current || busyRef.current) return;
       const k = keysRef.current;
       const dx = (k.ArrowRight ? 1 : 0) - (k.ArrowLeft ? 1 : 0);
       const dy = (k.ArrowUp ? 1 : 0) - (k.ArrowDown ? 1 : 0);
@@ -1053,7 +1110,7 @@ export default function App() {
   useEffect(() => {
     if (phase !== "playing") return;
     const t = setInterval(() => {
-      if (modalRef.current) return; // 對話進行時暫停倒數
+      if (modalRef.current || dlgRef.current) return; // 對話進行時暫停倒數
       setTimeLeft((s) => { if (s <= 1) { clearInterval(t); setPhase("ending"); return 0; } return s - 1; });
     }, 1000);
     return () => clearInterval(t);
@@ -1080,20 +1137,20 @@ export default function App() {
     return () => clearTimeout(t);
   }, [truce]);
 
-  /* 📸 大合照休戰：一場只觸發一次（隨機時間），全場和好 10 秒 */
+  /*  大合照休戰：一場只觸發一次（隨機時間），全場和好 10 秒 */
   useEffect(() => {
     if (phase !== "playing") return;
     let alive = true;
     const fire = () => {
       if (!alive) return;
-      if (modalRef.current || truceRef.current > 0 || busyRef.current) { setTimeout(fire, 4000); return; }
+      if (modalRef.current || dlgRef.current || truceRef.current > 0 || busyRef.current) { setTimeout(fire, 4000); return; }
       setTruce(10);
       setPhotoFlash(true); setTimeout(() => setPhotoFlash(false), 450);
       setElderScore((s) => s + 100); setYouthScore((s) => s + 100);
-      addPop("📸 +100 合照加分");
+      addPop("+100 合照加分");
       beep(660, 0.1, "triangle"); setTimeout(() => beep(990, 0.18, "triangle"), 130);
-      pushLed("【快訊】📸 全場大合照時間！長輩、年輕人暫時和好（耶✌️）雙方 +100");
-      setBubble("耶✌️📸"); setTimeout(() => setBubble(null), 2400);
+      pushLed("【快訊】 全場大合照時間！長輩、年輕人暫時和好（耶）雙方 +100");
+      setBubble("耶"); setTimeout(() => setBubble(null), 2400);
     };
     const t = setTimeout(fire, 40000 + Math.random() * 70000);
     return () => { alive = false; clearTimeout(t); };
@@ -1113,7 +1170,7 @@ export default function App() {
         if (Math.random() < 0.35) {
           const who = rand(ELDERS); const p = rand(MINE_PHRASES);
           addFine(who.name, p.fine);
-          pushLed(`⚠️ ${who.name}！罰 $${p.fine}！原因：${p.category} ⚠️`, who.id);
+          pushLed(`${who.name}！罰 $${p.fine}！原因：${p.category}`, who.id);
         }
       }
       addChaos(2);
@@ -1128,7 +1185,7 @@ export default function App() {
     const loop = () => {
       t = setTimeout(() => {
         if (!alive) return;
-        if (!modalRef.current && !busyRef.current && truceRef.current <= 0) (Math.random() < 0.5 ? spawnVerify : spawnCardBattle)();
+        if (!modalRef.current && !dlgRef.current && !busyRef.current && truceRef.current <= 0) (Math.random() < 0.5 ? spawnVerify : spawnCardBattle)();
         loop();
       }, 8000 + Math.random() * 8000);
     };
@@ -1149,11 +1206,11 @@ export default function App() {
       { sprite: { id: others[1].id, disguise: true }, label: yc[1], isElder: false },
     ], 3);
     alarm(); flashRed(); setAlert(true);
-    pushLed("🚨 邊界警報！有不明人士試圖混入年輕人區！🚨");
+    pushLed("邊界警報！有不明人士試圖混入年輕人區！");
     setModal({ type: "verify", people, elder, left: 6 });
   };
 
-  /* ⏱ 攔截倒數：6 秒內沒抓到，長輩直接混進來 */
+  /*  攔截倒數：6 秒內沒抓到，長輩直接混進來 */
   useEffect(() => {
     if (!modal || modal.type !== "verify") return;
     const eld = modal.elder;
@@ -1165,8 +1222,8 @@ export default function App() {
         setModal(null); setAlert(false);
         buzz(); flashRed();
         setElderScore((s) => s + 300);
-        addPop("😱 來不及判斷！長輩 +300", "#7A3A8E");
-        pushLed(`😱 猶豫就會敗北！${eld.name} 趁你猶豫大搖大擺走了進來（長輩 +300）`, eld.id);
+        addPop("來不及判斷！長輩 +300", "#7A3A8E");
+        pushLed(`猶豫就會敗北！${eld.name} 趁你猶豫大搖大擺走了進來（長輩 +300）`, eld.id);
         setTimeout(() => { if (!modalRef.current) spawnCardBattle(); }, 2500);
       } else {
         setModal((m) => (m && m.type === "verify" ? { ...m, left } : m));
@@ -1182,7 +1239,7 @@ export default function App() {
     setModal({ type: "cards", elder, phrase: rand(MINE_PHRASES), cards: sample(COMEBACK_CARDS, 3) });
   };
 
-  /* 👀 可疑長輩在邊界徘徊（年輕人的主動攻擊目標） */
+  /*  可疑長輩在邊界徘徊（年輕人的主動攻擊目標） */
   useEffect(() => {
     if (phase !== "playing" || role !== "youth") { setLurker(null); return; }
     let alive = true; let t;
@@ -1192,7 +1249,7 @@ export default function App() {
         if (!lurkerRef.current && truceRef.current <= 0) {
           const l = { elder: rand(ELDERS), x: WORLD.gateX + 170 + Math.floor(Math.random() * 150), born: Date.now() };
           setLurker(l);
-          pushLed("👀 有可疑長輩在邊界附近徘徊…主動搭話陰他一波！", l.elder.id);
+          pushLed("有可疑長輩在邊界附近徘徊…主動搭話陰他一波！", l.elder.id);
           setTimeout(() => { if (alive && lurkerRef.current && lurkerRef.current.born === l.born) setLurker(null); }, 22000);
         }
         loop(16000 + Math.random() * 12000);
@@ -1205,7 +1262,7 @@ export default function App() {
 
   /* ---- 長輩：講話 ---- */
   const openTalk = (npcId) => {
-    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
+    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
     const pool = MINE_PHRASES.filter((p) => !spoken.includes(p.id));
     const npc = YOUTHS.find((y) => y.id === npcId) || rand(YOUTHS.filter((y) => y.id !== charId));
     setModal({ type: "talk", mines: sample(pool.length ? pool : MINE_PHRASES, 2), safe: rand(SAFE_PHRASES), npc });
@@ -1218,24 +1275,27 @@ export default function App() {
       setElderScore((s) => s + 50); addPop("+50 長輩分");
       setBubble("今天天氣真好～"); setTimeout(() => setBubble(null), 2000);
       if (npcId) setTimeout(() => npcSay(npcId, gline(rand(RPSAFE), charId)), 600);
-      pushLed(`💬 ${me.name} 講了句場面話，大家點頭微笑 +50`, me.id);
+      pushLed(`${me.name} 講了句場面話，大家點頭微笑 +50`, me.id);
       beep(660, 0.1, "triangle"); return;
     }
     setSpoken((sp) => [...sp, p.id]);
-    setBubble(`「${p.text}」💣`);
+    setBubble(`「${p.text}」`);
     const catchChance = Math.max(0.1, CATCH_RATE[p.severity] - (me?.stats.stealth || 0) * 0.04);
     setTimeout(() => {
       setBubble(null);
       if (Math.random() < catchChance) {
         alarm(); flashRed(); setExpr("shock");
         setWallet((w) => w - p.fine);
-        addPop(`💸 罰款 −$${p.fine}（只扣錢）`, "#C8102E");
         addFine(me.name, p.fine);
         setStat((s) => ({ ...s, fined: s.fined + 1 }));
-        pushLed(`⚠️ ${me.name}！罰 $${p.fine}！原因：${p.category} ⚠️`, me.id);
-        if (npcId) npcSay(npcId, gline(rand(RPHIT), charId), "shock", 3800);
+        pushLed(`${me.name} 被開罰單！罰 $${p.fine}，原因：${p.category}`, me.id);
+        const npcObj = npcId ? YOUTHS.find((y) => y.id === npcId) : null;
+        showDlg([
+          npcObj && { who: npcObj.name, side: "youth", sprite: npcObj.id, text: gline(rand(RPHIT), charId) },
+          { who: "婚宴糾察隊", side: "sys", text: `逮到了！「${p.category}」現行犯，罰紅包 $${p.fine}。（只扣錢，火爆指數不受影響）` },
+        ]);
         if (p.severity === "severe" || p.severity === "fatal") {
-          addPop("🚪 免費送回長輩區", "#7A6A55");
+          addPop("免費送回長輩區", "#7A6A55");
           addChaos(CHAOS.carry, `${me.name} 被保鏢架走時大喊「我也沒說什麼啊！」`, me.name);
           setCarried(true); busyRef.current = true;
           setBubble("我也沒說什麼啊！");
@@ -1243,7 +1303,7 @@ export default function App() {
           setTimeout(() => {
             setCarried(false); setBubble(null); setExpr("idle");
             setZone("elder"); setDisguised(false); setPy(0); busyRef.current = false;
-            pushLed(`🕴️ ${me.name} 已被保鏢護送回長輩區——偷渡小遊戲，再開！`, me.id);
+            pushLed(`${me.name} 已被保鏢護送回長輩區——偷渡小遊戲，再開！`, me.id);
           }, 2200);
         } else {
           setTimeout(() => setExpr("idle"), 1200);
@@ -1253,8 +1313,12 @@ export default function App() {
         setElderScore((s) => s + gain);
         addChaos(CHAOS.mine, `「${p.text}」`, me.name);
         cheer();
-        if (npcId) npcSay(npcId, gline(rand(RPDODGE), charId), null, 4000);
-        pushLed(`😏 ${me.name} 講完「${p.text}」全場空氣凝結三秒`, me.id);
+        const npcObj = npcId ? YOUTHS.find((y) => y.id === npcId) : null;
+        pushLed(`${me.name} 講完「${p.text}」，全場空氣凝結三秒`, me.id);
+        showDlg([
+          npcObj && { who: npcObj.name, side: "youth", sprite: npcObj.id, text: gline(rand(RPDODGE), charId) },
+          { who: "現場狀況", side: "sys", text: `這句話沒人攔得住，空氣凝結三秒。現場火爆指數 +${CHAOS.mine}。` },
+        ]);
       }
     }, 1000);
   };
@@ -1267,14 +1331,14 @@ export default function App() {
     setStat((s) => ({ ...s, smuggle: s.smuggle + 1 }));
     addChaos(CHAOS.gate);
     cheer();
-    pushLed(`😎 ${me.name} ${msg}，成功潛入年輕人區！`, me.id);
+    pushLed(`${me.name} ${msg}，成功潛入年輕人區！`, me.id);
     busyRef.current = false;
     walkTo(WORLD.youthEntry, null, { sneak: true, toY: 0 });
   };
   const smuggleFail = (msg) => {
     setModal(null);
     buzz(); flashRed(); setExpr("shock");
-    pushLed(`📺 ${me.name}，${msg}，請回長輩區 😂`, me.id);
+    pushLed(`${me.name}，${msg}，請回長輩區`, me.id);
     setTimeout(() => setExpr("idle"), 1200);
     walkTo(WORLD.gateX - 190, null, { toY: 0 });
   };
@@ -1286,10 +1350,10 @@ export default function App() {
       setModal({ type: "disguise", options: sample(pool, 3) });
     }
     else if (method === "bribe") {
-      if (stat.bribes >= 2) { pushLed("🧧 守門人：「再收要被新娘發現了啦！」（每場限賄賂 2 次）"); setModal(null); return; }
-      if (wallet < 1800) { pushLed(`💸 ${me.name} 紅包基金不足（賄賂要 $1800）`, me.id); setModal(null); return; }
+      if (stat.bribes >= 2) { pushLed("守門人：「再收要被新娘發現了啦！」（每場限賄賂 2 次）"); setModal(null); return; }
+      if (wallet < 1800) { pushLed(`${me.name} 紅包基金不足（賄賂要 $1800）`, me.id); setModal(null); return; }
       setWallet((w) => w - 1800);
-      addPop("💸 −$1800 紅包", "#C8102E");
+      addPop("−$1800 紅包", "#C8102E");
       setStat((s) => ({ ...s, bribes: s.bribes + 1 }));
       if (Math.random() < 0.75) { setElderScore((s) => s + 100); smuggleSuccess("用紅包收買守門人"); }
       else smuggleFail("守門人收了紅包還是把你舉報了");
@@ -1307,53 +1371,54 @@ export default function App() {
       setStat((s) => ({ ...s, intercept: s.intercept + 1 }));
       addChaos(CHAOS.verify + CHAOS.carry, `${m.elder.name} 被當眾拆穿假髮，全場拍手`, me.name);
       cheer();
-      pushLed(`🏆 ${me.name} 攔截成功！${m.elder.name} 驗證失敗，被押回長輩區 😂`, m.elder.id);
+      pushLed(`${me.name} 攔截成功！${m.elder.name} 驗證失敗，被押回長輩區`, m.elder.id);
       setModal({ type: "shame", elder: m.elder });
     } else {
       buzz(); flashRed();
       setElderScore((s) => s + 300);
       addChaos(4, null, null); // 抓錯人全場爆笑，場面照樣升溫
-      addPop("😱 抓錯人！", "#7A3A8E");
-      pushLed(`😱 抓錯人了！${m.elder.name} 趁亂大搖大擺混進年輕人區，全場爆笑`, m.elder.id);
+      addPop("抓錯人！", "#7A3A8E");
+      pushLed(`抓錯人了！${m.elder.name} 趁亂大搖大擺混進年輕人區，全場爆笑`, m.elder.id);
       setTimeout(() => { if (!modalRef.current) spawnCardBattle(); }, 2500);
     }
   };
 
   const playCard = (card) => {
     const m = modal; setModal(null);
-    /* 💥 嗆過頭翻車：不扣分，但被新娘回頭瞪，原地罰站＋公審（鏡像長輩被架走） */
+    /*  嗆過頭翻車：不扣分，但被新娘回頭瞪，原地罰站＋公審（鏡像長輩被架走） */
     if (card.risk && Math.random() < card.risk) {
       buzz(); flashRed(); setExpr("shock");
       setCombo(0);
-      addPop("😬 嗆過頭！被新娘瞪", "#7A6A55");
-      setBubble("（新娘回頭瞪了一眼…）"); busyRef.current = true;
-      pushLed(`📺 ${me.name} 嗆過頭！新娘親自回頭關切，罰站反省中（不扣分，但好糗）`, me.id);
-      setTimeout(() => { setBubble(null); setExpr("idle"); busyRef.current = false; }, 2200);
-      setNpcReact({ id: "foe", elder: m.elder.id, text: "唉唷～連新娘都看不下去囉？", expr: null });
-      setTimeout(() => setNpcReact((w) => (w && w.id === "foe" ? null : w)), 4000);
+      pushLed(`${me.name} 嗆過頭！新娘親自回頭關切，罰站反省中`, me.id);
+      busyRef.current = true;
+      showDlg([
+        { who: me.name, side: "youth", sprite: me.id, text: cardLine(card, m.elder) },
+        { who: "現場狀況", side: "sys", text: "（新娘回頭瞪了一眼……全場安靜）" },
+        { who: m.elder.name, side: "elder", sprite: m.elder.id, text: "唉唷～連新娘都看不下去囉？" },
+      ], () => { setExpr("idle"); busyRef.current = false; });
       return;
     }
     const n = combo + 1;
     setCombo(n); setMaxCombo((x) => Math.max(x, n));
     let total = card.gain + (n >= 2 ? 200 : 0);
-    if (tarotFx === "power") { total = Math.round(total * 1.5); setTarotFx(null); addPop("🔮 宇宙能量加成！"); }
+    if (tarotFx === "power") { total = Math.round(total * 1.5); setTarotFx(null); addPop("宇宙能量加成！"); }
     setYouthScore((s) => s + total);
     addChaos(CHAOS.comeback + (n >= 2 ? CHAOS.chain : 0), cardLine(card, m.elder), me.name);
-    if (n >= 2) addPop(`⚡ 交鋒連鎖 ×${n}`);
+    if (n >= 2) addPop(`交鋒連鎖 ×${n}`);
     setStat((s) => ({ ...s, comeback: s.comeback + 1 }));
     cheer();
-    setBubble(cardLine(card, m.elder)); setTimeout(() => setBubble(null), 2200);
-    setNpcReact({ id: "foe", elder: m.elder.id, text: null, expr: null });
-    setTimeout(() => {
-      const rc = CRPLY[card.id] || ["……", null];
-      setNpcReact({ id: "foe", elder: m.elder.id, text: rc[0], expr: rc[1] });
-    }, 900);
-    setTimeout(() => setNpcReact((w) => (w && w.id === "foe" ? null : w)), 5000);
-    if (card.id === "c5") pushLed(`🏆 ${me.name} 使出『核彈卡』！${m.elder.name} 已陣亡，全場歡呼！+${total}，長輩 −${card.dmg}`, m.elder.id);
-    else pushLed(`🎯 ${me.name} 使出『${card.name}』：${m.elder.name} ${card.effect}！+${total}${card.dmg > 0 ? `，長輩 −${card.dmg}` : ""}`, me.id);
-    if (n === 2) pushLed("✨ 2 連擊！獲得稱號：高 EQ 青年");
-    if (n === 3) pushLed("👏 3 連擊！全場年輕人起立鼓掌！");
-    if (n >= 5) pushLed("🌟 5 連擊！『年輕人之光』特效全開！");
+    const rc = CRPLY[card.id] || ["……", null];
+    const chaosGain = CHAOS.comeback + (n >= 2 ? CHAOS.chain : 0);
+    showDlg([
+      { who: me.name, side: "youth", sprite: me.id, text: cardLine(card, m.elder) },
+      { who: m.elder.name, side: "elder", sprite: m.elder.id, expr: rc[1], text: rc[0] },
+      { who: "現場狀況", side: "sys", text: `${m.elder.name}${card.effect}。現場火爆指數 +${chaosGain}${n >= 2 ? `（交鋒連鎖 ×${n}）` : ""}。` },
+    ]);
+    if (card.id === "c5") pushLed(`${me.name} 使出『核彈卡』！${m.elder.name} 已陣亡，全場歡呼！+${total}，長輩 −${card.dmg}`, m.elder.id);
+    else pushLed(`${me.name} 使出『${card.name}』：${m.elder.name} ${card.effect}！+${total}${card.dmg > 0 ?`，長輩 −${card.dmg}`: ""}`, me.id);
+    if (n === 2) pushLed("2 連擊！獲得稱號：高 EQ 青年");
+    if (n === 3) pushLed("3 連擊！全場年輕人起立鼓掌！");
+    if (n >= 5) pushLed("5 連擊！『年輕人之光』特效全開！");
   };
 
   const ignoreCard = () => {
@@ -1362,52 +1427,54 @@ export default function App() {
     setElderScore((s) => s + 300);
     setChaos((c) => Math.max(0, c - 3)); // 已讀不回，場子冷掉
     buzz();
-    setNpcReact({ id: "foe", elder: m.elder.id, text: rand(CIGN), expr: null });
-    setTimeout(() => setNpcReact((w) => (w && w.id === "foe" ? null : w)), 4000);
-    pushLed(`😤 ${m.elder.name} 講完「${m.phrase.text}」沒人反擊，氣勢大增 +300`, m.elder.id);
+    showDlg([
+      { who: m.elder.name, side: "elder", sprite: m.elder.id, text: rand(CIGN) },
+      { who: "現場狀況", side: "sys", text: "沒人接話，場子冷掉了。現場火爆指數 −3。" },
+    ]);
+    pushLed(`${m.elder.name} 講完「${m.phrase.text}」沒人反擊，氣勢大增 +300`, m.elder.id);
   };
 
   const setTrap = () => {
-    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
+    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
     if (trapCd > 0) return;
     setTrapCd(20);
     const trap = rand(TRAPS);
-    setBubble(`${trap.icon} 「${trap.name}」設好了，嘿嘿`); setTimeout(() => setBubble(null), 2200);
+    setBubble(`「${trap.name}」設好了，嘿嘿`); setTimeout(() => setBubble(null), 2200);
     if (Math.random() < 0.6) {
       const who = rand(ELDERS);
       setYouthScore((s) => s + 400);
       setStat((s) => ({ ...s, intercept: s.intercept + 1 }));
       addChaos(CHAOS.carry, `${who.name} ${trap.ok}`, me.name);
       cheer();
-      pushLed(`🪤【${trap.name}】${who.name} ${trap.ok}！`, who.id);
-    } else pushLed(`🪤【${trap.name}】${trap.fail}`);
+      pushLed(`【${trap.name}】${who.name} ${trap.ok}！`, who.id);
+    } else pushLed(`【${trap.name}】${trap.fail}`);
   };
 
   const publicShame = (elder) => {
     setModal(null);
     setYouthScore((s) => s + 100);
     beep(1200, 0.08); setTimeout(() => beep(1200, 0.08), 120);
-    pushLed(`📺 公審：${elder.name} 偷渡未遂全紀錄已上 LED 大螢幕 +100`, elder.id);
+    pushLed(`公審：${elder.name} 偷渡未遂全紀錄已上 LED 大螢幕 +100`, elder.id);
   };
 
-  /* 🥂 向新人敬酒（30 秒冷卻）：回血加分 */
+  /*  向新人敬酒（30 秒冷卻）：回血加分 */
   const doToast = () => {
-    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
-    if (toastCd > 0) { setBubble(`剛敬過啦，${toastCd} 秒後再來 🥂`); setTimeout(() => setBubble(null), 2100); return; }
+    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
+    if (toastCd > 0) { setBubble(`剛敬過啦，${toastCd} 秒後再來`); setTimeout(() => setBubble(null), 2100); return; }
     setToastCd(30);
     cheer();
-    setBubble("新婚快樂！乾杯 🥂"); setTimeout(() => setBubble(null), 2300);
+    setBubble("新婚快樂！乾杯"); setTimeout(() => setBubble(null), 2300);
     if (isElder) {
       setWallet((w) => w + 600); setElderScore((s) => s + 100);
-      addPop("🧧 +$600 紅包基金"); addPop(isElder ? "+100 長輩分" : "+150 年輕人分");
-      pushLed(`🥂 ${me.name} 向新人敬酒，超有誠意！紅包基金回血 +$600`, me.id);
+      addPop("+$600 紅包基金"); addPop(isElder ? "+100 長輩分" : "+150 年輕人分");
+      pushLed(`${me.name} 向新人敬酒，超有誠意！紅包基金回血 +$600`, me.id);
     } else {
       setYouthScore((s) => s + 150);
-      pushLed(`🥂 ${me.name} 向新人敬酒，士氣大振 +150`, me.id);
+      pushLed(`${me.name} 向新人敬酒，士氣大振 +150`, me.id);
     }
   };
 
-  /* 😊 年輕人社畜搭話：表面客氣，實際在陰人 */
+  /*  年輕人社畜搭話：表面客氣，實際在陰人 */
   const openSchmooze = () => {
     if (!lurkerRef.current) return;
     setModal({ type: "schmooze", elder: lurkerRef.current.elder, opts: sample(SCHMOOZE, 3) });
@@ -1415,7 +1482,7 @@ export default function App() {
 
   const resolveSchmooze = (opt) => {
     const m = modal; setModal(null);
-    setBubble(`😊「${gline(opt.line, m.elder)}」`);
+    setBubble(`「${gline(opt.line, m.elder)}」`);
     const detect = Math.min(0.45, (m.elder.stats.defense || 3) * 0.08); // 長輩感知力 = 防禦值
     setTimeout(() => {
       setBubble(null);
@@ -1425,24 +1492,29 @@ export default function App() {
         buzz(); flashRed();
         setCombo(0);
         setElderScore((s) => s + 100);
-        addPop("😱 被識破！長輩 +100", "#7A3A8E");
         setExpr("shock"); busyRef.current = true;
-        setTimeout(() => { busyRef.current = false; }, 1800); setTimeout(() => setExpr("idle"), 1500);
-        npcSay("visitor", "少跟我來這套！你是不是交不到對象才這樣講話？😤", null, 4200);
-        pushLed(`😱 ${m.elder.name} 不吃這套！反手一句「你是不是交不到對象才這樣講話？」 −200`, m.elder.id);
+        pushLed(`${m.elder.name} 不吃這套！反手一句「你是不是交不到對象才這樣講話？」`, m.elder.id);
+        showDlg([
+          { who: m.elder.name, side: "elder", sprite: m.elder.id, text: "少跟我來這套！你是不是交不到對象才這樣講話？" },
+          { who: "現場狀況", side: "sys", text: "被識破了，你原地石化三秒。" },
+        ], () => { busyRef.current = false; setExpr("idle"); });
       } else {
         cheer();
         setYouthScore((s) => s + 250);
-        addChaos(CHAOS.comeback, `😊「${gline(opt.line, m.elder)}」`, me.name);
+        addChaos(CHAOS.comeback, `「${gline(opt.line, m.elder)}」`, me.name);
         setStat((s) => ({ ...s, comeback: s.comeback + 1 }));
-        npcSay("visitor", gline(ERPLY[opt.id] || "……", m.elder), ERPX[opt.id] || null, 4200);
-        pushLed(`🎯 ${me.name} 使出『${opt.name}』！${m.elder.name} ${opt.ok}　+250`, m.elder.id);
+        pushLed(`${me.name} 使出「${opt.name}」！${m.elder.name} ${opt.ok}`, m.elder.id);
+        showDlg([
+          { who: me.name, side: "youth", sprite: me.id, text: gline(opt.line, m.elder) },
+          { who: m.elder.name, side: "elder", sprite: m.elder.id, expr: ERPX[opt.id] || null, text: gline(ERPLY[opt.id] || "……", m.elder) },
+          { who: "現場狀況", side: "sys", text: `${m.elder.name}${opt.ok}。現場火爆指數 +${CHAOS.comeback}。` },
+        ]);
       }
       setTimeout(() => setLurker(null), 2000);
     }, 1100);
   };
 
-  /* 💬 年輕人同伴閒聊 */
+  /*  年輕人同伴閒聊 */
   const peerChat = (id) => {
     const mine = rand(["欸這場 DJ 不錯欸", "撐住，柵欄那邊剛剛有動靜", "等等一起去掃 buffet", "我社交額度快用完了"]);
     setBubble(mine); setTimeout(() => setBubble(null), 2200);
@@ -1450,71 +1522,78 @@ export default function App() {
     setTimeout(() => npcSay(id, rand(["真的", "收到，我盯著", "+1，蝦子先搶", "懂，我也在裝忙"]), null, 3200), 900);
   };
 
-  /* 📢 大聲公：全場都聽見了（每人每場限 SHOUT_LIMIT 次）
-     流程：對話框選嗆聲 → 短暫集中演出 → 跑馬燈全場重播 → 對面必有反應 → 火爆 +10 */
+  /*  大聲公：全場都聽見了（每人每場限 SHOUT_LIMIT 次）
+     流程：對話框選嗆聲  短暫集中演出  跑馬燈全場重播  對面必有反應  火爆 +10 */
   const doShout = (s) => {
     setModal(null); setShoutCd(15);
     setShoutUses((n) => n + 1);
     setPhotoFlash(true); setTimeout(() => setPhotoFlash(false), 350); // 集中演出閃光
-    setBubble(`📢「${s.line}」`); setTimeout(() => setBubble(null), 3200);
-    addChaos(CHAOS.shout, `📢「${s.line}」`, me.name);
-    pushLed(`📢【大聲公】${me.name}：「${s.line}」——全場都聽見了`, me.id);
+    addChaos(CHAOS.shout, `「${s.line}」`, me.name);
+    pushLed(`【大聲公】${me.name}：「${s.line}」——全場都聽見了`, me.id);
+    let reply;
     if (isElder) {
       setElderScore((sc) => sc + (s.v || 80));
       const yn = rand(["y1", "y2", "y3"].filter((i) => i !== charId));
-      setTimeout(() => npcSay(yn, gline(rand(RPDODGE), charId), null, 4200), 1200);
+      const yo = YOUTHS.find((y) => y.id === yn);
+      reply = { who: yo.name, side: "youth", sprite: yn, text: gline(rand(RPDODGE), charId) };
     } else {
       setYouthScore((sc) => sc + (s.v || 80));
       const en = rand(["e1", "e2", "e4"].filter((i) => i !== charId));
-      setTimeout(() => npcSay(en, rand(["現在的年輕人喔…", "哎唷！大小聲什麼啦！", "我聽你在放送啦！"]), "shock", 4200), 1200);
+      const eo = ELDERS.find((e) => e.id === en);
+      reply = { who: eo.name, side: "elder", sprite: en, expr: "shock", text: rand(["現在的年輕人喔…", "哎唷！大小聲什麼啦！", "我聽你在放送啦！"]) };
     }
+    showDlg([
+      { who: `${me.name}（大聲公）`, side: isElder ? "elder" : "youth", sprite: me.id, text: s.line },
+      reply,
+      { who: "現場狀況", side: "sys", text: `全場都聽見了，跑馬燈正在重播。現場火爆指數 +${CHAOS.shout}。` },
+    ]);
   };
 
-  /* 🍗 長輩設年輕人誘餌 */
+  /*  長輩設年輕人誘餌 */
   const setBait = () => {
     setModal(null);
     if (baitCd > 0) return;
     setBaitCd(25);
     const b = rand(YBAITS);
-    setBubble(`${b.icon} 「${b.name}」攤位搭好了，嘿嘿`); setTimeout(() => setBubble(null), 2500);
+    setBubble(`「${b.name}」攤位搭好了，嘿嘿`); setTimeout(() => setBubble(null), 2500);
     if (Math.random() < 0.45) {
       const who = rand(YOUTHS);
       setYouthScore((s) => s - 150); addPop("誘餌成功！年輕人 −150", "#7A3A8E");
       setElderScore((s) => s + 100); addPop("+100 長輩分");
-      pushLed(`⚠️【誘餌】年輕人防線因「${b.name}」出現缺口！${who.name} ${b.joke}（年輕人 −150）`, who.id);
+      pushLed(`【誘餌】年輕人防線因「${b.name}」出現缺口！${who.name} ${b.joke}（年輕人 −150）`, who.id);
     } else {
-      pushLed(`🍢【誘餌】「${b.name}」攤位乏人問津…年輕人邊滑手機邊說不要（但有偷看）`);
+      pushLed(`【誘餌】「${b.name}」攤位乏人問津…年輕人邊滑手機邊說不要（但有偷看）`);
     }
   };
 
-  /* 🔮 靈性角落抽塔羅 */
+  /*  靈性角落抽塔羅 */
   const drawTarot = () => {
     setModal(null); setTarotCd(25);
     const c = rand(TAROTS);
-    setBubble("（雙手合十）感恩宇宙 🙏"); setTimeout(() => setBubble(null), 2600);
-    if (c.id === "wheel") { setTarotFx("wheel"); addPop("🔮 下次警報有提示"); }
-    else if (c.id === "power") { setTarotFx("power"); addPop("🔮 下次回嗆 ×1.5"); }
-    else if (c.id === "tower") { setTarotFx("tower"); addPop("🌀 水逆纏身…", "#7A3A8E"); }
-    else addPop("🔮 ……沒事發生");
-    pushLed(`🔮 ${me.name} 抽到「${c.name}」——${c.joke}`, me.id);
+    setBubble("（雙手合十）感恩宇宙"); setTimeout(() => setBubble(null), 2600);
+    if (c.id === "wheel") { setTarotFx("wheel"); addPop("下次警報有提示"); }
+    else if (c.id === "power") { setTarotFx("power"); addPop("下次回嗆 ×1.5"); }
+    else if (c.id === "tower") { setTarotFx("tower"); addPop("水逆纏身…", "#7A3A8E"); }
+    else addPop("……沒事發生");
+    pushLed(`${me.name} 抽到「${c.name}」——${c.joke}`, me.id);
   };
 
-  /* 🛋️🍵🀄 長輩區場景互動：沙發、圓桌、茶水、麻將 */
+  /*  長輩區場景互動：沙發、圓桌、茶水、麻將 */
   const elderZoneAct = (id) => {
     if (id === "mahjong") {
       const r = Math.random();
       if (r < 0.3) {
         cheer();
         setElderScore((s) => s + 150); setWallet((w) => w + 200);
-        addPop("+150 自摸！"); addPop("🧧 +$200");
-        setBubble("🀄 自摸！哈哈哈！"); setTimeout(() => setBubble(null), 2400);
-        pushLed(`🀄 ${me.name} 麻將桌自摸！贏 $200，三叔公臉都綠了 +150`, me.id);
+        addPop("+150 自摸！"); addPop("+$200");
+        setBubble("自摸！哈哈哈！"); setTimeout(() => setBubble(null), 2400);
+        pushLed(`${me.name} 麻將桌自摸！贏 $200，三叔公臉都綠了 +150`, me.id);
         if (charId !== "e3") npcSay("e3", "唉唷！又被你摸走！", "shock", 3600);
       } else if (r < 0.5) {
         buzz();
-        setWallet((w) => w - 100); addPop("💸 −$100 放槍", "#C8102E");
-        setBubble("唉唷…放槍，輸 $100 😩"); setTimeout(() => setBubble(null), 2400);
-        pushLed(`🀄 ${me.name} 麻將桌放槍，輸了 $100，面子有點掛不住`, me.id);
+        setWallet((w) => w - 100); addPop("−$100 放槍", "#C8102E");
+        setBubble("唉唷…放槍，輸 $100"); setTimeout(() => setBubble(null), 2400);
+        pushLed(`${me.name} 麻將桌放槍，輸了 $100，面子有點掛不住`, me.id);
         if (charId !== "e3") npcSay("e3", "胡啦！哈哈，你放的槍齁", null, 3800);
       } else {
         beep(523, 0.12, "triangle");
@@ -1530,9 +1609,9 @@ export default function App() {
     setBubble(rand(lines)); setTimeout(() => setBubble(null), 2500);
     const rp = EZREPLY[id];
     if (rp && charId !== rp.npc && Math.random() < 0.85) setTimeout(() => npcSay(rp.npc, rand(rp.lines)), 900);
-    if (id === "sofa") pushLed(`🛋️ ${me.name} 在沙發區喬了一個舒服的位置 +30`, me.id);
-    if (id === "table") pushLed(`🍽️ ${me.name} 在辦桌圓桌開啟勸菜模式 +30`, me.id);
-    if (id === "tea") pushLed(`🍵 ${me.name} 在茶水吧台研究無糖選項 +30`, me.id);
+    if (id === "sofa") pushLed(`${me.name} 在沙發區喬了一個舒服的位置 +30`, me.id);
+    if (id === "table") pushLed(`${me.name} 在辦桌圓桌開啟勸菜模式 +30`, me.id);
+    if (id === "tea") pushLed(`${me.name} 在茶水吧台研究無糖選項 +30`, me.id);
   };
 
   const singKaraoke = () => setModal({ type: "ksong", options: sample(KSONGS, 3) });
@@ -1543,12 +1622,12 @@ export default function App() {
     const n = sings + 1;
     setSings(n);
     if (s.mood === "sad") {
-      /* 💧 婚禮唱悲歌：全場凝結 */
+      /*  婚禮唱悲歌：全場凝結 */
       buzz(); flashRed();
       setElderScore((sc) => sc - 150); setYouthScore((sc) => sc + 100);
       addPop("−150 唱悲歌！", "#C8102E");
-      setBubble(`🎤 有一日咱若老…😢`); setTimeout(() => setBubble(null), 2600);
-      pushLed(`⚠️【婚禮快訊】有人在婚禮唱《${s.t}》！新娘眼眶泛紅，DJ 小胖緊急切歌救場（長輩 −150／年輕人 +100）`, me.id);
+      setBubble(`有一日咱若老…`); setTimeout(() => setBubble(null), 2600);
+      pushLed(`【婚禮快訊】有人在婚禮唱《${s.t}》！新娘眼眶泛紅，DJ 小胖緊急切歌救場（長輩 −150／年輕人 +100）`, me.id);
       if (charId !== "e1") setTimeout(() => npcSay("e1", "唱這要哭欸！緊換歌啦！", "shock", 3800), 800);
       return;
     }
@@ -1556,43 +1635,44 @@ export default function App() {
       cheer(); setTimeout(() => beep(880, 0.2, "triangle"), 250);
       setElderScore((sc) => sc + 200); addPop("+200 全場歡呼！");
       setElderChoir(true); setTimeout(() => setElderChoir(false), 5000);
-      setBubble("🎤 三分天注定！七分靠打拚！"); setTimeout(() => setBubble(null), 2600);
-      pushLed(`🔥 ${me.name} 唱《愛拚才會贏》全場歡呼！長輩區起立大合唱 +200`, me.id);
+      setBubble("三分天注定！七分靠打拚！"); setTimeout(() => setBubble(null), 2600);
+      pushLed(`${me.name} 唱《愛拚才會贏》全場歡呼！長輩區起立大合唱 +200`, me.id);
     } else if (s.mood === "happy") {
-      cheer();
+      /* 〈歡喜就好〉有真的旋律，直接用 8-bit 音源唱出來 */
+      playSong(HAPPY_SONG, 116);
       setElderScore((sc) => sc + 150); addPop("+150 長輩分");
-      setBubble("🎤 歡喜就好～人生短短～"); setTimeout(() => setBubble(null), 2600);
-      pushLed(`😄 ${me.name} 唱《歡喜就好》，氣氛輕鬆全場拍手 +150`, me.id);
+      setBubble("歡喜就好～人生短短～"); setTimeout(() => setBubble(null), 2600);
+      pushLed(`${me.name} 唱《歡喜就好》，氣氛輕鬆全場拍手 +150`, me.id);
     } else if (s.mood === "sweet") {
       cheer();
       setElderScore((sc) => sc + 150); setWallet((w) => w + 100);
-      addPop("+150 長輩分"); addPop("🧧 +$100 紅包");
-      setBubble("🎤 甜蜜蜜～你笑得甜蜜蜜～"); setTimeout(() => setBubble(null), 2600);
-      pushLed(`🍬 ${me.name} 唱《甜蜜蜜》超應景！新人感動加碼紅包 $100 +150`, me.id);
+      addPop("+150 長輩分"); addPop("+$100 紅包");
+      setBubble("甜蜜蜜～你笑得甜蜜蜜～"); setTimeout(() => setBubble(null), 2600);
+      pushLed(`${me.name} 唱《甜蜜蜜》超應景！新人感動加碼紅包 $100 +150`, me.id);
     } else {
       beep(440, 0.3, "sine", 0.05);
       setKaraoke((k) => k + 1);
       setElderScore((sc) => sc + 100); addPop("+100 長輩分");
-      setBubble("🎤 你問我愛你有多深～"); setTimeout(() => setBubble(null), 2600);
-      pushLed(`🌙 長輩區卡拉OK：月亮代表我的心（第 ${karaoke + 1} 次）+100`, me.id);
+      setBubble("你問我愛你有多深～"); setTimeout(() => setBubble(null), 2600);
+      pushLed(`長輩區卡拉OK：月亮代表我的心（第 ${karaoke + 1} 次）+100`, me.id);
     }
     if (n % 3 === 0) {
       /* 長輩合唱團：全部長輩聚過來一起搖擺 */
       setElderChoir(true); setTimeout(() => setElderChoir(false), 5000);
       setElderScore((s) => s + 300); addPop("+300 合唱團！");
       setTimeout(() => beep(494, 0.25, "sine", 0.05), 300); setTimeout(() => beep(554, 0.3, "sine", 0.05), 600);
-      pushLed(`🎶【長輩合唱團】全長輩區起立大合唱！氣勢如虹 +300`, me.id);
+      pushLed(`【長輩合唱團】全長輩區起立大合唱！氣勢如虹 +300`, me.id);
     }
     if (n % 5 === 0) {
       setYouthScore((s) => s - 100);
-      pushLed("📢【音量戰】卡拉OK 音量突破天際，年輕人區 Lo-fi 慘遭蓋台（年輕人 −100）");
+      pushLed("【音量戰】卡拉OK 音量突破天際，年輕人區 Lo-fi 慘遭蓋台（年輕人 −100）");
     }
-    if (n >= 3) pushLed(`🎵 音量PK 戰況：卡拉OK ${n} 首 vs DJ ${songs} 首`);
+    if (n >= 3) pushLed(`音量PK 戰況：卡拉OK ${n} 首 vs DJ ${songs} 首`);
   };
 
-  /* 🎧 年輕人點歌（DJ 台）：卡拉OK 的反制 */
+  /*  年輕人點歌（DJ 台）：卡拉OK 的反制 */
   const openSongModal = () => {
-    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
+    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
     setModal({ type: "song", options: sample(SONGS, 3) });
   };
 
@@ -1602,16 +1682,16 @@ export default function App() {
     setSongs(n);
     setYouthScore((sc) => sc + 100); addPop("+100 年輕人分");
     beep(523, 0.18, "triangle", 0.05); setTimeout(() => beep(659, 0.22, "triangle", 0.05), 180);
-    setBubble(`🎵 ${s.t}～`); setTimeout(() => setBubble(null), 2300);
-    pushLed(`🎧 ${me.name} 點了 ${s.a}〈${s.t}〉，年輕人區氣氛 UP +100`, me.id);
+    setBubble(`${s.t}～`); setTimeout(() => setBubble(null), 2300);
+    pushLed(`${me.name} 點了 ${s.a}〈${s.t}〉，年輕人區氣氛 UP +100`, me.id);
     if (n % 3 === 0) {
       /* 年輕人全場大合唱：反殺蓋台 */
       setYouthParty(true); setTimeout(() => setYouthParty(false), 5000);
       setYouthScore((sc) => sc + 300); addPop("+300 反殺蓋台！");
       setElderScore((sc) => sc - 100);
-      pushLed("🎧【音量戰】DJ 直接開到最大！卡拉OK 慘遭反殺蓋台，全場年輕人大合唱 +300（長輩 −100）");
+      pushLed("【音量戰】DJ 直接開到最大！卡拉OK 慘遭反殺蓋台，全場年輕人大合唱 +300（長輩 −100）");
     }
-    if (n >= 3) pushLed(`🎵 音量PK 戰況：卡拉OK ${sings} 首 vs DJ ${n} 首`);
+    if (n >= 3) pushLed(`音量PK 戰況：卡拉OK ${sings} 首 vs DJ ${n} 首`);
   };
 
   /* ---- 開始 / 重置（婚禮開始後鎖定角色與陣營，不再倒戈） ---- */
@@ -1622,7 +1702,7 @@ export default function App() {
     setZone(toElder ? "elder" : "youth");
     setPx(toElder ? 220 : WORLD.youthEntry + 200); setPy(0);
     setPhase("playing");
-    pushLed(`🎮 ${c.name} 進場！戰鬥開始！`, c.id);
+    pushLed(`${c.name} 進場！戰鬥開始！`, c.id);
   };
   /* 「再舉辦一次婚禮」：回到角色選擇（鼓勵換人換陣營），不是同角色立即重玩 */
   const resetGame = () => {
@@ -1631,18 +1711,18 @@ export default function App() {
     setTimeLeft(GAME_SECONDS); setCombo(0); setMaxCombo(0); setSpoken([]);
     setChaos(0); setShoutUses(0); setBestLine(null); setQuitGroup(false);
     setStat({ smuggle: 0, intercept: 0, comeback: 0, fined: 0, switched: 0, bribes: 0 });
-    setLed([{ text: "🎊 歡迎蒞臨婚禮大亂鬥會場 🎊", seq: ledSeq.current++ }]);
+    setLed([{ text: "歡迎蒞臨婚禮大亂鬥會場", seq: ledSeq.current++ }]);
     setModal(null); setKaraoke(6); setTrapCd(0); setCarried(false); setBubble(null); setExpr("idle"); setDisguised(false); setTruce(0); setToastCd(0); setLurker(null); setSings(0); setSongs(0); setElderChoir(false); setYouthParty(false); setNpcReact(null); setPy(0); setShoutCd(0); setBaitCd(0); setTarotCd(0); setTarotFx(null);
     busyRef.current = false;
   };
 
   /* 結局由「終場火爆指數」決定，不再判斷哪一方獲勝 */
   const getEnding = () => {
-    if (quitGroup) return { icon: "📱", title: "已讀，退群", crown: "家族群組終結者", desc: "退群通知彈出的瞬間，全場手機同時震動。三姑六婆面面相覷，新郎默默把手機收起來。這場婚禮，將以「那場有人退群的婚禮」被記住。" };
-    if (chaos >= 80) return { icon: "💥", title: "傳說大亂鬥", crown: "婚宴失控傳說", desc: "柵欄轟然倒下！切蛋糕時全場合唱〈愛拚才會贏〉，卡拉OK 和 DJ 台合流開趴。這場婚禮將被鄉里傳頌十年。" };
-    if (chaos >= 50) return { icon: "⚔️", title: "混戰婚禮", crown: "火爆製造機", desc: "鐵柵欄搖搖欲墜，長輩和年輕人隔空互嗆到忘記吃菜，三叔公跟著 Lo-fi 打麻將，意外地……很歡樂？" };
-    if (chaos >= 25) return { icon: "🤝", title: "和平共處", crown: "氣氛調節師", desc: "雙方達成歷史性協議：講一句地雷話就要包一個紅包。紅包雨下了一整晚，年輕人邊收邊喊「阿姨再說一句！」" };
-    return { icon: "🦗", title: "尷尬收場", crown: "冷場天使", desc: "音樂停了，大家默默把菜吃完就走。新人鬆了口氣，但總覺得，這場婚禮少了點什麼。" };
+    if (quitGroup) return { title: "已讀，退群", crown: "家族群組終結者", desc: "退群通知彈出的瞬間，全場手機同時震動。三姑六婆面面相覷，新郎默默把手機收起來。這場婚禮，將以「那場有人退群的婚禮」被記住。" };
+    if (chaos >= 80) return { title: "傳說大亂鬥", crown: "婚宴失控傳說", desc: "柵欄轟然倒下！切蛋糕時全場合唱〈愛拚才會贏〉，卡拉OK 和 DJ 台合流開趴。這場婚禮將被鄉里傳頌十年。" };
+    if (chaos >= 50) return { title: "混戰婚禮", crown: "火爆製造機", desc: "鐵柵欄搖搖欲墜，長輩和年輕人隔空互嗆到忘記吃菜，三叔公跟著 Lo-fi 打麻將，意外地……很歡樂？" };
+    if (chaos >= 25) return { title: "和平共處", crown: "氣氛調節師", desc: "雙方達成歷史性協議：講一句地雷話就要包一個紅包。紅包雨下了一整晚，年輕人邊收邊喊「阿姨再說一句！」" };
+    return { title: "尷尬收場", crown: "冷場天使", desc: "音樂停了，大家默默把菜吃完就走。新人鬆了口氣，但總覺得，這場婚禮少了點什麼。" };
   };
 
 
@@ -1675,7 +1755,7 @@ export default function App() {
           if (spot.id === "tarot") {
             setElderScore((s) => s + 30); addPop("+30");
             setBubble(rand(["這是在拜什麼？神明有同意嗎", "水晶喔？阮以前攏叫石頭", "鼠尾草？拿去滷卡實在啦"])); setTimeout(() => setBubble(null), 2400);
-            pushLed(`🔮 ${me.name} 對靈性角落發表長輩看法，附近年輕人集體深呼吸`, me.id);
+            pushLed(`${me.name} 對靈性角落發表長輩看法，附近年輕人集體深呼吸`, me.id);
             return;
           }
           const lines = { candle: "燭光晚餐？電火開卡光啦", buffet: "這蝦子不錯，包一點回去", arch: "這個門做這麼小幹嘛", photo: "來，幫阿姨拍一張" };
@@ -1715,7 +1795,7 @@ export default function App() {
 
   const onGateClick = () => {
     if (phase !== "playing" || modal || carried) return;
-    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
+    if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
 
     if (isElder && inElderZone) walkTo(WORLD.gateX - 130, () => setModal({ type: "smuggle" }), { toY: 0 });
     else if (!isElder) walkTo(WORLD.gateX + 140, () => setModal({ type: "defend" }), { toY: 0 });
@@ -1775,7 +1855,7 @@ export default function App() {
 
   const C = { cream: "#FBF6EC", ink: INK, red: "#C8102E", gold: "#E8B84B", green: "#7FAF6A" };
 
-  /* 📱 手機直向：全畫面提示把手機橫過來（橫向或桌機自動隱藏） */
+  /*  手機直向：全畫面提示把手機橫過來（橫向或桌機自動隱藏） */
   const rotateHint = (
     <div className="wb-rotate">
       <div style={{ width: 38, height: 64, border: "4px solid #FFF8EC", borderRadius: 6, animation: "wbRotatePhone 1.4s ease-in-out infinite alternate" }} />
@@ -1842,7 +1922,7 @@ export default function App() {
           <span style={{ animation: "wbBlink 1s steps(2) infinite", lineHeight: 1 }}>▶</span>
           <span style={{ lineHeight: 1 }}>開始</span>
         </button>
-        <button onClick={() => setMuted((m) => !m)} className="absolute text-xs font-black" style={{ right: 12, top: 10, textShadow: `1px 1px 0 ${INK}` }}>{muted ? "🔇 音效已關" : "🔊 音效已開"}</button>
+        <button onClick={() => setMuted((m) => !m)} className="absolute text-xs font-black" style={{ right: 12, top: 10, textShadow: `1px 1px 0 ${INK}` }}>{muted ? "音效已關" : "音效已開"}</button>
       </div>
     );
   }
@@ -1892,8 +1972,8 @@ export default function App() {
         <div className="flex items-center justify-between gap-2 flex-wrap flex-shrink-0">
           <h2 className="font-black" style={{ fontSize: "clamp(14px,2.4vh,20px)", letterSpacing: ".06em" }}>選擇你的入席身份</h2>
           <div className="flex gap-1.5">
-            <button className="font-black" style={{ fontSize: 12, padding: "6px 12px", background: isE ? C.red : "#2b1e15", color: isE ? "#FFF8EC" : "#C4B29A", border: `2.5px solid ${INK}`, boxShadow: isE ? `2px 2px 0 ${INK}` : "none", minHeight: 34, cursor: "pointer" }} onClick={() => switchFaction("elder")}>🧓 長輩陣營</button>
-            <button className="font-black" style={{ fontSize: 12, padding: "6px 12px", background: !isE ? "#37812E" : "#2b1e15", color: !isE ? "#FFF8EC" : "#C4B29A", border: `2.5px solid ${INK}`, boxShadow: !isE ? `2px 2px 0 ${INK}` : "none", minHeight: 34, cursor: "pointer" }} onClick={() => switchFaction("youth")}>👱 年輕人陣營</button>
+            <button className="font-black" style={{ fontSize: 12, padding: "6px 12px", background: isE ? C.red : "#2b1e15", color: isE ? "#FFF8EC" : "#C4B29A", border: `2.5px solid ${INK}`, boxShadow: isE ? `2px 2px 0 ${INK}` : "none", minHeight: 34, cursor: "pointer" }} onClick={() => switchFaction("elder")}> 長輩陣營</button>
+            <button className="font-black" style={{ fontSize: 12, padding: "6px 12px", background: !isE ? "#37812E" : "#2b1e15", color: !isE ? "#FFF8EC" : "#C4B29A", border: `2.5px solid ${INK}`, boxShadow: !isE ? `2px 2px 0 ${INK}` : "none", minHeight: 34, cursor: "pointer" }} onClick={() => switchFaction("youth")}> 年輕人陣營</button>
           </div>
         </div>
         <div className="text-[10px] font-bold opacity-70 flex-shrink-0 mb-1.5">{isE ? "目標：闖過柵欄，把「關心」一句不漏講完" : "目標：守住邊界，讓每句地雷話都被回敬"}</div>
@@ -1997,24 +2077,23 @@ export default function App() {
       <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden" style={{ background: "#EFE6D4", color: C.ink, minHeight: "100dvh" }}>
         <style>{css}</style>
         {rotateHint}
-        {["🎊", "🎉", "✨", "🧧", "🎊", "✨"].map((e, i) => (
+        {["", "", "", "", "", ""].map((e, i) => (
           <span key={i} style={{ position: "absolute", left: `${8 + i * 16}%`, top: `${6 + (i % 3) * 9}%`, fontSize: 26 + (i % 3) * 8, animation: `wbSway ${2 + i * 0.4}s ease-in-out infinite alternate`, opacity: 0.85 }}>{e}</span>
         ))}
 
         <div className="wb-pop w-full max-w-md relative z-10" style={{ maxHeight: "94dvh", overflowY: "auto" }}>
           {/* 結局標題 */}
           <div className="text-center mb-3">
-            <div className="text-5xl" style={{ animation: "wbBounce 1.6s ease-in-out infinite" }}>{end.icon}</div>
             <div className="inline-block mt-1 px-6 py-1.5 text-2xl font-black" style={{ background: INK, color: "#FFE6A0", border: `4px solid ${INK}`, boxShadow: `4px 4px 0 rgba(0,0,0,.3)` }}>
               {end.title}
             </div>
             <p className="text-sm leading-relaxed mt-2 font-bold px-2 opacity-85">{end.desc}</p>
           </div>
 
-          {/* 🧾 喜宴失控結帳單 */}
+          {/*  喜宴失控結帳單 */}
           <div className="relative mx-auto mb-3" style={{ width: "min(100%, 340px)", background: "#FFFDF6", border: `3px solid ${INK}`, padding: "10px 16px 12px", boxShadow: `4px 4px 0 ${INK}` }}>
             <div className="text-center text-[10px] tracking-widest opacity-50 font-black">✂ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-            <div className="text-center text-base font-black mt-0.5">🧾 喜宴失控結帳單</div>
+            <div className="text-center text-base font-black mt-0.5"> 喜宴失控結帳單</div>
             <div className="text-center text-[9px] opacity-50 font-bold mb-2">WEDDING BATTLE・流水席帳務科</div>
 
             <div className="flex items-center gap-2 text-xs font-black py-1" style={{ borderBottom: `2px dotted ${INK}55` }}>
@@ -2043,7 +2122,7 @@ export default function App() {
 
             {bestLine && (
               <div className="text-xs font-black mt-2 px-2 py-1.5" style={{ background: "#1d1a17", color: "#FFF8EC" }}>
-                🏆 本場最精彩的一句：<br />{bestLine.who && <span style={{ color: "#F2B234" }}>{bestLine.who}：</span>}{bestLine.text}
+                 本場最精彩的一句：<br />{bestLine.who && <span style={{ color: "#F2B234" }}>{bestLine.who}：</span>}{bestLine.text}
               </div>
             )}
 
@@ -2056,7 +2135,7 @@ export default function App() {
 
             {quitGroup && (
               <div className="text-xs font-black mt-2 px-2 py-1.5" style={{ background: "#06C755", color: "#fff", border: `2.5px solid ${INK}` }}>
-                📱 系統通知：{me?.name} 已退出「相親相愛一家人」群組
+                 系統通知：{me?.name} 已退出「相親相愛一家人」群組
               </div>
             )}
 
@@ -2067,7 +2146,7 @@ export default function App() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-1.5 mb-4 px-2">
-            {[["🏃", `闖關 ${stat.smuggle}`], ["🚨", `攔截 ${stat.intercept}`], ["🃏", `回嗆 ${stat.comeback}`], ["⚡", `連鎖 ${maxCombo}`], ["📢", `大聲公 ${shoutUses}`]].map(([ic, t], i) => (
+            {[["", `闖關 ${stat.smuggle}`], ["", `攔截 ${stat.intercept}`], ["", `回嗆 ${stat.comeback}`], ["", `連鎖 ${maxCombo}`], ["", `大聲公 ${shoutUses}`]].map(([ic, t], i) => (
               <span key={i} className="px-2 py-0.5 text-[11px] font-black" style={{ background: ["#FFE6A0", "#DCEBD8", "#F6D9D2", "#EBD9F2"][i % 4], border: `2.5px solid ${INK}`, boxShadow: `1.5px 1.5px 0 ${INK}` }}>
                 {ic} {t}
               </span>
@@ -2075,7 +2154,7 @@ export default function App() {
           </div>
 
           <div className="text-center pb-2">
-            <button className="wb-opt" style={{ width: "auto", display: "inline-block", background: INK, color: "#FFE6A0", fontSize: 16, minHeight: 44 }} onClick={resetGame}>🎊 再舉辦一次婚禮</button>
+            <button className="wb-opt" style={{ width: "auto", display: "inline-block", background: INK, color: "#FFE6A0", fontSize: 16, minHeight: 44 }} onClick={resetGame}> 再舉辦一次婚禮</button>
           </div>
         </div>
       </div>
@@ -2086,7 +2165,7 @@ export default function App() {
      主遊戲畫面（橫向捲軸世界）
      ============================================================ */
 
-  /* 🔍 焦點制提示：同一時間只有「離玩家最近的可互動目標」浮出名牌／發光，
+  /*  焦點制提示：同一時間只有「離玩家最近的可互動目標」浮出名牌／發光，
      其餘一律安靜——裝飾永遠不亮，會亮的就是能點的（計畫書第四節互動原則） */
   const FOCUS_RANGE = 300;
   const focusCandidates = [];
@@ -2130,7 +2209,7 @@ export default function App() {
       {/* HUD：現場火爆指數（主要進度）＋倒數＋資源 */}
       <div className="px-2 py-1 flex flex-wrap items-center gap-1.5 text-xs font-black">
         <div className="flex items-center gap-1.5" style={{ minWidth: 160, flex: "1 1 160px", maxWidth: 300 }}>
-          <span style={{ color: INK, whiteSpace: "nowrap" }}>🔥火爆</span>
+          <span style={{ color: INK, whiteSpace: "nowrap" }}>火爆</span>
           <div style={{ flex: 1, height: 13, border: `2px solid ${INK}`, background: "rgba(255,253,246,.6)", display: "flex", gap: 2, padding: 2 }}>
             {Array.from({ length: 20 }).map((_, i) => (
               <span key={i} style={{ flex: 1, background: i < Math.round(chaos / 5) ? (i >= 16 ? "#F2B234" : i >= 10 ? "#E5304C" : i >= 5 ? "#E08A3C" : "#E8C84F") : "transparent" }} />
@@ -2138,16 +2217,16 @@ export default function App() {
           </div>
           <span className="px-1 py-0.5" style={{ background: chaosStage(chaos).color, border: `2px solid ${INK}`, color: INK, whiteSpace: "nowrap" }}>{chaosStage(chaos).label}·{chaos}</span>
         </div>
-        <span className="px-2 py-0.5" style={{ background: "rgba(29,26,23,.85)", color: "#fff", border: `2px solid ${INK}` }}>⏱{fmt(timeLeft)}</span>
-        {isElder && <span className="px-2 py-0.5" style={{ background: "rgba(232,184,75,.92)", border: `2px solid ${INK}` }}>🧧${wallet}</span>}
-        {!isElder && combo > 0 && <span className="px-2 py-0.5" style={{ background: "rgba(122,58,142,.9)", color: "#fff", border: `2px solid ${INK}` }}>⚡連鎖{combo}</span>}
+        <span className="px-2 py-0.5" style={{ background: "rgba(29,26,23,.85)", color: "#fff", border: `2px solid ${INK}` }}>{fmt(timeLeft)}</span>
+        {isElder && <span className="px-2 py-0.5" style={{ background: "rgba(232,184,75,.92)", border: `2px solid ${INK}` }}>${wallet}</span>}
+        {!isElder && combo > 0 && <span className="px-2 py-0.5" style={{ background: "rgba(122,58,142,.9)", color: "#fff", border: `2px solid ${INK}` }}>連鎖{combo}</span>}
         <span className="flex-1" />
-        <button onClick={() => setMuted((m) => !m)} aria-label="切換音效">{muted ? "🔇" : "🔊"}</button>
+        <button onClick={() => setMuted((m) => !m)} aria-label="切換音效">{muted ? "" : ""}</button>
       </div>
 
       {truce > 0 && (
         <div className="mx-3 mb-1 text-center font-black text-sm rounded-xl py-1.5 px-2" style={{ background: "#FFE6A0", border: `3px solid ${INK}`, boxShadow: `2px 2px 0 ${INK}`, color: INK }}>
-          📸 大合照中 {truce}s — 全場暫時和好！耶✌️
+           大合照中 {truce}s — 全場暫時和好！耶
         </div>
       )}
 
@@ -2174,7 +2253,7 @@ export default function App() {
               {Array.from({ length: 14 }).map((_, i) => (
                 <path key={i} d={`M ${i * 58} 120 q 29 26 58 0 Z`} fill={i % 2 ? "#C8413A" : "#E8B84B"} stroke={INK} strokeWidth={2} />
               ))}
-              <text x={395} y={70} textAnchor="middle" fontSize={34} fontWeight={900} fill="#FFE6A0" stroke={INK} strokeWidth={1}>🏮 長 輩 區 🏮</text>
+              <text x={395} y={70} textAnchor="middle" fontSize={34} fontWeight={900} fill="#FFE6A0" stroke={INK} strokeWidth={1}> 長 輩 區 </text>
             </svg>
             <LanternRow n={5} />
           </div>
@@ -2219,29 +2298,29 @@ export default function App() {
           {charId !== "y2" && <NPCSprite id="y2" x={1378} y={42} w={62} dance={youthParty} react={npcReact && npcReact.id === "y2" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1409, () => openTalk("y2")) : !isElder ? () => approachNpc(1409, () => peerChat("y2")) : undefined} hot={focusId === "npc-y2"} />}
           {charId !== "y3" && <NPCSprite id="y3" x={1812} y={38} w={60} flip dance={youthParty} react={npcReact && npcReact.id === "y3" ? npcReact : null} onClick={isElder && !inElderZone ? () => approachNpc(1844, () => openTalk("y3")) : !isElder ? () => approachNpc(1844, () => peerChat("y3")) : undefined} hot={focusId === "npc-y3"} />}
           {charId !== "y4" && <NPCSprite id="y4" x={1604} y={40} w={62} dance react={npcReact && npcReact.id === "y4" ? npcReact : null} hot={focusId === "npc-y4"} onClick={!isElder ? () => approachNpc(1572, () => peerChat("y4")) : undefined} />}
-          {/* 🎤 卡拉OK 播放中字幕 */}
+          {/*  卡拉OK 播放中字幕 */}
           {nowPlaying && (
             <div className="wb-pop" style={{ position: "absolute", left: 70, bottom: 235, zIndex: 15, background: "#1d1a17", color: "#FFE6A0", border: `3px solid ${INK}`, borderRadius: 12, padding: "3px 10px", fontSize: 11, fontWeight: 900, boxShadow: `2px 2px 0 ${INK}`, animation: "wbSway 1.4s ease-in-out infinite alternate" }}>
               ♪ 播放中：《{nowPlaying}》
             </div>
           )}
-          {/* 🎶 合唱/蓋台音符特效 */}
-          {elderChoir && <div style={{ position: "absolute", left: 130, bottom: 200, fontSize: 30, animation: "wbIdle .6s ease-in-out infinite", zIndex: 15 }}>🎶🎵🎶</div>}
-          {youthParty && <div style={{ position: "absolute", left: 1450, bottom: 170, fontSize: 30, animation: "wbIdle .6s ease-in-out infinite", zIndex: 15 }}>🎧🎵🎶</div>}
+          {/*  合唱/蓋台音符特效 */}
+          {elderChoir && <div style={{ position: "absolute", left: 130, bottom: 200, fontSize: 30, animation: "wbIdle .6s ease-in-out infinite", zIndex: 15 }}></div>}
+          {youthParty && <div style={{ position: "absolute", left: 1450, bottom: 170, fontSize: 30, animation: "wbIdle .6s ease-in-out infinite", zIndex: 15 }}></div>}
 
-          {/* 💒 新郎新娘（象徵性無臉設計）：點擊敬酒 */}
+          {/*  新郎新娘（象徵性無臉設計）：點擊敬酒 */}
           <CoupleSprite x={1928} y={40} hot={focusId === "couple"}
-            cdLabel={toastCd > 0 ? `🥂 ${toastCd}s` : "🥂 向新人敬酒"}
+            cdLabel={toastCd > 0 ? `${toastCd}s` : "向新人敬酒"}
             onClick={() => {
               if (phase !== "playing" || modal || carried) return;
               if (isElder && inElderZone) walkTo(WORLD.gateX - 130, () => setModal({ type: "smuggle" }));
               else approachNpc(1986, doToast);
             }} />
-          {/* 👀 可疑長輩（年輕人限定攻擊目標） */}
+          {/*  可疑長輩（年輕人限定攻擊目標） */}
           {!isElder && lurker && (
             <div className={`${focusId === "lurker" ? "wb-hot " : ""}wb-stop`} onClick={() => {
               if (phase !== "playing" || modal || carried) return;
-              if (truceRef.current > 0) { setBubble("拍照中啦！比 YA ✌️"); setTimeout(() => setBubble(null), 2000); return; }
+              if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
               approachNpc(lurker.x + 30, openSchmooze);
             }} style={{ position: "absolute", left: lurker.x, bottom: 38, zIndex: npcReact && npcReact.id === "visitor" ? 30 : 11, cursor: "pointer" }}>
               {npcReact && npcReact.id === "visitor" && (
@@ -2252,8 +2331,8 @@ export default function App() {
               <div style={{ animation: npcReact && npcReact.id === "visitor" && npcReact.expr ? "wbKick .3s linear 5" : "wbIdle 1.4s ease-in-out infinite", transform: "scale(.94)", transformOrigin: "bottom center", filter: "drop-shadow(0 3px 2px rgba(0,0,0,.2))" }}>
                 <CharSprite id={lurker.elder.id} w={60} expression={npcReact && npcReact.id === "visitor" && npcReact.expr ? npcReact.expr : "idle"} />
               </div>
-              <div style={{ position: "absolute", top: -6, right: -4, fontSize: 16 }}>💦</div>
-              {focusId === "lurker" && <div className="wb-hint">👀 可疑長輩・搭話陰他</div>}
+              <div style={{ position: "absolute", top: -6, right: -4, fontSize: 16 }}></div>
+              {focusId === "lurker" && <div className="wb-hint"> 可疑長輩・搭話陰他</div>}
             </div>
           )}
 
@@ -2267,7 +2346,7 @@ export default function App() {
               border: `2.5px solid ${INK}`, borderRadius: 12, padding: "3px 10px",
               fontWeight: 900, fontSize: 12, whiteSpace: "nowrap", boxShadow: `2px 2px 0 ${INK}`, zIndex: 15,
             }}>
-              {isElder && inElderZone ? "🏃 查看闖關任務 👇" : !isElder ? "🛡️ 守備柵欄 👇" : "🚪 邊界大門"}
+              {isElder && inElderZone ? "查看闖關任務" : !isElder ? "守備柵欄" : "邊界大門"}
             </div>}
             <svg width="190" height="330" viewBox="0 0 190 330">
               {/* 左右鐵柵欄延伸 */}
@@ -2285,7 +2364,7 @@ export default function App() {
               ))}
               {/* 門楣（招牌直接畫在上面） */}
               <rect x={32} y={56} width={126} height={32} rx={7} fill="#8E2424" stroke={INK} strokeWidth={4} />
-              <text x={95} y={78} textAnchor="middle" fontSize={16} fontWeight={900} fill="#FFE6A0">🚧 邊界檢查哨 🚧</text>
+              <text x={95} y={78} textAnchor="middle" fontSize={16} fontWeight={900} fill="#FFE6A0"> 邊界檢查哨 </text>
               {/* 警示燈 */}
               <rect x={86} y={36} width={18} height={14} fill="#444" stroke={INK} strokeWidth={3} />
               <circle cx={95} cy={26} r={12} fill={alert_ ? "#FF2A1A" : "#5A1212"} stroke={INK} strokeWidth={3.5} style={alert_ ? { animation: "wbBlink .4s linear infinite" } : {}} />
@@ -2342,7 +2421,7 @@ export default function App() {
                   <CharSprite id={npcReact.elder} w={78} expression={npcReact.expr || "idle"} />
                 </div>
                 {npcReact.expr === "dead" && (
-                  <div style={{ position: "absolute", top: -26, left: "50%", transform: "translateX(-50%)", fontSize: 22, animation: "wbBounce 1.4s ease-in-out infinite" }}>👻</div>
+                  <div style={{ position: "absolute", top: -26, left: "50%", transform: "translateX(-50%)", fontSize: 22, animation: "wbBounce 1.4s ease-in-out infinite" }}></div>
                 )}
               </div>
             )}
@@ -2358,29 +2437,65 @@ export default function App() {
             }}>
               {me && <CharSprite id={me.id} w={92} expression={expr} disguise={disguised} />}
             </div>
-            {sneaking && <div style={{ position: "absolute", top: -8, right: 4, fontSize: 18 }}>💦</div>}
+            {sneaking && <div style={{ position: "absolute", top: -8, right: 4, fontSize: 18 }}></div>}
             <div style={{ position: "absolute", bottom: -4, left: "50%", transform: "translateX(-50%)", width: 64, height: 12, background: "rgba(0,0,0,.18)", borderRadius: "50%" }} />
           </div>
         </div>
       </div>
 
-      {/* 📢 大聲公鈕（雙陣營可用，每場限 SHOUT_LIMIT 次） */}
+      {/*  大聲公鈕（雙陣營可用，每場限 SHOUT_LIMIT 次） */}
       {phase === "playing" && !modal && !carried && shoutUses < SHOUT_LIMIT && (
         <button onClick={() => { if (shoutCd <= 0) setModal({ type: "shout" }); }}
           className="fixed font-black wb-pop" disabled={shoutCd > 0}
           style={{ right: "max(14px, env(safe-area-inset-right))", bottom: 86, zIndex: 35, minWidth: 54, height: 54, background: shoutCd > 0 ? "#C9BFA8" : "#FFE6A0", color: INK, border: `3.5px solid ${INK}`, borderRadius: "50%", fontSize: shoutCd > 0 ? 16 : 22, boxShadow: `3px 3px 0 ${INK}`, opacity: shoutCd > 0 ? 0.55 : 1, display: "flex", alignItems: "center", justifyContent: "center", animation: "none" }}>
-          {shoutCd > 0 ? shoutCd : `📢${SHOUT_LIMIT - shoutUses}`}
+          {shoutCd > 0 ? shoutCd : `${SHOUT_LIMIT - shoutUses}`}
         </button>
       )}
 
-      {/* 📱 退出家庭群組（年輕人・火爆 80 以上解鎖的大招） */}
+      {/*  退出家庭群組（年輕人・火爆 80 以上解鎖的大招） */}
       {phase === "playing" && !modal && !carried && !isElder && chaos >= 80 && !quitGroup && (
         <button onClick={() => setModal({ type: "quitgroup" })}
           className="fixed font-black wb-pop"
           style={{ right: "max(14px, env(safe-area-inset-right))", bottom: 150, zIndex: 35, background: "#1d1a17", color: "#FFE6A0", border: `3.5px solid ${INK}`, boxShadow: `0 0 0 2px #FFE6A0, 3px 3px 0 ${INK}`, padding: "10px 14px", fontSize: 13, animation: "wbHotPulse 1.2s ease-in-out infinite" }}>
-          📱 退出家庭群組
+           退出家庭群組
         </button>
       )}
+
+      {/* ===== 固定式 RPG 對話框：角色對話與行動結果都走這裡，按一下才前進 ===== */}
+      {dlg && dlg.lines[dlg.idx] && (() => {
+        const L = dlg.lines[dlg.idx];
+        const last = dlg.idx === dlg.lines.length - 1;
+        const sideColor = L.side === "elder" ? C.red : L.side === "youth" ? "#37812E" : "#4A4038";
+        return (
+          <div className="fixed inset-x-0 bottom-0 z-40" onClick={advanceDlg}
+            style={{ padding: "0 calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left))", cursor: "pointer" }}>
+            <div className="relative w-full max-w-3xl mx-auto" style={{
+              background: "rgba(23,16,10,.97)", border: "3px solid #FFF8EC",
+              boxShadow: `0 0 0 3px ${INK}`, padding: "14px 16px 12px",
+            }}>
+              {L.who && (
+                <span className="absolute font-black" style={{
+                  top: 0, left: 12, transform: "translateY(-55%)", background: sideColor,
+                  color: "#FFF8EC", border: `2px solid ${INK}`, padding: "2px 10px", fontSize: 13,
+                }}>{L.who}</span>
+              )}
+              <div className="flex items-center gap-3">
+                {L.sprite && (
+                  <div className="flex-shrink-0" style={{ width: 46 }}>
+                    <CharSprite id={L.sprite} w={46} expression={L.expr || "idle"} headOnly />
+                  </div>
+                )}
+                <div className="font-black flex-1 min-w-0" style={{ fontSize: 15, lineHeight: 1.65, color: "#FBF6EC" }}>
+                  {L.text}
+                </div>
+              </div>
+              <span className="absolute font-black" style={{ right: 12, bottom: 6, fontSize: 13, color: C.gold, animation: "wbBlink 1s steps(2) infinite" }}>
+                {last ? "點一下結束" : "點一下繼續"}
+              </span>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* 底部任務欄（含大頭照，單行精簡提示） */}
       <div className="px-2 py-1 flex items-center gap-2" style={{ background: "rgba(29,26,23,.88)", color: "#FBF6EC", paddingBottom: "max(4px, env(safe-area-inset-bottom))" }}>
@@ -2410,23 +2525,23 @@ export default function App() {
                 <div className="grid gap-2">
                   {modal.mines.map((p) => (
                     <button key={p.id} className="wb-opt" onClick={() => speak(p)}>
-                      💬「{p.text}」<br /><span className="opacity-60 text-xs">{p.category}</span>
+                      「{p.text}」<br /><span className="opacity-60 text-xs">{p.category}</span>
                     </button>
                   ))}
-                  <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => speak(null)}>😇「{modal.safe}」（場面話）</button>
+                  <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => speak(null)}>「{modal.safe}」（場面話）</button>
                 </div>
               </>
             )}
 
             {modal.type === "smuggle" && (
               <>
-                <h3 className="font-black mb-1">🏃 查看闖關任務 — 選擇路線</h3>
+                <h3 className="font-black mb-1"> 查看闖關任務 — 選擇路線</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">闖過柵欄就能去年輕人區「關心」大家。被抓不算輸，回來再闖！</p>
                 {/* 賄賂／餐車／節奏／誘餌路線程式保留，本版先隱藏（選項上限 3） */}
                 <div className="grid gap-2">
-                  <button className="wb-opt" onClick={() => startSmuggle("quiz")}>🚪 正面硬闖 — 回答守門人的年齡驗證題</button>
-                  <button className="wb-opt" onClick={() => startSmuggle("disguise")}>🕶️ 偽裝潛入 — 換上年輕人的衣服</button>
-                  <button className="wb-opt" onClick={() => startSmuggle("climb")}>🧗 翻牆偷渡 — 快速連點翻過柵欄</button>
+                  <button className="wb-opt" onClick={() => startSmuggle("quiz")}> 正面硬闖 — 回答守門人的年齡驗證題</button>
+                  <button className="wb-opt" onClick={() => startSmuggle("disguise")}> 偽裝潛入 — 換上年輕人的衣服</button>
+                  <button className="wb-opt" onClick={() => startSmuggle("climb")}> 翻牆偷渡 — 快速連點翻過柵欄</button>
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>先不要好了…</button>
                 </div>
               </>
@@ -2448,12 +2563,12 @@ export default function App() {
 
             {modal.type === "disguise" && (
               <>
-                <h3 className="font-black mb-1">🕶️ 偽裝潛入 — 選一套穿搭</h3>
+                <h3 className="font-black mb-1"> 偽裝潛入 — 選一套穿搭</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">哪一套最像年輕人？</p>
                 <div className="grid grid-cols-2 gap-2">
                   {modal.options.map((o, i) => (
                     <button key={i} className="wb-opt" onClick={() => o.ok ? (Math.random() < 0.85 ? (setDisguised(true), smuggleSuccess("成功偽裝成年輕人")) : smuggleFail("帽T 底下露出保溫杯")) : smuggleFail(`穿「${o.label}」一秒被識破`)}>
-                      <span className="text-2xl block">{o.icon}</span>{o.label}
+                      {o.label}
                     </button>
                   ))}
                 </div>
@@ -2462,12 +2577,12 @@ export default function App() {
 
             {modal.type === "climb" && <ClimbGame charId={charId} onWin={() => smuggleSuccess("身手矯健翻過鐵柵欄")} onLose={() => smuggleFail("摔個四腳朝天，被保鏢抬下來（沙隆巴斯自費）")} />}
             {modal.type === "steps" && <StepGame onWin={() => smuggleSuccess("踏出正確節奏，密道地板翻轉把人送進年輕人區")} onLose={() => smuggleFail("踏錯節奏機關卡住，被保鏢從地道拖出來")} />}
-            {modal.type === "cart" && <CartGame onWin={() => smuggleSuccess("藏在餐車裡（致敬 Metal Gear ❗）")} onLose={() => smuggleFail("掀餐車布的瞬間跟服務生對到眼")} />}
+            {modal.type === "cart" && <CartGame onWin={() => smuggleSuccess("藏在餐車裡（致敬 Metal Gear ）")} onLose={() => smuggleFail("掀餐車布的瞬間跟服務生對到眼")} />}
 
             {modal.type === "verify" && (
               <>
-                <h3 className="font-black mb-1 flex items-center justify-between">🚨 誰是偽裝的長輩？
-                  <span style={{ color: "#C8102E", fontSize: 18 }}>⏱ {(modal.left ?? 6).toFixed(1)}s</span></h3>
+                <h3 className="font-black mb-1 flex items-center justify-between"> 誰是偽裝的長輩？
+                  <span style={{ color: "#C8102E", fontSize: 18 }}> {(modal.left ?? 6).toFixed(1)}s</span></h3>
                 <div className="h-2 mb-2 overflow-hidden" style={{ background: "#E8E0D2", border: `2.5px solid ${INK}`, borderRadius: 8 }}>
                   <div className="h-full" style={{ width: `${((modal.left ?? 6) / 6) * 100}%`, background: (modal.left ?? 6) < 2 ? "#C8102E" : "#E8B84B", transition: "width .1s linear" }} />
                 </div>
@@ -2475,7 +2590,7 @@ export default function App() {
                 <div className="grid gap-2">
                   {modal.people.map((p, i) => (
                     <button key={i} className="wb-opt" style={{ display: "flex", alignItems: "center", gap: 10 }} onClick={() => { if (tarotFx === "wheel") setTarotFx(null); pickVerify(p); }}>
-                      <span className="relative inline-flex"><CharSprite id={p.sprite.id} w={36} disguise={p.sprite.disguise} />{tarotFx === "wheel" && p.isElder && <span style={{ position: "absolute", top: -4, right: -8, fontSize: 16 }}>💦</span>}</span>
+                      <span className="relative inline-flex"><CharSprite id={p.sprite.id} w={36} disguise={p.sprite.disguise} />{tarotFx === "wheel" && p.isElder && <span style={{ position: "absolute", top: -4, right: -8, fontSize: 16 }}></span>}</span>
                       <span>{p.label}{tarotFx === "wheel" && p.isElder ? "（在冒汗…）" : ""}</span>
                     </button>
                   ))}
@@ -2487,10 +2602,10 @@ export default function App() {
               <>
                 <div className="flex items-center gap-3 mb-2">
                   <div style={{ transform: "rotate(8deg)" }}><CharSprite id={modal.elder.id} w={62} expression="shock" /></div>
-                  <div className="font-black text-sm">🏆 攔截成功！{modal.elder.name} 被押回長輩區。<br />要順便上 LED 公審嗎？</div>
+                  <div className="font-black text-sm"> 攔截成功！{modal.elder.name} 被押回長輩區。<br />要順便上 LED 公審嗎？</div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="wb-opt" style={{ background: "#F6D9D2", width: "auto" }} onClick={() => publicShame(modal.elder)}>📺 公審！（+100）</button>
+                  <button className="wb-opt" style={{ background: "#F6D9D2", width: "auto" }} onClick={() => publicShame(modal.elder)}> 公審！（+100）</button>
                   <button className="wb-opt" style={{ background: "#E8E0D2", width: "auto" }} onClick={() => setModal(null)}>放他一馬</button>
                 </div>
               </>
@@ -2498,11 +2613,11 @@ export default function App() {
 
             {modal.type === "shout" && (
               <>
-                <h3 className="font-black mb-1">📢 大聲公 — 全場都會聽見</h3>
+                <h3 className="font-black mb-1"> 大聲公 — 全場都會聽見</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">選一句嗆出去：跑馬燈全場重播、對面一定有反應、火爆指數 +{CHAOS.shout}。每場限 {SHOUT_LIMIT} 次（剩 {SHOUT_LIMIT - shoutUses} 次）。</p>
                 <div className="grid gap-2">
                   {sample(isElder ? ELDER_SHOUTS : YOUTH_SHOUTS, 3).map((s, i) => (
-                    <button key={i} className="wb-opt" onClick={() => doShout(s)}>📢「{s.line}」</button>
+                    <button key={i} className="wb-opt" onClick={() => doShout(s)}>「{s.line}」</button>
                   ))}
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>算了，喊了也沒人聽</button>
                 </div>
@@ -2511,17 +2626,17 @@ export default function App() {
 
             {modal.type === "defend" && (
               <>
-                <h3 className="font-black mb-1">🛡️ 守備柵欄</h3>
+                <h3 className="font-black mb-1"> 守備柵欄</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">柵欄是年輕人的防線。選一個守備行動：</p>
                 <div className="grid gap-2">
                   <button className="wb-opt" disabled={trapCd > 0} style={trapCd > 0 ? { opacity: 0.4, cursor: "not-allowed" } : {}}
                     onClick={() => { setModal(null); setTrap(); }}>
-                    🪤 設陷阱{trapCd > 0 ? `（冷卻 ${trapCd}s）` : " — 早鳥券、假 WiFi、養生講座傳單…"}
+                     設陷阱{trapCd > 0 ? `（冷卻 ${trapCd}s）` : "— 早鳥券、假 WiFi、養生講座傳單…"}
                   </button>
                   <button className="wb-opt" disabled={shoutCd > 0 || shoutUses >= SHOUT_LIMIT}
                     style={shoutCd > 0 || shoutUses >= SHOUT_LIMIT ? { opacity: 0.4, cursor: "not-allowed" } : {}}
                     onClick={() => setModal({ type: "shout" })}>
-                    📢 大聲公{shoutUses >= SHOUT_LIMIT ? "（本場已用完）" : " — 隔著柵欄公開回敬"}
+                     大聲公{shoutUses >= SHOUT_LIMIT ? "（本場已用完）" : "— 隔著柵欄公開回敬"}
                   </button>
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>繼續巡邏</button>
                 </div>
@@ -2530,10 +2645,10 @@ export default function App() {
 
             {modal.type === "tarot" && (
               <>
-                <h3 className="font-black mb-1">🔮 靈性角落</h3>
+                <h3 className="font-black mb-1"> 靈性角落</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">水晶已淨化、鼠尾草點好了。抽一張，看宇宙今天想說什麼。</p>
                 <div className="grid gap-2">
-                  <button className="wb-opt" style={{ background: "#E8DFF5", textAlign: "center", fontSize: 16 }} onClick={drawTarot}>🃏 抽一張塔羅</button>
+                  <button className="wb-opt" style={{ background: "#E8DFF5", textAlign: "center", fontSize: 16 }} onClick={drawTarot}> 抽一張塔羅</button>
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>我才不信這個（默默離開）</button>
                 </div>
               </>
@@ -2541,33 +2656,33 @@ export default function App() {
 
             {modal.type === "story" && (
               <>
-                <h3 className="font-black mb-1">📸 拍照打卡區 — 發一則限動</h3>
+                <h3 className="font-black mb-1"> 拍照打卡區 — 發一則限動</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">社群就是年輕人的武器。發出去就收不回來了。</p>
                 <div className="grid gap-2">
                   <button className="wb-opt" onClick={() => {
                     setModal(null); beep(1200, 0.08);
                     setYouthScore((s) => s + 200); setElderScore((s) => s - 150);
                     addPop("+200 窘照曝光！"); addPop("長輩 −150", "#7A3A8E");
-                    setBubble("📸 喀嚓！上傳中…"); setTimeout(() => setBubble(null), 2100);
-                    pushLed(`📸 ${me.name} 發限動：${modal.elder.name} 偷渡未遂窘照曝光！面子 −150，20 秒內不敢再偷渡 +200`, modal.elder.id);
+                    setBubble("喀嚓！上傳中…"); setTimeout(() => setBubble(null), 2100);
+                    pushLed(`${me.name} 發限動：${modal.elder.name} 偷渡未遂窘照曝光！面子 −150，20 秒內不敢再偷渡 +200`, modal.elder.id);
                   }}>
-                    😱 拍 {modal.elder.name} 偷渡未遂的窘照<br /><span className="text-xs opacity-60">年輕人 +200，該長輩面子 −150</span>
+                     拍 {modal.elder.name} 偷渡未遂的窘照<br /><span className="text-xs opacity-60">年輕人 +200，該長輩面子 −150</span>
                   </button>
                   <button className="wb-opt" onClick={() => {
                     setModal(null); beep(1200, 0.08);
                     setYouthScore((s) => s + 100); addPop("+100 年輕人分");
-                    setBubble("📸 #今日穿搭 #OOTD"); setTimeout(() => setBubble(null), 2100);
-                    pushLed(`📸 ${me.name} 發了 #今日穿搭，年輕人 NPC 聚集圍觀，防守人氣 +100`, me.id);
+                    setBubble("#今日穿搭 #OOTD"); setTimeout(() => setBubble(null), 2100);
+                    pushLed(`${me.name} 發了 #今日穿搭，年輕人 NPC 聚集圍觀，防守人氣 +100`, me.id);
                   }}>
-                    👗 發一則 #今日穿搭<br /><span className="text-xs opacity-60">吸引年輕人聚集，年輕人 +100</span>
+                     發一則 #今日穿搭<br /><span className="text-xs opacity-60">吸引年輕人聚集，年輕人 +100</span>
                   </button>
                   <button className="wb-opt" onClick={() => {
                     setModal(null); beep(1200, 0.08); setTimeout(() => beep(1200, 0.08), 120);
                     setYouthScore((s) => s + 150); addPop("+150 年輕人分");
-                    setBubble("📸 轉發！"); setTimeout(() => setBubble(null), 2000);
-                    pushLed(`📺 ${me.name} 轉發了 LED 公審畫面，此畫面已被分享 87 次 +150`, me.id);
+                    setBubble("轉發！"); setTimeout(() => setBubble(null), 2000);
+                    pushLed(`${me.name} 轉發了 LED 公審畫面，此畫面已被分享 87 次 +150`, me.id);
                   }}>
-                    📺 轉發 LED 公審畫面<br /><span className="text-xs opacity-60">已被分享 87 次，年輕人 +150</span>
+                     轉發 LED 公審畫面<br /><span className="text-xs opacity-60">已被分享 87 次，年輕人 +150</span>
                   </button>
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>算了，先拍個自拍就好</button>
                 </div>
@@ -2576,7 +2691,7 @@ export default function App() {
 
             {modal.type === "ksong" && (
               <>
-                <h3 className="font-black mb-1">🎤 卡拉OK 點歌</h3>
+                <h3 className="font-black mb-1"> 卡拉OK 點歌</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">今天是婚禮，要唱什麼自己看著辦…</p>
                 <div className="grid gap-2">
                   {(modal.options || KSONGS.slice(0, 3)).map((s, i) => (
@@ -2593,11 +2708,11 @@ export default function App() {
 
             {modal.type === "song" && (
               <>
-                <h3 className="font-black mb-1">🎧 DJ 台點歌 — 反制卡拉OK！</h3>
+                <h3 className="font-black mb-1"> DJ 台點歌 — 反制卡拉OK！</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">點一首 +100。每點滿 3 首觸發「全場大合唱」反殺蓋台 +300！</p>
                 <div className="grid gap-2">
                   {modal.options.map((s, i) => (
-                    <button key={i} className="wb-opt" onClick={() => pickSong(s)}>🎵 {s.a}〈{s.t}〉</button>
+                    <button key={i} className="wb-opt" onClick={() => pickSong(s)}> {s.a}〈{s.t}〉</button>
                   ))}
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>沒有想聽的…</button>
                 </div>
@@ -2613,7 +2728,7 @@ export default function App() {
                 <div className="grid gap-2">
                   {modal.opts.map((o) => (
                     <button key={o.id} className="wb-opt" onClick={() => resolveSchmooze(o)}>
-                      😊 <b>{o.name}</b>「{gline(o.line, modal.elder)}」<br /><span className="text-xs opacity-60">{gline(o.sub, modal.elder)}</span>
+                       <b>{o.name}</b>「{gline(o.line, modal.elder)}」<br /><span className="text-xs opacity-60">{gline(o.sub, modal.elder)}</span>
                     </button>
                   ))}
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>先不要好了…</button>
@@ -2627,33 +2742,33 @@ export default function App() {
                   <CharSprite id={modal.elder.id} w={64} />
                   <div>
                     <div className="font-black text-sm mb-1">{modal.elder.name} 對你說：</div>
-                    <div className="inline-block px-3 py-1.5 font-black text-sm" style={{ background: "#F6D9D2", border: `3px solid ${INK}`, borderRadius: "14px 14px 14px 2px" }}>「{modal.phrase.text}」💣</div>
+                    <div className="inline-block px-3 py-1.5 font-black text-sm" style={{ background: "#F6D9D2", border: `3px solid ${INK}`, borderRadius: "14px 14px 14px 2px" }}>「{modal.phrase.text}」</div>
                   </div>
                 </div>
                 <p className="text-xs opacity-70 mb-2 font-bold">抽到 3 張回嗆卡——每張都帶刺，差別只是笑點路線。嗆過頭可能被新娘瞪（糗而已）：</p>
                 <div className="grid gap-2 mb-2">
                   {modal.cards.map((c) => (
                     <button key={c.id} className="wb-opt" onClick={() => playCard(c)}>
-                      {c.icon} <b>{c.name}</b>：{cardLine(c, modal.elder)}<br /><span className="text-xs opacity-60">效果：{c.effect}</span>
+                      <b>{c.name}</b>：{cardLine(c, modal.elder)}<br /><span className="text-xs opacity-60">效果：{c.effect}</span>
                     </button>
                   ))}
                 </div>
-                <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={ignoreCard}>😶 算了不理他（場子會冷掉，連鎖歸零）</button>
+                <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={ignoreCard}> 算了不理他（場子會冷掉，連鎖歸零）</button>
               </>
             )}
 
             {modal.type === "quitgroup" && (
               <>
-                <h3 className="font-black mb-1">📱 確定要退出「相親相愛一家人」群組嗎？</h3>
+                <h3 className="font-black mb-1"> 確定要退出「相親相愛一家人」群組嗎？</h3>
                 <p className="text-xs opacity-70 mb-3 font-bold">這是終極大招。按下去，這場婚禮就正式進入傳說。沒有回頭路。</p>
                 <div className="grid gap-2">
                   <button className="wb-opt" style={{ background: "#1d1a17", color: "#FFE6A0" }} onClick={() => {
                     setModal(null); setQuitGroup(true);
                     buzz(); flashRed();
-                    setBubble("📱 已退出群組。"); setTimeout(() => setBubble(null), 2600);
-                    pushLed(`💥【系統通知】${me.name} 已退出『相親相愛一家人』群組——全場手機同時震動`);
+                    setBubble("已退出群組。"); setTimeout(() => setBubble(null), 2600);
+                    pushLed(`【系統通知】${me.name} 已退出『相親相愛一家人』群組——全場手機同時震動`);
                     addChaos(100, `${me.name} 當眾退出家庭群組`, me.name);
-                  }}>📱 退出群組（火爆直衝 100）</button>
+                  }}> 退出群組（火爆直衝 100）</button>
                   <button className="wb-opt" style={{ background: "#E8E0D2" }} onClick={() => setModal(null)}>再忍一下好了…</button>
                 </div>
               </>
@@ -2683,12 +2798,12 @@ function NPCSprite({ id, x, y, w = 60, flip, onClick, hot, dance, react }) {
       }}>
         <CharSprite id={id} w={w} expression={react && react.expr ? react.expr : "idle"} />
       </div>
-      {hot && <div className="wb-hint">💬 搭話</div>}
+      {hot && <div className="wb-hint"> 搭話</div>}
     </div>
   );
 }
 
-/* ---------- 💒 新郎新娘（無臉象徵設計） ---------- */
+/* ----------  新郎新娘（無臉象徵設計） ---------- */
 function CoupleSprite({ x, y, onClick, hot, cdLabel }) {
   return (
     <div onClick={onClick} className={`${onClick ? "wb-stop" : ""} ${hot ? "wb-hot" : ""}`}
@@ -2710,12 +2825,12 @@ function CoupleSprite({ x, y, onClick, hot, cdLabel }) {
           <line x1={65} y1={94} x2={65} y2={100} stroke={INK} strokeWidth={2.5} />
         </svg>
       </div>
-      {hot && <div className="wb-hint">{cdLabel || "🥂 向新人敬酒"}</div>}
+      {hot && <div className="wb-hint">{cdLabel || "向新人敬酒"}</div>}
     </div>
   );
 }
 
-/* ---------- 📖 開場故事分鏡：喜帖 × 戰帖 ---------- */
+/* ----------  開場故事分鏡：喜帖 × 戰帖 ---------- */
 function IntroModal({ css, onClose, onStart }) {
   const [page, setPage] = useState(0);
   const GOLD = "#E8B84B", GOLDL = "#FFE6A0";
@@ -2742,9 +2857,9 @@ function IntroModal({ css, onClose, onStart }) {
       title: "謹訂於本週末，舉行婚禮",
       visual: (
         <Wrap>
-          <span className="text-4xl self-center">🎊</span>
+          <span className="text-4xl self-center"></span>
           <div className="relative" style={{ width: 112, height: 125 }}><CoupleSprite x={0} y={0} /></div>
-          <span className="text-4xl self-center">🎊</span>
+          <span className="text-4xl self-center"></span>
         </Wrap>
       ),
       lines: <>戶外草地、燭光、自助餐，一切都完美。<br />新郎新娘只有一個小小的願望：<br /><b>「拜託……讓婚禮平安結束。」</b></>,
@@ -2754,7 +2869,7 @@ function IntroModal({ css, onClose, onStart }) {
       visual: (
         <Wrap>
           <Sp id="e1" /><Sp id="e2" w={56} />
-          <span className="text-3xl font-black self-center">⚡</span>
+          <span className="text-3xl font-black self-center"></span>
           <Sp id="y3" flip /><Sp id="y4" w={56} flip />
         </Wrap>
       ),
@@ -2803,11 +2918,11 @@ function IntroModal({ css, onClose, onStart }) {
         <span style={{ position: "absolute", top: 10, left: 14, color: GOLDL, fontSize: 13, fontWeight: 900 }}>囍</span>
         <span style={{ position: "absolute", bottom: 9, left: 14, color: GOLDL, fontSize: 13, fontWeight: 900 }}>囍</span>
         <span style={{ position: "absolute", bottom: 9, right: 14, color: GOLDL, fontSize: 13, fontWeight: 900 }}>囍</span>
-        <button onClick={onClose} className="text-[11px] font-black underline" style={{ position: "absolute", top: 9, right: 16, zIndex: 3, color: GOLDL, opacity: 0.95 }}>⏭ 跳過</button>
+        <button onClick={onClose} className="text-[11px] font-black underline" style={{ position: "absolute", top: 9, right: 16, zIndex: 3, color: GOLDL, opacity: 0.95 }}> 跳過</button>
 
         {/* 帖頭 */}
         <div className="text-center relative pt-2" style={{ zIndex: 1 }}>
-          <div className="text-[10px] font-black" style={{ color: GOLD, letterSpacing: ".45em", textIndent: ".45em" }}>{p.war ? "— ⚔️ 戰 帖 ⚔️ —" : "— 💌 喜 帖 💌 —"}</div>
+          <div className="text-[10px] font-black" style={{ color: GOLD, letterSpacing: ".45em", textIndent: ".45em" }}>{p.war ? "— 戰 帖 —" : "— 喜 帖 —"}</div>
         </div>
 
         {/* 內頁 */}
@@ -2823,20 +2938,23 @@ function IntroModal({ css, onClose, onStart }) {
               padding: "12px 16px 14px", color: INK, fontSize: 12, fontWeight: 700, lineHeight: 1.8,
             }}>
               <h3 className="font-black text-base text-center mb-2">{p.title}</h3>
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>勝負規則</div>
-              <p className="mb-2">三分鐘倒數結束時，<b>總分較高的陣營獲勝</b>。你沒操控的那一隊也會自己得分，所以不能發呆。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>這場婚禮的目的</div>
+              <p className="mb-2">不是打贏對面，是<b>讓婚禮越來越失控</b>。全場共用一條「現場火爆指數」（0 到 100）：長輩每講完一句地雷話、年輕人每回敬一句，指數就往上跳。<b>90 秒結束時指數落在哪一段，就演出哪一種結局</b>——從最無聊的「尷尬收場」到傳說級的「全場大亂鬥」。</p>
 
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>長輩這隊怎麼得分</div>
-              <p className="mb-2">偷渡到年輕人區一次 <b>+500</b>。對年輕人講「地雷話」，成功依嚴重度 <b>+200～+600</b>，最重的兩級還會讓年輕人扣分。在自己區唱卡拉OK、打麻將、向新人敬酒，都有小額加分。也可以站在柵欄邊向對面喊話、在大門改設「年輕人誘餌」（免費鹽酥雞之類的）。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>長輩怎麼玩</div>
+              <p className="mb-2">走到柵欄「查看闖關任務」，選一條路線闖進年輕人區，找人把「關心」講完。講成功指數大漲；被抓只是罰紅包錢、被保鏢架回去——回來再闖一次就好。</p>
 
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>年輕人這隊怎麼得分</div>
-              <p className="mb-2">警報響起時抓出偽裝的長輩 <b>+400</b>。被講地雷話時抽回嗆卡反擊，依強度 <b>+200～+600</b>，最重的卡會讓長輩扣分，連續反擊有連擊加成。也可以主動搭話陰長輩、在大門設陷阱、DJ 點歌、發限動、隔柵欄喊話，或到靈性角落抽塔羅求宇宙加持。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>年輕人怎麼玩</div>
+              <p className="mb-2">警報響起就抓出偽裝的長輩；被講地雷話就抽回嗆卡回敬——每張都帶刺，差別只是笑點路線，連續交鋒還有連鎖加成。也可以主動搭話陰可疑長輩、去柵欄設防、DJ 點歌反制卡拉OK。</p>
 
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>金錢與分數是兩回事</div>
-              <p className="mb-2">「紅包基金」是長輩的錢包：被抓的罰款從這裡扣、賄賂守門人一次 $1800（每場最多 2 次）、向新人敬酒能回血。<b>錢再多都不會變成分數</b>，但花光就不能賄賂。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>大聲公</div>
+              <p className="mb-2">兩邊都能用、每場限兩次：選一句話全場放送，跑馬燈重播、對面一定有反應，火爆指數大漲。要留到關鍵時刻還是開場就轟，自己決定。</p>
+
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>錢是錢，火爆是火爆</div>
+              <p className="mb-2">「紅包基金」是長輩的錢包：被抓的罰款從這裡扣、向新人敬酒能回血。<b>錢不會變成火爆指數</b>，但花光了有些路就走不了。</p>
 
               <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>最重要的一條</div>
-              <p><b>失敗永遠不會扣分。</b>長輩被抓只罰錢、被架走正好回去再玩一次偷渡；年輕人嗆過頭只是被新娘瞪、抓錯人只是讓長輩白賺。所以——放膽玩最大的。</p>
+              <p><b>沒有輸這回事。</b>被抓、被架走、嗆過頭被新娘瞪，都只是場面更精彩的素材。指數越高、結局越傳奇——所以放膽玩最大的。</p>
             </div>
             {/* 下卷軸桿 */}
             <div style={{ height: 17, margin: "0 -5px", background: "linear-gradient(180deg,#9A6630,#5E3A18)", border: `3px solid ${INK}`, borderRadius: 10, position: "relative", zIndex: 2 }} />
@@ -2860,7 +2978,7 @@ function IntroModal({ css, onClose, onStart }) {
           {page > 0 && <button className="wb-opt" style={{ width: "auto", background: "#FBF6EC", borderRadius: 16 }} onClick={() => setPage(page - 1)}>◀</button>}
           {page < pages.length - 1
             ? <button className="wb-opt" style={{ width: "auto", background: GOLD, borderRadius: 16, fontWeight: 900 }} onClick={() => setPage(page + 1)}>下一頁 ▶</button>
-            : <button className="wb-opt" style={{ width: "auto", background: GOLD, borderRadius: 16, fontWeight: 900 }} onClick={onStart}>🔥 接下戰帖・選邊開戰</button>}
+            : <button className="wb-opt" style={{ width: "auto", background: GOLD, borderRadius: 16, fontWeight: 900 }} onClick={onStart}> 接下戰帖・選邊開戰</button>}
         </div>
       </div>
     </div>
@@ -2895,7 +3013,7 @@ function ClimbGame({ onWin, onLose, charId }) {
   const pct = Math.min(1, count / TARGET);
   return (
     <>
-      <h3 className="font-black mb-1">🧗 翻牆偷渡！</h3>
+      <h3 className="font-black mb-1"> 翻牆偷渡！</h3>
       <p className="text-xs opacity-70 mb-2 font-bold">{LIMIT} 秒內連點 {TARGET} 下爬過鐵柵欄！（第一下開始計時）</p>
       {/* 爬牆舞台 */}
       <div className="relative mx-auto mb-2 overflow-hidden" style={{ width: 220, height: 190, background: "linear-gradient(180deg,#BFD8EE 0%,#DCEBD8 70%,#C9A66B 70%,#C9A66B 100%)", border: `3px solid ${INK}`, borderRadius: 14 }}>
@@ -2915,26 +3033,26 @@ function ClimbGame({ onWin, onLose, charId }) {
         }}>
           <CharSprite id={charId} w={58} expression={fail ? "shock" : "idle"} />
         </div>
-        {count > 6 && !fail && <div style={{ position: "absolute", left: "68%", bottom: 40 + pct * 110, fontSize: 16 }}>💦</div>}
-        {fail && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: 52, fontSize: 26, fontWeight: 900, color: "#C8102E", textShadow: "1px 1px 0 #fff" }}>啪！💥</div>}
-        {win && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", top: 6, fontSize: 20 }}>🎉</div>}
+        {count > 6 && !fail && <div style={{ position: "absolute", left: "68%", bottom: 40 + pct * 110, fontSize: 16 }}></div>}
+        {fail && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: 52, fontSize: 26, fontWeight: 900, color: "#C8102E", textShadow: "1px 1px 0 #fff" }}>啪！</div>}
+        {win && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", top: 6, fontSize: 20 }}></div>}
       </div>
       {fail ? (
-        <div className="text-sm font-black text-center mb-2" style={{ color: "#C8102E" }}>哎唷喂呀…記得回去貼沙隆巴斯 🩹</div>
+        <div className="text-sm font-black text-center mb-2" style={{ color: "#C8102E" }}>哎唷喂呀…記得回去貼沙隆巴斯 </div>
       ) : (
         <>
           <div className="h-3.5 mb-1.5 overflow-hidden" style={{ background: "#E8E0D2", border: `3px solid ${INK}`, borderRadius: 10 }}>
             <div className="h-full transition-all" style={{ width: `${pct * 100}%`, background: "#E8B84B" }} />
           </div>
-          <div className="text-xs mb-2 font-bold opacity-80">⏱ 剩 {left.toFixed(1)} 秒　|　{count}/{TARGET}</div>
-          <button onClick={tap} className="wb-opt" style={{ textAlign: "center", fontSize: 22, padding: "16px 0", background: "#C8102E", color: "#fff" }}>🐸 爬！爬！爬！</button>
+          <div className="text-xs mb-2 font-bold opacity-80"> 剩 {left.toFixed(1)} 秒　|　{count}/{TARGET}</div>
+          <button onClick={tap} className="wb-opt" style={{ textAlign: "center", fontSize: 22, padding: "16px 0", background: "#C8102E", color: "#fff" }}> 爬！爬！爬！</button>
         </>
       )}
     </>
   );
 }
 
-/* 🦶 長輩踏步捷徑：照節奏踏 左右左右… */
+/*  長輩踏步捷徑：照節奏踏 左右左右… */
 function StepGame({ onWin, onLose }) {
   const LIMIT = 6;
   const [seq] = useState(() => Array.from({ length: 6 }, () => (Math.random() < 0.5 ? "L" : "R")));
@@ -2972,7 +3090,7 @@ function StepGame({ onWin, onLose }) {
   };
   return (
     <>
-      <h3 className="font-black mb-1">🦶 長輩捷徑 — 踏步密道</h3>
+      <h3 className="font-black mb-1"> 長輩捷徑 — 踏步密道</h3>
       <p className="text-xs opacity-70 mb-2 font-bold">相傳是二十年前某位舅公留下的。{LIMIT} 秒內照順序踏對節奏！</p>
       {/* 節奏題目 */}
       <div className="flex justify-center gap-1.5 mb-2">
@@ -3000,9 +3118,9 @@ function StepGame({ onWin, onLose }) {
         <div className="text-[10px] font-black opacity-50 mt-1">（穿藍白拖踏比較有效，前人說的）</div>
       </div>
       {fail ? (
-        <div className="text-sm font-black text-center my-2" style={{ color: "#C8102E" }}>踏錯啦！機關「喀」一聲卡住了 😱</div>
+        <div className="text-sm font-black text-center my-2" style={{ color: "#C8102E" }}>踏錯啦！機關「喀」一聲卡住了 </div>
       ) : (
-        <div className="text-xs mb-2 font-bold opacity-80 text-center">⏱ 剩 {left.toFixed(1)} 秒（第一踏開始計時）　{idx}/{seq.length}</div>
+        <div className="text-xs mb-2 font-bold opacity-80 text-center"> 剩 {left.toFixed(1)} 秒（第一踏開始計時）　{idx}/{seq.length}</div>
       )}
       <div className="flex gap-2">
         <button onClick={() => press("L")} className="wb-opt flex-1" style={{ textAlign: "center", fontSize: 19, fontWeight: 900, padding: "14px 0", background: "#fff" }}>◀ 左腳</button>
@@ -3034,13 +3152,13 @@ function CartGame({ onWin, onLose }) {
   };
   return (
     <>
-      <h3 className="font-black mb-1">🛒 木馬屠城！</h3>
+      <h3 className="font-black mb-1"> 木馬屠城！</h3>
       <p className="text-xs opacity-70 mb-2 font-bold">趁服務生不注意——當游標在綠色區域時按下！</p>
       {/* 藏進餐車的人體視覺 */}
       <div className="relative mx-auto mb-2" style={{ width: 190, height: 108 }}>
         <div style={{ position: "absolute", left: 20, top: 0, width: 150, height: 70, background: "#D8D8DE", border: `3px solid ${INK}`, borderRadius: 10, animation: "wbSway 1.6s ease-in-out infinite alternate" }}>
           <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 26, background: "#fff", borderBottom: `3px solid ${INK}`, borderRadius: "7px 7px 0 0" }} />
-          <div style={{ position: "absolute", left: "50%", top: -16, transform: "translateX(-50%)", fontSize: 22 }}>🍲</div>
+          <div style={{ position: "absolute", left: "50%", top: -16, transform: "translateX(-50%)", fontSize: 22 }}></div>
           <div style={{ position: "absolute", left: 8, top: 34, fontSize: 10, fontWeight: 900, opacity: 0.6 }}>本日特餐：佛跳牆（？）</div>
         </div>
         {/* 車底露出的腿 */}
@@ -3048,7 +3166,7 @@ function CartGame({ onWin, onLose }) {
         <div style={{ position: "absolute", left: 96, top: 66, width: 13, height: 26, background: "#7A6A55", border: `2.5px solid ${INK}`, borderRadius: 5, transform: "rotate(12deg)" }} />
         <div style={{ position: "absolute", left: 52, top: 88, width: 26, height: 10, background: "#3B82C4", border: `2.5px solid ${INK}`, borderRadius: "3px 8px 3px 3px", transform: "scaleX(-1)" }} />
         <div style={{ position: "absolute", left: 100, top: 88, width: 26, height: 10, background: "#3B82C4", border: `2.5px solid ${INK}`, borderRadius: "3px 8px 3px 3px" }} />
-        <div style={{ position: "absolute", right: 6, top: 6, fontSize: 16 }}>💦</div>
+        <div style={{ position: "absolute", right: 6, top: 6, fontSize: 16 }}></div>
         {/* 輪子 */}
         <div style={{ position: "absolute", left: 36, top: 64, width: 14, height: 14, background: "#1d1a17", borderRadius: "50%" }} />
         <div style={{ position: "absolute", left: 140, top: 64, width: 14, height: 14, background: "#1d1a17", borderRadius: "50%" }} />
@@ -3058,7 +3176,7 @@ function CartGame({ onWin, onLose }) {
         <div className="absolute top-0 bottom-0" style={{ left: "38%", width: "24%", background: "rgba(127,175,106,.6)" }} />
         <div className="absolute top-0 bottom-0 w-2.5" style={{ left: `calc(${pos}% - 5px)`, background: "#C8102E", borderRadius: 4 }} />
       </div>
-      <button onClick={jump} className="wb-opt" style={{ textAlign: "center", fontSize: 20, padding: "16px 0", background: "#C8102E", color: "#fff" }}>🫣 就是現在，跳！</button>
+      <button onClick={jump} className="wb-opt" style={{ textAlign: "center", fontSize: 20, padding: "16px 0", background: "#C8102E", color: "#fff" }}> 就是現在，跳！</button>
     </>
   );
 }
