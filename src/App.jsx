@@ -209,8 +209,11 @@ const AI_ELDER_EVENTS = ["有長輩偷偷講完一句地雷話沒被發現…", 
    依樂譜 Dm-C-Dm-C / Gm7-Am7 和聲進行採譜的主歌旋律片段，
    用 8-bit 方波在遊戲內演奏；[音高, 拍數] ，休止符用 0
    ============================================================ */
-const NOTE = { 0: 0, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00,
-               AS4: 466.16, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46 };
+const NOTE = { 0: 0, C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00,
+               A4: 440.00, AS4: 466.16, B4: 493.88, C5: 523.25, D5: 587.33,
+               E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00 };
+
+/* 〈歡喜就好〉陳雷／吳嘉祥曲：Dm-C-Dm-C / Gm7-Am7 進行的主歌 */
 const HAPPY_SONG = [
   /* 人生海海 甚麼攏了解 */
   ["A4",1],["A4",1],["C5",1],["A4",1],["G4",2],["F4",2],
@@ -219,6 +222,58 @@ const HAPPY_SONG = [
   ["A4",1],["C5",1],["D5",1],["C5",1],["A4",2],["G4",2],
   ["F4",1],["G4",1],["F4",1],["E4",1],["D4",3],[0,1],
 ];
+
+/* 〈愛拚才會贏〉葉啟田／陳百潭曲：1=C 簡譜採主歌與副歌 */
+const HYPE_SONG = [
+  /* 一時失志不免怨嘆 */
+  ["E4",1],["G4",1],["A4",1],["A4",1],["G4",1],["A4",1],["C5",2],
+  /* 一時落魄不免膽寒 */
+  ["C5",1],["A4",1],["G4",1],["A4",1],["G4",1],["E4",1],["D4",2],
+  /* 那怕失去希望 每日醉茫茫 */
+  ["E4",1],["G4",1],["A4",1],["C5",1],["D5",2],["C5",2],
+  ["A4",1],["G4",1],["A4",1],["G4",1],["E4",2],[0,1],
+  /* 三分天注定 七分靠打拚 */
+  ["G4",1],["A4",1],["C5",1],["C5",1],["D5",2],[0,1],
+  ["C5",1],["D5",1],["E5",1],["D5",1],["C5",2],["A4",2],
+  /* 愛拚才會贏 */
+  ["G4",1],["A4",1],["C5",1],["A4",1],["G4",3],[0,1],
+];
+
+/* 〈甜蜜蜜〉鄧麗君／印尼民謠 */
+const SWEET_SONG = [
+  /* 甜蜜蜜 你笑得甜蜜蜜 */
+  ["G4",1],["E4",1],["G4",2],["A4",1],["G4",1],["E4",2],
+  ["D4",1],["E4",1],["G4",1],["A4",1],["G4",3],[0,1],
+  /* 好像花兒開在春風裡 */
+  ["A4",1],["C5",1],["D5",1],["E5",1],["D5",2],["C5",2],
+  ["A4",1],["G4",1],["A4",1],["C5",1],["A4",3],[0,1],
+];
+
+/* 〈月亮代表我的心〉鄧麗君／湯尼曲：1=bD，此處以 C 調記譜 */
+const CLASSIC_SONG = [
+  /* 你問我愛你有多深 我愛你有幾分 */
+  ["C4",1],["D4",1],["E4",1],["G4",1],["C5",2],["B4",1],["A4",1],
+  ["G4",1],["E4",1],["G4",1],["A4",1],["G4",3],[0,1],
+  /* 我的情也真 我的愛也真 */
+  ["C4",1],["C4",1],["C4",1],["D4",1],["E4",2],["D4",2],
+  ["E4",1],["G4",1],["A4",1],["G4",1],["E4",3],[0,1],
+  /* 月亮代表我的心 */
+  ["A4",1],["C5",1],["D5",1],["C5",1],["A4",2],["G4",2],
+  ["E4",1],["G4",1],["E4",1],["D4",1],["C4",3],[0,1],
+];
+
+/* 〈家後〉江蕙／鄭進一曲：C-Em-Am / Gm-F 進行的主歌 */
+const SAD_SONG = [
+  /* 有一日咱若老 找無人甲咱有孝 */
+  ["E4",1],["G4",1],["C5",2],["B4",1],["A4",1],["G4",2],
+  ["A4",1],["G4",1],["E4",1],["D4",1],["C4",3],[0,1],
+  /* 我會陪你 坐惦椅寮 */
+  ["C4",1],["E4",1],["G4",1],["A4",1],["G4",2],["E4",2],
+  ["D4",1],["E4",1],["D4",1],["C4",1],["C4",3],[0,1],
+];
+
+/* 卡拉OK 曲目 → 譜面對照 */
+const SONG_SCORES = { happy: HAPPY_SONG, hype: HYPE_SONG, sweet: SWEET_SONG, classic: CLASSIC_SONG, sad: SAD_SONG };
 
 const GAME_SECONDS = 90;
 const START_WALLET = 5000;
@@ -924,7 +979,7 @@ export default function App() {
   const buzz = useCallback(() => beep(180, 0.3, "sawtooth", 0.08), [beep]);
   const songTimers = useRef([]);
   /* 用內建方波音源演奏一段旋律；bpm 決定速度，回傳整段長度（毫秒） */
-  const playSong = useCallback((song, bpm = 116) => {
+  const playSong = useCallback((song, bpm = 116, gain = 0.045) => {
     songTimers.current.forEach(clearTimeout);
     songTimers.current = [];
     if (muted) return 0;
@@ -935,7 +990,7 @@ export default function App() {
       const f = NOTE[n];
       if (f) {
         songTimers.current.push(setTimeout(() => {
-          beep(f, (ms * 0.9) / 1000, "square", 0.045);
+          beep(f, (ms * 0.9) / 1000, "square", gain);
         }, t));
       }
       t += ms;
@@ -943,6 +998,31 @@ export default function App() {
     return t;
   }, [beep, muted]);
   useEffect(() => () => songTimers.current.forEach(clearTimeout), []);
+
+  /* 卡拉OK 背景音樂：預設循環播《歡喜就好》；點播別首就唱一次，唱完自動換回來 */
+  const bgmRef = useRef(null);
+  const bgmLoop = useCallback((mood) => {
+    clearTimeout(bgmRef.current);
+    const score = SONG_SCORES[mood] || HAPPY_SONG;
+    const bpm = mood === "hype" ? 128 : mood === "sad" ? 92 : mood === "classic" ? 96 : 116;
+    const dur = playSong(score, bpm, 0.03); // 背景音量比音效低
+    if (!dur) return;
+    bgmRef.current = setTimeout(() => {
+      /* 點播的歌只唱一次，唱完回到預設曲 */
+      bgmLoop("happy");
+    }, dur + 900);
+  }, [playSong]);
+  useEffect(() => {
+    if (phase !== "playing") { clearTimeout(bgmRef.current); return; }
+    bgmLoop("happy");
+    return () => clearTimeout(bgmRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+  useEffect(() => {
+    if (muted) { clearTimeout(bgmRef.current); songTimers.current.forEach(clearTimeout); }
+    else if (phase === "playing") bgmLoop("happy");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [muted]);
 
   const addPop = useCallback((text, color) => {
     const id = Date.now() + Math.random();
@@ -1290,12 +1370,13 @@ export default function App() {
         setStat((s) => ({ ...s, fined: s.fined + 1 }));
         pushLed(`${me.name} 被開罰單！罰 $${p.fine}，原因：${p.category}`, me.id);
         const npcObj = npcId ? YOUTHS.find((y) => y.id === npcId) : null;
+        const heavy = p.severity === "severe" || p.severity === "fatal";
         showDlg([
           npcObj && { who: npcObj.name, side: "youth", sprite: npcObj.id, text: gline(rand(RPHIT), charId) },
           { who: "婚宴糾察隊", side: "sys", text: `逮到了！「${p.category}」現行犯，罰紅包 $${p.fine}。（只扣錢，火爆指數不受影響）` },
-        ]);
-        if (p.severity === "severe" || p.severity === "fatal") {
-          addPop("免費送回長輩區", "#7A6A55");
+          heavy && { who: "婚宴糾察隊", side: "sys", text: "這句太超過了——保鏢已經在你身後。請回長輩區重新來過。" },
+        ], heavy ? () => {
+          /* 對話讀完才開始架人，搬運期間維持鎖定 */
           addChaos(CHAOS.carry, `${me.name} 被保鏢架走時大喊「我也沒說什麼啊！」`, me.name);
           setCarried(true); busyRef.current = true;
           setBubble("我也沒說什麼啊！");
@@ -1305,9 +1386,7 @@ export default function App() {
             setZone("elder"); setDisguised(false); setPy(0); busyRef.current = false;
             pushLed(`${me.name} 已被保鏢護送回長輩區——偷渡小遊戲，再開！`, me.id);
           }, 2200);
-        } else {
-          setTimeout(() => setExpr("idle"), 1200);
-        }
+        } : () => setExpr("idle"));
       } else {
         const gain = MINE_GAIN[p.severity] || 300;
         setElderScore((s) => s + gain);
@@ -1618,7 +1697,13 @@ export default function App() {
 
   const pickKaraoke = (s) => {
     setModal(null);
-    setNowPlaying(s.t); setTimeout(() => setNowPlaying((c) => (c === s.t ? null : c)), 6500);
+    /* 點播的歌立刻蓋掉背景音樂大聲唱一次，唱完自動換回《歡喜就好》 */
+    clearTimeout(bgmRef.current);
+    const score = SONG_SCORES[s.mood] || HAPPY_SONG;
+    const bpm = s.mood === "hype" ? 128 : s.mood === "sad" ? 92 : s.mood === "classic" ? 96 : 116;
+    const dur = playSong(score, bpm, 0.05);
+    if (dur) bgmRef.current = setTimeout(() => bgmLoop("happy"), dur + 900);
+    setNowPlaying(s.t); setTimeout(() => setNowPlaying((c) => (c === s.t ? null : c)), Math.max(6500, dur));
     const n = sings + 1;
     setSings(n);
     if (s.mood === "sad") {
@@ -1638,8 +1723,6 @@ export default function App() {
       setBubble("三分天注定！七分靠打拚！"); setTimeout(() => setBubble(null), 2600);
       pushLed(`${me.name} 唱《愛拚才會贏》全場歡呼！長輩區起立大合唱 +200`, me.id);
     } else if (s.mood === "happy") {
-      /* 〈歡喜就好〉有真的旋律，直接用 8-bit 音源唱出來 */
-      playSong(HAPPY_SONG, 116);
       setElderScore((sc) => sc + 150); addPop("+150 長輩分");
       setBubble("歡喜就好～人生短短～"); setTimeout(() => setBubble(null), 2600);
       pushLed(`${me.name} 唱《歡喜就好》，氣氛輕鬆全場拍手 +150`, me.id);
@@ -1729,7 +1812,7 @@ export default function App() {
   /* （世界座標 WORLD 已移至模組層級） */
 
   const onSpotClick = (spot) => {
-    if (phase !== "playing" || modal || carried) return;
+    if (phase !== "playing" || modal || dlg || carried) return;
     const cx = spot.x + spot.w / 2;
     if (isElder) {
       if (spot.zone === "elder" && inElderZone) {
@@ -1794,7 +1877,7 @@ export default function App() {
   };
 
   const onGateClick = () => {
-    if (phase !== "playing" || modal || carried) return;
+    if (phase !== "playing" || modal || dlg || carried) return;
     if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
 
     if (isElder && inElderZone) walkTo(WORLD.gateX - 130, () => setModal({ type: "smuggle" }), { toY: 0 });
@@ -2074,88 +2157,88 @@ export default function App() {
     ];
 
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden" style={{ background: "#EFE6D4", color: C.ink, minHeight: "100dvh" }}>
+      <div className="flex flex-col p-3" style={{ background: "#EFE6D4", color: C.ink, height: "100dvh", overflowY: "auto" }}>
         <style>{css}</style>
         {rotateHint}
-        {["", "", "", "", "", ""].map((e, i) => (
-          <span key={i} style={{ position: "absolute", left: `${8 + i * 16}%`, top: `${6 + (i % 3) * 9}%`, fontSize: 26 + (i % 3) * 8, animation: `wbSway ${2 + i * 0.4}s ease-in-out infinite alternate`, opacity: 0.85 }}>{e}</span>
-        ))}
 
-        <div className="wb-pop w-full max-w-md relative z-10" style={{ maxHeight: "94dvh", overflowY: "auto" }}>
-          {/* 結局標題 */}
-          <div className="text-center mb-3">
-            <div className="inline-block mt-1 px-6 py-1.5 text-2xl font-black" style={{ background: INK, color: "#FFE6A0", border: `4px solid ${INK}`, boxShadow: `4px 4px 0 rgba(0,0,0,.3)` }}>
-              {end.title}
-            </div>
-            <p className="text-sm leading-relaxed mt-2 font-bold px-2 opacity-85">{end.desc}</p>
+        {/* 頂列：結局標題與描述橫排，省高度 */}
+        <div className="flex items-center gap-3 flex-shrink-0 flex-wrap">
+          <div className="px-4 py-1 text-xl font-black flex-shrink-0" style={{ background: INK, color: "#FFE6A0", border: `3px solid ${INK}`, boxShadow: "3px 3px 0 rgba(0,0,0,.3)" }}>
+            {end.title}
+          </div>
+          <p className="text-xs leading-relaxed font-bold opacity-85 flex-1 min-w-0" style={{ minWidth: 220 }}>{end.desc}</p>
+        </div>
+
+        {/* 結帳單：橫式雙欄（左＝明細、右＝亮點與總結） */}
+        <div className="relative mt-2 flex-1 min-h-0" style={{ background: "#FFFDF6", border: `3px solid ${INK}`, padding: "8px 14px 10px", boxShadow: `4px 4px 0 ${INK}`, overflowY: "auto" }}>
+          <div className="text-center text-[10px] tracking-widest opacity-50 font-black">✂ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
+          <div className="flex items-baseline justify-center gap-2 mt-0.5">
+            <span className="text-base font-black">喜宴失控結帳單</span>
+            <span className="text-[9px] opacity-50 font-bold">WEDDING BATTLE・流水席帳務科</span>
           </div>
 
-          {/*  喜宴失控結帳單 */}
-          <div className="relative mx-auto mb-3" style={{ width: "min(100%, 340px)", background: "#FFFDF6", border: `3px solid ${INK}`, padding: "10px 16px 12px", boxShadow: `4px 4px 0 ${INK}` }}>
-            <div className="text-center text-[10px] tracking-widest opacity-50 font-black">✂ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
-            <div className="text-center text-base font-black mt-0.5"> 喜宴失控結帳單</div>
-            <div className="text-center text-[9px] opacity-50 font-bold mb-2">WEDDING BATTLE・流水席帳務科</div>
-
-            <div className="flex items-center gap-2 text-xs font-black py-1" style={{ borderBottom: `2px dotted ${INK}55` }}>
-              <span className="rounded-full overflow-hidden inline-flex" style={{ width: 26, height: 26, border: `2px solid ${INK}`, background: "#fff", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                {me && <CharSprite id={me.id} w={22} headOnly />}
-              </span>
-              <span>本場角色：{me?.name}</span>
-              <span className="flex-1" />
-              <span className="opacity-60">{isElder ? "長輩隊" : "年輕人隊"}</span>
+          <div className="grid gap-x-6 gap-y-1 mt-1.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+            {/* 左欄：本場明細 */}
+            <div>
+              <div className="flex items-center gap-2 text-xs font-black py-1" style={{ borderBottom: `2px dotted ${INK}55` }}>
+                <span className="rounded-full overflow-hidden inline-flex" style={{ width: 24, height: 24, border: `2px solid ${INK}`, background: "#fff", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {me && <CharSprite id={me.id} w={20} headOnly />}
+                </span>
+                <span>本場角色：{me?.name}</span>
+                <span className="flex-1" />
+                <span className="opacity-60">{isElder ? "長輩隊" : "年輕人隊"}</span>
+              </div>
+              {receiptRows.map(([label, v]) => (
+                <div key={label} className="flex items-end gap-1.5 text-xs font-black py-0.5">
+                  <span>{label}</span>
+                  <span className="flex-1 mb-1" style={{ borderBottom: `2px dotted ${INK}55` }} />
+                  <span>{v}</span>
+                </div>
+              ))}
+              {topFine && (
+                <div className="flex items-end gap-1.5 text-xs font-black py-0.5">
+                  <span>罰款王：{topFine[0]}</span>
+                  <span className="flex-1 mb-1" style={{ borderBottom: `2px dotted ${INK}55` }} />
+                  <span style={{ color: C.red }}>${topFine[1]}</span>
+                </div>
+              )}
             </div>
 
-            {receiptRows.map(([label, v]) => (
-              <div key={label} className="flex items-end gap-1.5 text-xs font-black py-0.5">
-                <span>{label}</span>
+            {/* 右欄：亮點、總結與稱號 */}
+            <div className="flex flex-col gap-1.5">
+              {bestLine && (
+                <div className="text-xs font-black px-2 py-1.5" style={{ background: "#1d1a17", color: "#FFF8EC" }}>
+                  本場最精彩的一句：<br />{bestLine.who && <span style={{ color: "#F2B234" }}>{bestLine.who}：</span>}{bestLine.text}
+                </div>
+              )}
+              {quitGroup && (
+                <div className="text-xs font-black px-2 py-1.5" style={{ background: "#06C755", color: "#fff", border: `2.5px solid ${INK}` }}>
+                  系統通知：{me?.name} 已退出「相親相愛一家人」群組
+                </div>
+              )}
+              <div className="flex items-end gap-1.5 text-sm font-black pt-1.5" style={{ borderTop: `2px solid ${INK}` }}>
+                <span>最終火爆指數</span>
                 <span className="flex-1 mb-1" style={{ borderBottom: `2px dotted ${INK}55` }} />
-                <span>{v}</span>
+                <span style={{ color: C.red }}>{chaos}／100（{stg.label}）</span>
               </div>
-            ))}
-            {topFine && (
-              <div className="flex items-end gap-1.5 text-xs font-black py-0.5">
-                <span>罰款王：{topFine[0]}</span>
-                <span className="flex-1 mb-1" style={{ borderBottom: `2px dotted ${INK}55` }} />
-                <span style={{ color: C.red }}>${topFine[1]}</span>
+              <div className="text-[10px] font-bold opacity-60">陣營統計（僅供參考）：長輩 {elderScore}・年輕人 {youthScore}</div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[10px] font-bold opacity-60 flex-shrink-0">失控稱號</span>
+                <span className="text-xs font-black px-3 py-1" style={{ border: `2.5px solid ${C.red}`, color: C.red, background: "rgba(200,16,46,.06)" }}>{end.crown}</span>
               </div>
-            )}
-
-            {bestLine && (
-              <div className="text-xs font-black mt-2 px-2 py-1.5" style={{ background: "#1d1a17", color: "#FFF8EC" }}>
-                 本場最精彩的一句：<br />{bestLine.who && <span style={{ color: "#F2B234" }}>{bestLine.who}：</span>}{bestLine.text}
+              <div className="flex flex-wrap gap-1 mt-0.5">
+                {[`闖關 ${stat.smuggle}`, `攔截 ${stat.intercept}`, `回嗆 ${stat.comeback}`, `連鎖 ${maxCombo}`, `大聲公 ${shoutUses}`].map((t, i) => (
+                  <span key={i} className="px-2 py-0.5 text-[10px] font-black" style={{ background: ["#FFE6A0", "#DCEBD8", "#F6D9D2", "#EBD9F2"][i % 4], border: `2px solid ${INK}` }}>{t}</span>
+                ))}
               </div>
-            )}
-
-            <div className="flex items-end gap-1.5 text-sm font-black pt-2 mt-1" style={{ borderTop: `2px solid ${INK}` }}>
-              <span>最終火爆指數</span>
-              <span className="flex-1 mb-1" style={{ borderBottom: `2px dotted ${INK}55` }} />
-              <span style={{ color: C.red }}>{chaos}／100（{stg.label}）</span>
             </div>
-            <div className="text-[10px] font-bold opacity-60 text-center mt-0.5">陣營統計（僅供參考）：長輩 {elderScore}・年輕人 {youthScore}</div>
-
-            {quitGroup && (
-              <div className="text-xs font-black mt-2 px-2 py-1.5" style={{ background: "#06C755", color: "#fff", border: `2.5px solid ${INK}` }}>
-                 系統通知：{me?.name} 已退出「相親相愛一家人」群組
-              </div>
-            )}
-
-            <div className="text-center text-[9px] opacity-50 font-bold mt-2">— 感謝惠顧・歡迎再亂 —</div>
-            <div className="text-center text-[10px] tracking-widest opacity-50 font-black">─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ✂</div>
-            {/* 失控稱號戳章 */}
-            <div style={{ position: "absolute", right: 8, top: 12, width: 66, height: 66, border: `3.5px solid ${C.red}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: C.red, fontWeight: 900, fontSize: 11, transform: "rotate(14deg)", opacity: 0.85, background: "rgba(200,16,46,.06)", textAlign: "center", lineHeight: 1.3, padding: 4 }}>{end.crown}</div>
           </div>
+          <div className="text-center text-[9px] opacity-50 font-bold mt-1.5">— 感謝惠顧・歡迎再亂 —</div>
+          <div className="text-center text-[10px] tracking-widest opacity-50 font-black">─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ✂</div>
+        </div>
 
-          <div className="flex flex-wrap justify-center gap-1.5 mb-4 px-2">
-            {[["", `闖關 ${stat.smuggle}`], ["", `攔截 ${stat.intercept}`], ["", `回嗆 ${stat.comeback}`], ["", `連鎖 ${maxCombo}`], ["", `大聲公 ${shoutUses}`]].map(([ic, t], i) => (
-              <span key={i} className="px-2 py-0.5 text-[11px] font-black" style={{ background: ["#FFE6A0", "#DCEBD8", "#F6D9D2", "#EBD9F2"][i % 4], border: `2.5px solid ${INK}`, boxShadow: `1.5px 1.5px 0 ${INK}` }}>
-                {ic} {t}
-              </span>
-            ))}
-          </div>
-
-          <div className="text-center pb-2">
-            <button className="wb-opt" style={{ width: "auto", display: "inline-block", background: INK, color: "#FFE6A0", fontSize: 16, minHeight: 44 }} onClick={resetGame}> 再舉辦一次婚禮</button>
-          </div>
+        <div className="text-center mt-2 flex-shrink-0">
+          <button className="wb-opt" style={{ width: "auto", display: "inline-block", background: INK, color: "#FFE6A0", fontSize: 16, minHeight: 44 }} onClick={resetGame}>再舉辦一次婚禮</button>
         </div>
       </div>
     );
@@ -2312,14 +2395,14 @@ export default function App() {
           <CoupleSprite x={1928} y={40} hot={focusId === "couple"}
             cdLabel={toastCd > 0 ? `${toastCd}s` : "向新人敬酒"}
             onClick={() => {
-              if (phase !== "playing" || modal || carried) return;
+              if (phase !== "playing" || modal || dlg || carried) return;
               if (isElder && inElderZone) walkTo(WORLD.gateX - 130, () => setModal({ type: "smuggle" }));
               else approachNpc(1986, doToast);
             }} />
           {/*  可疑長輩（年輕人限定攻擊目標） */}
           {!isElder && lurker && (
             <div className={`${focusId === "lurker" ? "wb-hot " : ""}wb-stop`} onClick={() => {
-              if (phase !== "playing" || modal || carried) return;
+              if (phase !== "playing" || modal || dlg || carried) return;
               if (truceRef.current > 0) { setBubble("拍照中啦！比 YA"); setTimeout(() => setBubble(null), 2000); return; }
               approachNpc(lurker.x + 30, openSchmooze);
             }} style={{ position: "absolute", left: lurker.x, bottom: 38, zIndex: npcReact && npcReact.id === "visitor" ? 30 : 11, cursor: "pointer" }}>
@@ -3013,39 +3096,38 @@ function ClimbGame({ onWin, onLose, charId }) {
   const pct = Math.min(1, count / TARGET);
   return (
     <>
-      <h3 className="font-black mb-1"> 翻牆偷渡！</h3>
+      <h3 className="font-black mb-1">翻牆偷渡！</h3>
       <p className="text-xs opacity-70 mb-2 font-bold">{LIMIT} 秒內連點 {TARGET} 下爬過鐵柵欄！（第一下開始計時）</p>
-      {/* 爬牆舞台 */}
-      <div className="relative mx-auto mb-2 overflow-hidden" style={{ width: 220, height: 190, background: "linear-gradient(180deg,#BFD8EE 0%,#DCEBD8 70%,#C9A66B 70%,#C9A66B 100%)", border: `3px solid ${INK}`, borderRadius: 14 }}>
-        {/* 鐵柵欄 */}
-        {[28, 58, 88, 118, 148, 178].map((x) => (
-          <div key={x} style={{ position: "absolute", left: x, top: 12, width: 7, height: 148, background: "#6A6A75", border: `2px solid ${INK}`, borderRadius: 3 }} />
+      {/* 爬牆舞台：柵欄在後、角色在前，爬到頂剛好越過欄杆 */}
+      <div className="relative mx-auto mb-2 overflow-hidden" style={{ width: 220, height: 180, background: "linear-gradient(180deg,#BFD8EE 0%,#BFD8EE 62%,#C9A66B 62%,#C9A66B 100%)", border: `3px solid ${INK}` }}>
+        {/* 鐵柵欄（底部埋進地面，頂端留白給越過的角色） */}
+        {[24, 56, 88, 120, 152, 184].map((x) => (
+          <div key={x} style={{ position: "absolute", left: x, top: 44, width: 7, height: 118, background: "#6A6A75", border: `2px solid ${INK}`, zIndex: 1 }} />
         ))}
-        <div style={{ position: "absolute", left: 16, top: 30, width: 180, height: 7, background: "#55555F", border: `2px solid ${INK}` }} />
-        <div style={{ position: "absolute", left: 16, top: 120, width: 180, height: 7, background: "#55555F", border: `2px solid ${INK}` }} />
-        {/* 玩家：青蛙式攀爬 */}
+        <div style={{ position: "absolute", left: 12, top: 52, width: 196, height: 7, background: "#55555F", border: `2px solid ${INK}`, zIndex: 1 }} />
+        <div style={{ position: "absolute", left: 12, top: 120, width: 196, height: 7, background: "#55555F", border: `2px solid ${INK}`, zIndex: 1 }} />
+        {/* 玩家：越爬越高，成功時整個人翻到欄杆上方 */}
         <div style={{
-          position: "absolute", left: "50%", marginLeft: -29,
-          bottom: fail ? 4 : 18 + pct * 118,
+          position: "absolute", left: "50%", marginLeft: -26, zIndex: 2,
+          bottom: fail ? 6 : 14 + pct * 104,
           transition: fail ? "bottom .55s cubic-bezier(.5,0,1,1)" : "bottom .12s linear",
-          transform: fail ? "rotate(180deg)" : win ? "rotate(-20deg) translateY(-8px)" : `rotate(${count % 2 ? 14 : -14}deg) scaleX(${count % 2 ? 1 : -1})`,
-          transformOrigin: "center",
+          transform: fail ? "rotate(180deg)" : win ? "rotate(-18deg)" : `rotate(${count % 2 ? 10 : -10}deg)`,
+          transformOrigin: "center bottom",
         }}>
-          <CharSprite id={charId} w={58} expression={fail ? "shock" : "idle"} />
+          <CharSprite id={charId} w={52} expression={fail ? "shock" : "idle"} />
         </div>
-        {count > 6 && !fail && <div style={{ position: "absolute", left: "68%", bottom: 40 + pct * 110, fontSize: 16 }}></div>}
-        {fail && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: 52, fontSize: 26, fontWeight: 900, color: "#C8102E", textShadow: "1px 1px 0 #fff" }}>啪！</div>}
-        {win && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", top: 6, fontSize: 20 }}></div>}
+        {fail && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: 62, fontSize: 24, fontWeight: 900, color: "#C8102E", textShadow: "2px 2px 0 #fff", zIndex: 3 }}>啪！</div>}
+        {win && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", top: 8, fontSize: 20, fontWeight: 900, color: "#3E7C6E", textShadow: "2px 2px 0 #fff", zIndex: 3 }}>過關！</div>}
       </div>
       {fail ? (
-        <div className="text-sm font-black text-center mb-2" style={{ color: "#C8102E" }}>哎唷喂呀…記得回去貼沙隆巴斯 </div>
+        <div className="text-sm font-black text-center mb-2" style={{ color: "#C8102E" }}>哎唷喂呀…記得回去貼沙隆巴斯</div>
       ) : (
         <>
-          <div className="h-3.5 mb-1.5 overflow-hidden" style={{ background: "#E8E0D2", border: `3px solid ${INK}`, borderRadius: 10 }}>
+          <div className="h-3.5 mb-1.5 overflow-hidden" style={{ background: "#E8E0D2", border: `3px solid ${INK}` }}>
             <div className="h-full transition-all" style={{ width: `${pct * 100}%`, background: "#E8B84B" }} />
           </div>
-          <div className="text-xs mb-2 font-bold opacity-80"> 剩 {left.toFixed(1)} 秒　|　{count}/{TARGET}</div>
-          <button onClick={tap} className="wb-opt" style={{ textAlign: "center", fontSize: 22, padding: "16px 0", background: "#C8102E", color: "#fff" }}> 爬！爬！爬！</button>
+          <div className="text-xs mb-2 font-bold opacity-80">剩 {left.toFixed(1)} 秒　|　已爬 {count}/{TARGET} 下</div>
+          <button onClick={tap} className="wb-opt" style={{ textAlign: "center", fontSize: 22, padding: "16px 0", background: "#C8102E", color: "#fff" }}>爬！爬！爬！</button>
         </>
       )}
     </>
