@@ -204,6 +204,22 @@ const OUTFITS = [
 const AI_YOUTH_EVENTS = ["年輕人陣營成功攔截一位偽裝長輩！", "拍照打卡區大排長龍，潮度上升", "DJ 把音量轉大，成功蓋掉勸酒聲"];
 const AI_ELDER_EVENTS = ["有長輩偷偷講完一句地雷話沒被發現…", "有長輩用紅包收買了守門人！", "邊界警報！有不明人士試圖翻越柵欄！"];
 
+/* ============================================================
+   〈歡喜就好〉主旋律（陳雷／吳嘉祥曲）
+   依樂譜 Dm-C-Dm-C / Gm7-Am7 和聲進行採譜的主歌旋律片段，
+   用 8-bit 方波在遊戲內演奏；[音高, 拍數] ，休止符用 0
+   ============================================================ */
+const NOTE = { 0: 0, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00,
+               AS4: 466.16, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46 };
+const HAPPY_SONG = [
+  /* 人生海海 甚麼攏了解 */
+  ["A4",1],["A4",1],["C5",1],["A4",1],["G4",2],["F4",2],
+  ["F4",1],["G4",1],["A4",1],["G4",1],["F4",2],[0,1],
+  /* 有時仔清醒 有時青菜 */
+  ["A4",1],["C5",1],["D5",1],["C5",1],["A4",2],["G4",2],
+  ["F4",1],["G4",1],["F4",1],["E4",1],["D4",3],[0,1],
+];
+
 const GAME_SECONDS = 90;
 const START_WALLET = 5000;
 
@@ -906,6 +922,27 @@ export default function App() {
   const alarm = useCallback(() => { beep(980, 0.18, "sawtooth", 0.07); setTimeout(() => beep(740, 0.18, "sawtooth", 0.07), 180); setTimeout(() => beep(980, 0.25, "sawtooth", 0.07), 360); }, [beep]);
   const cheer = useCallback(() => { beep(660, 0.1, "triangle"); setTimeout(() => beep(880, 0.1, "triangle"), 110); setTimeout(() => beep(1100, 0.2, "triangle"), 220); }, [beep]);
   const buzz = useCallback(() => beep(180, 0.3, "sawtooth", 0.08), [beep]);
+  const songTimers = useRef([]);
+  /* 用內建方波音源演奏一段旋律；bpm 決定速度，回傳整段長度（毫秒） */
+  const playSong = useCallback((song, bpm = 116) => {
+    songTimers.current.forEach(clearTimeout);
+    songTimers.current = [];
+    if (muted) return 0;
+    const beat = 60000 / bpm;
+    let t = 0;
+    song.forEach(([n, len]) => {
+      const ms = beat * len;
+      const f = NOTE[n];
+      if (f) {
+        songTimers.current.push(setTimeout(() => {
+          beep(f, (ms * 0.9) / 1000, "square", 0.045);
+        }, t));
+      }
+      t += ms;
+    });
+    return t;
+  }, [beep, muted]);
+  useEffect(() => () => songTimers.current.forEach(clearTimeout), []);
 
   const addPop = useCallback((text, color) => {
     const id = Date.now() + Math.random();
@@ -1601,7 +1638,8 @@ export default function App() {
       setBubble("三分天注定！七分靠打拚！"); setTimeout(() => setBubble(null), 2600);
       pushLed(`${me.name} 唱《愛拚才會贏》全場歡呼！長輩區起立大合唱 +200`, me.id);
     } else if (s.mood === "happy") {
-      cheer();
+      /* 〈歡喜就好〉有真的旋律，直接用 8-bit 音源唱出來 */
+      playSong(HAPPY_SONG, 116);
       setElderScore((sc) => sc + 150); addPop("+150 長輩分");
       setBubble("歡喜就好～人生短短～"); setTimeout(() => setBubble(null), 2600);
       pushLed(`${me.name} 唱《歡喜就好》，氣氛輕鬆全場拍手 +150`, me.id);
