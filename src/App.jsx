@@ -2823,20 +2823,23 @@ function IntroModal({ css, onClose, onStart }) {
               padding: "12px 16px 14px", color: INK, fontSize: 12, fontWeight: 700, lineHeight: 1.8,
             }}>
               <h3 className="font-black text-base text-center mb-2">{p.title}</h3>
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>勝負規則</div>
-              <p className="mb-2">三分鐘倒數結束時，<b>總分較高的陣營獲勝</b>。你沒操控的那一隊也會自己得分，所以不能發呆。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>這場婚禮的目的</div>
+              <p className="mb-2">不是打贏對面，是<b>讓婚禮越來越失控</b>。全場共用一條「現場火爆指數」（0 到 100）：長輩每講完一句地雷話、年輕人每回敬一句，指數就往上跳。<b>90 秒結束時指數落在哪一段，就演出哪一種結局</b>——從最無聊的「尷尬收場」到傳說級的「全場大亂鬥」。</p>
 
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>長輩這隊怎麼得分</div>
-              <p className="mb-2">偷渡到年輕人區一次 <b>+500</b>。對年輕人講「地雷話」，成功依嚴重度 <b>+200～+600</b>，最重的兩級還會讓年輕人扣分。在自己區唱卡拉OK、打麻將、向新人敬酒，都有小額加分。也可以站在柵欄邊向對面喊話、在大門改設「年輕人誘餌」（免費鹽酥雞之類的）。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>長輩怎麼玩</div>
+              <p className="mb-2">走到柵欄「查看闖關任務」，選一條路線闖進年輕人區，找人把「關心」講完。講成功指數大漲；被抓只是罰紅包錢、被保鏢架回去——回來再闖一次就好。</p>
 
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>年輕人這隊怎麼得分</div>
-              <p className="mb-2">警報響起時抓出偽裝的長輩 <b>+400</b>。被講地雷話時抽回嗆卡反擊，依強度 <b>+200～+600</b>，最重的卡會讓長輩扣分，連續反擊有連擊加成。也可以主動搭話陰長輩、在大門設陷阱、DJ 點歌、發限動、隔柵欄喊話，或到靈性角落抽塔羅求宇宙加持。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>年輕人怎麼玩</div>
+              <p className="mb-2">警報響起就抓出偽裝的長輩；被講地雷話就抽回嗆卡回敬——每張都帶刺，差別只是笑點路線，連續交鋒還有連鎖加成。也可以主動搭話陰可疑長輩、去柵欄設防、DJ 點歌反制卡拉OK。</p>
 
-              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>金錢與分數是兩回事</div>
-              <p className="mb-2">「紅包基金」是長輩的錢包：被抓的罰款從這裡扣、賄賂守門人一次 $1800（每場最多 2 次）、向新人敬酒能回血。<b>錢再多都不會變成分數</b>，但花光就不能賄賂。</p>
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>大聲公</div>
+              <p className="mb-2">兩邊都能用、每場限兩次：選一句話全場放送，跑馬燈重播、對面一定有反應，火爆指數大漲。要留到關鍵時刻還是開場就轟，自己決定。</p>
+
+              <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>錢是錢，火爆是火爆</div>
+              <p className="mb-2">「紅包基金」是長輩的錢包：被抓的罰款從這裡扣、向新人敬酒能回血。<b>錢不會變成火爆指數</b>，但花光了有些路就走不了。</p>
 
               <div style={{ fontWeight: 900, fontSize: 13, borderBottom: `2px solid ${INK}`, paddingBottom: 2, marginBottom: 4 }}>最重要的一條</div>
-              <p><b>失敗永遠不會扣分。</b>長輩被抓只罰錢、被架走正好回去再玩一次偷渡；年輕人嗆過頭只是被新娘瞪、抓錯人只是讓長輩白賺。所以——放膽玩最大的。</p>
+              <p><b>沒有輸這回事。</b>被抓、被架走、嗆過頭被新娘瞪，都只是場面更精彩的素材。指數越高、結局越傳奇——所以放膽玩最大的。</p>
             </div>
             {/* 下卷軸桿 */}
             <div style={{ height: 17, margin: "0 -5px", background: "linear-gradient(180deg,#9A6630,#5E3A18)", border: `3px solid ${INK}`, borderRadius: 10, position: "relative", zIndex: 2 }} />
